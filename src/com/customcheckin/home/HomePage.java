@@ -1,10 +1,15 @@
 package com.customcheckin.home;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.customcheckin.home.ui.HomeScreenController;
+import com.customcheckin.model.JiraTicket;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +20,11 @@ import javafx.stage.Stage;
 public class HomePage extends Application {
 	private Stage primaryStage;
     private BorderPane rootLayout;
+    private ObservableList<JiraTicket> jiraTicketList = FXCollections.observableArrayList();
 
+    public HomePage() {
+    	jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
+    }
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
@@ -52,6 +61,10 @@ public class HomePage extends Application {
         HomeScreenController controller = loader.getController();
         controller.setHomePage(this);
 	}
+	
+	public ObservableList<JiraTicket> getJiraTicketList() {
+        return jiraTicketList;
+    }
 	
 	/**
      * Returns the main stage.

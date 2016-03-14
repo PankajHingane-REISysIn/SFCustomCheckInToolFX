@@ -12,10 +12,10 @@
         <items>
           <AnchorPane prefHeight="478.0" prefWidth="265.0">
                <children>
-                  <TableView layoutX="33.0" layoutY="93.0" prefHeight="605.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
+                  <TableView fx:id="JiraTicketTable" layoutX="33.0" layoutY="93.0" prefHeight="605.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
                     <columns>
                       <TableColumn prefWidth="83.0" text="CheckBox" />
-                      <TableColumn prefWidth="181.0" text="FileName" />
+                      <TableColumn fx:id="nameColumn" prefWidth="181.0" text="FileName" />
                     </columns>
                   </TableView>
                </children>

@@ -7,6 +7,9 @@ import java.util.List;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.customcheckin.model.JiraTicket;
+
+import javafx.beans.property.SimpleStringProperty;
 
 public class TicketHelper {
 	private List<SearchCriteriaBean> searchCriteriaList;
@@ -54,8 +57,8 @@ public class TicketHelper {
 		for (BasicIssue issue : searchResult.getIssues()) {
 			JiraTicket j = new JiraTicket();
 			System.out.println(issue.getKey());
-			j.setId(issue.getKey());
-			j.setName(issue.getKey());
+			j.setId(new SimpleStringProperty(issue.getKey()));
+			j.setName(new SimpleStringProperty(issue.getKey()));
 			jiraTicketList.add(j);
 		}
 		return jiraTicketList;
