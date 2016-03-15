@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -8,29 +11,46 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.customcheckin.home.ui.HomeScreenController">
    <children>
-      <SplitPane dividerPositions="0.29797979797979796" layoutX="-377.0" layoutY="-126.0" prefHeight="34.0" prefWidth="84.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.19933184855233854" layoutX="-377.0" layoutY="-126.0" prefHeight="700.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane prefHeight="478.0" prefWidth="265.0">
+          <AnchorPane prefHeight="698.0" prefWidth="228.0">
                <children>
-                  <TableView fx:id="JiraTicketTable" layoutX="33.0" layoutY="93.0" prefHeight="605.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
+                  <TableView fx:id="metadataFileList" layoutX="33.0" layoutY="93.0" prefHeight="605.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
                     <columns>
-                      <TableColumn prefWidth="83.0" text="CheckBox" />
-                      <TableColumn fx:id="nameColumn" prefWidth="181.0" text="FileName" />
+                      <TableColumn fx:id="metaDataChekBoxColumn" prefWidth="37.0" text="CheckBox" />
+                      <TableColumn fx:id="metadataNameColumn" prefWidth="138.0" text="FileName" />
                     </columns>
                   </TableView>
+                  <Label layoutX="46.0" layoutY="6.0" text="Metadata" />
+                  <DatePicker layoutX="1.0" layoutY="55.0" />
+                  <Label layoutX="24.0" layoutY="38.0" text="Last CheckIn Date" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="601.0">
                <children>
-                  <SplitPane dividerPositions="0.3793103448275862, 0.853448275862069" layoutX="252.0" layoutY="149.0" orientation="VERTICAL" prefHeight="698.0" prefWidth="627.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <SplitPane dividerPositions="0.7758620689655172, 0.853448275862069" layoutX="252.0" layoutY="149.0" orientation="VERTICAL" prefHeight="698.0" prefWidth="716.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                      <AnchorPane prefHeight="582.0" prefWidth="714.0">
                            <children>
-                              <Button layoutX="347.0" layoutY="222.0" mnemonicParsing="false" onMouseClicked="#handleGetJiraTicketOnClick" text="Jira Tickets" />
+                              <TableView layoutX="6.0" layoutY="92.0" prefHeight="441.0" prefWidth="694.0">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="Name" />
+                                  <TableColumn prefWidth="75.0" text="Description" />
+                                </columns>
+                              </TableView>
+                              <Label layoutX="219.0" layoutY="14.0" text="Config data" />
                            </children>
                         </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="54.0" prefWidth="625.0" />
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="106.0" prefWidth="714.0">
+                           <children>
+                              <Button layoutX="61.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#handleGetJiraTicketOnClick" text="Jira Tickets" />
+                              <ComboBox fx:id="jiraTicketCombo" layoutX="207.0" layoutY="12.0" prefWidth="150.0" />
+                           </children></AnchorPane>
+                        <AnchorPane prefHeight="153.0" prefWidth="724.0">
+                           <children>
+                              <Button layoutX="69.0" layoutY="37.0" mnemonicParsing="false" text="Commit" />
+                              <Button layoutX="161.0" layoutY="37.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="59.0" text="Push" />
+                           </children></AnchorPane>
                     </items>
                   </SplitPane>
                </children>

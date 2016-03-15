@@ -3,11 +3,9 @@ package com.customcheckin.home;
 import java.io.IOException;
 
 import com.customcheckin.home.ui.HomeScreenController;
-import com.customcheckin.model.MetadataFile;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -17,13 +15,7 @@ import javafx.stage.Stage;
 public class HomePage extends Application {
 	private Stage primaryStage;
     private BorderPane rootLayout;
-    private ObservableList<MetadataFile> metadataFileList = FXCollections.observableArrayList();
-    
-    private ObservableList<String> jiraTicketComboList = FXCollections.observableArrayList();
 
-    public HomePage() {
-    	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
-    }
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
@@ -55,14 +47,11 @@ public class HomePage extends Application {
         loader.setLocation(HomePage.class.getResource("ui/HomeScreen.fxml"));
         AnchorPane homeScreenPane = (AnchorPane) loader.load();
 
+        // Set person overview into the center of root layout.
         rootLayout.setCenter(homeScreenPane);
         HomeScreenController controller = loader.getController();
         controller.setHomePage(this);
 	}
-	
-	public ObservableList<MetadataFile> getMetadataFileList() {
-        return metadataFileList;
-    }
 	
 	/**
      * Returns the main stage.
@@ -74,11 +63,5 @@ public class HomePage extends Application {
     
 	public static void main(String[] args) {
 		launch(args);
-	}
-	/**
-	 * @return the jiraTicketComboList
-	 */
-	public ObservableList<String> getJiraTicketComboList() {
-		return jiraTicketComboList;
 	}
 }
