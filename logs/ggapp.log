@@ -33,3 +33,21 @@
 17 Mar 2016, 08:53:04 INFO [TestSF.java:main():16] - count: 1
 17 Mar 2016, 08:53:04 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: pankaj.hingane@business.org1; SessionId: 00D36000000Jiir!AQIAQF0V1CEGO13dcu1AA.jnSzJc00vMUBzrH8_oIZi_eIQfhYuescjExR_ERmaWAZYhiYqJi4ultGgDhR5j8V6B2h0AeZNI
 17 Mar 2016, 08:53:05 INFO [ForceService.java:queryCount():201] - record count: 21
+17 Mar 2016, 10:43:37 ERROR [PropertyManager.java:readPropertyFile():87] - java.io.FileNotFoundException: config.properties (The system cannot find the file specified)
+17 Mar 2016, 10:43:37 INFO [PropertyManager.java:main():100] - 
+17 Mar 2016, 10:49:09 INFO [PropertyManager.java:main():84] - 
+17 Mar 2016, 10:49:22 INFO [PropertyManager.java:main():84] - abc
+17 Mar 2016, 10:52:49 INFO [PropertyManager.java:main():65] - abc
+17 Mar 2016, 10:54:45 INFO [PropertyManager.java:main():69] - abc
+17 Mar 2016, 10:54:54 INFO [PropertyManager.java:main():69] - abc
+17 Mar 2016, 10:56:27 INFO [PropertyManager.java:main():68] - abc
+17 Mar 2016, 10:56:35 INFO [PropertyManager.java:main():68] - abc
+17 Mar 2016, 10:58:22 INFO [PropertyManager.java:main():69] - abc
+17 Mar 2016, 10:58:22 INFO [PropertyManager.java:main():72] - C:\_Projects\Java\EveryDayUtils
+17 Mar 2016, 10:59:00 INFO [PropertyManager.java:main():95] - abc
+17 Mar 2016, 10:59:00 INFO [PropertyManager.java:main():98] - C:\_Projects\Java\EveryDayUtils
+17 Mar 2016, 10:59:40 INFO [PropertyManager.java:main():94] - abc
+17 Mar 2016, 10:59:40 INFO [PropertyManager.java:main():97] - C:\_Projects\Salesforce\REI\REI Internal\Projects\GovGrants\Source Code\SFCustomCheckInToolFX\bin
+17 Mar 2016, 11:02:03 INFO [PropertyManager.java:main():92] - abc
+17 Mar 2016, 11:02:43 INFO [PropertyManager.java:main():92] - abc
+17 Mar 2016, 11:03:13 INFO [PropertyManager.java:main():92] - abc
