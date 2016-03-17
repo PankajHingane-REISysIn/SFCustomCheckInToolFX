@@ -18,12 +18,13 @@ public class HomePage extends Application {
 	private Stage primaryStage;
     private BorderPane rootLayout;
     private ObservableList<MetadataFile> metadataFileList = FXCollections.observableArrayList();
-    
+      
     private ObservableList<String> jiraTicketComboList = FXCollections.observableArrayList();
 
     public HomePage() {
     	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
     }
+    
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;

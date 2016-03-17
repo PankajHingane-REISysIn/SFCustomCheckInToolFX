@@ -1,0 +1,35 @@
+17 Mar 2016, 08:43:12 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:43:12 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:44:19 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:44:19 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:45:02 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:45:02 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:45:48 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:45:48 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:46:22 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:46:22 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:47:12 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:47:12 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:47:12 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 08:47:13 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for gg.pmo; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 08:47:14 INFO [ForceService.java:queryCount():201] - record count: 1
+17 Mar 2016, 08:48:23 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:48:23 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:48:23 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 08:48:25 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for gg.pmo; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 08:48:25 INFO [ForceService.java:queryCount():201] - record count: 1
+17 Mar 2016, 08:48:25 INFO [TestSF.java:main():32] - count: 1
+17 Mar 2016, 08:49:50 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:49:50 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:49:50 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 08:49:51 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for gg.pmo; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 08:49:51 INFO [ForceService.java:queryCount():201] - record count: 1
+17 Mar 2016, 08:49:51 INFO [TestSF.java:main():25] - count: 1
+17 Mar 2016, 08:53:02 INFO [CustomProperties.java:init():80] - Property file gg-pmo.properties is successfully loaded into singleton object
+17 Mar 2016, 08:53:02 INFO [CustomProperties.java:init():80] - Property file gg-int.properties is successfully loaded into singleton object
+17 Mar 2016, 08:53:02 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 08:53:04 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for gg.pmo; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 08:53:04 INFO [ForceService.java:queryCount():201] - record count: 1
+17 Mar 2016, 08:53:04 INFO [TestSF.java:main():16] - count: 1
+17 Mar 2016, 08:53:04 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: pankaj.hingane@business.org1; SessionId: 00D36000000Jiir!AQIAQF0V1CEGO13dcu1AA.jnSzJc00vMUBzrH8_oIZi_eIQfhYuescjExR_ERmaWAZYhiYqJi4ultGgDhR5j8V6B2h0AeZNI
+17 Mar 2016, 08:53:05 INFO [ForceService.java:queryCount():201] - record count: 21
