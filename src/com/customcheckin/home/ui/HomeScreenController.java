@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.customcheckin.home.HomePage;
-import com.customcheckin.model.JiraTicket;
+import com.customcheckin.model.JIRATicket;
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.jira.TicketHelper;
@@ -35,7 +35,7 @@ public class HomeScreenController {
     private TableColumn<MetadataFile, Boolean> metaDataChekBoxColumn;
 	
 	@FXML
-	  private ComboBox<String> jiraTicketCombo;
+	  private ComboBox<String> JIRATicketCombo;
 	
 	public HomeScreenController() {
 		
@@ -84,27 +84,27 @@ public class HomeScreenController {
     }
 	
 	@FXML
-    private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
+    private void handleGetJIRATicketOnClick() throws URISyntaxException, Exception {
     	System.out.println("=========Fetching");
     	JIRAConnection jira = new JIRAConnection("pankaj.hingane", "Ved@123.com");
-		List<JiraTicket> jiraTicketList = new TicketHelper(jira.getConnection()).getOpenTicketList("State of MA - Internal", "pankaj.hingane");
-		List<String> jiraTicketListToCombo = new ArrayList<String>();
-		for(JiraTicket jiraTicket : jiraTicketList) {
-			System.out.println("=========jiraTicket:" + jiraTicket.getId());
-			jiraTicketListToCombo.add(jiraTicket.getId().get());
+		List<JIRATicket> JIRATicketList = new TicketHelper(jira.getConnection()).getOpenTicketList("State of MA - Internal", "pankaj.hingane");
+		List<String> JIRATicketListToCombo = new ArrayList<String>();
+		for(JIRATicket JIRATicket : JIRATicketList) {
+			System.out.println("=========JIRATicket:" + JIRATicket.getId());
+			JIRATicketListToCombo.add(JIRATicket.getId().get());
 		}
 		List<MetadataFile> metadataFileList = new ArrayList<>();
 		metadataFileList.add(new MetadataFile(new SimpleStringProperty("sample4"), new SimpleBooleanProperty(false)));
 		metadataFileList.add(new MetadataFile(new SimpleStringProperty("sample5"), new SimpleBooleanProperty(false)));
 		homePage.getMetadataFileList().addAll(metadataFileList);
-		homePage.getJiraTicketComboList().addAll(jiraTicketListToCombo);
+		homePage.getJiraTicketComboList().addAll(JIRATicketListToCombo);
 		System.out.println("=========Completed");
     }
 	
 	public void setHomePage(HomePage homePage) {
 		this.homePage = homePage;
 		metadataFileList.setItems(homePage.getMetadataFileList());
-		jiraTicketCombo.setItems(homePage.getJiraTicketComboList());
+		JIRATicketCombo.setItems(homePage.getJiraTicketComboList());
 	}
 
 }

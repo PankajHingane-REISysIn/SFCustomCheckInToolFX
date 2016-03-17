@@ -6,18 +6,18 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
 
-public class JiraTicket implements Serializable {
+public class JIRATicket implements Serializable {
 	private StringProperty id;
 	private StringProperty name;
 	private BooleanProperty isSelected = new SimpleBooleanProperty(false);
 	
-	public JiraTicket() {
+	public JIRATicket() {
 		
 	}
-	public JiraTicket(StringProperty Id){
+	public JIRATicket(StringProperty Id){
 		this.id = Id;
 	}
-	public JiraTicket(StringProperty id, StringProperty name, BooleanProperty isSelected){
+	public JIRATicket(StringProperty id, StringProperty name, BooleanProperty isSelected){
 		this.id = id;
 		this.name = name;
 		this.isSelected = isSelected;

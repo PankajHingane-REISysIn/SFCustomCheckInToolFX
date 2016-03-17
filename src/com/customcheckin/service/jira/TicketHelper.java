@@ -7,7 +7,7 @@ import java.util.List;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
-import com.customcheckin.model.JiraTicket;
+import com.customcheckin.model.JIRATicket;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,7 +15,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class TicketHelper {
 	private List<SearchCriteriaBean> searchCriteriaList;
 	private JiraRestClient jiraRestClient;
-	private List<JiraTicket> jiraTicketList;
+	private List<JIRATicket> jiraTicketList;
 	
 	public TicketHelper(JiraRestClient jiraRestClient) {
 		this.jiraRestClient = jiraRestClient;
@@ -25,7 +25,7 @@ public class TicketHelper {
 		this.searchCriteriaList = searchCriteriaList;
 		// TODO Auto-generated constructor stub
 	}
-	public List<JiraTicket> getOpenTicketList(String projectName, String userName) throws Exception {
+	public List<JIRATicket> getOpenTicketList(String projectName, String userName) throws Exception {
 		/*System.out.println("===============1");
 		List<String> issueList = new ArrayList<String>();
 		
@@ -43,8 +43,8 @@ public class TicketHelper {
 		return getTicketList();
 	}
 	
-	public List<JiraTicket> getTicketList() throws Exception {
-		jiraTicketList = new ArrayList<JiraTicket>();
+	public List<JIRATicket> getTicketList() throws Exception {
+		jiraTicketList = new ArrayList<JIRATicket>();
 		if(searchCriteriaList.isEmpty()) {
 			throw new Exception("Please define search criteria.");
 		}
@@ -56,7 +56,7 @@ public class TicketHelper {
 		//return first 50 records
 		SearchResult searchResult = jiraRestClient.getSearchClient().searchJql(jqlStr).claim();
 		for (BasicIssue issue : searchResult.getIssues()) {
-			JiraTicket j = new JiraTicket();
+			JIRATicket j = new JIRATicket();
 			System.out.println(issue.getKey());
 			j.setId(new SimpleStringProperty(issue.getKey()));
 			j.setName(new SimpleStringProperty(issue.getKey()));

@@ -2,7 +2,7 @@ package com.customcheckin.service.jira;
 
 import java.io.Serializable;
 
-public class JiraTicket implements Serializable {
+public class JIRATicket implements Serializable {
 	private String Id;
 	private String Name;
 	/**
