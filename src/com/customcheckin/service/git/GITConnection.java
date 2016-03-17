@@ -1,45 +1,35 @@
 package com.customcheckin.service.git;
-import java.io.IOException;
-import java.util.Collection;
 
-import org.kohsuke.github.GHRepository;
+import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.errors.TransportException;
 import org.kohsuke.github.GitHub;
 
-
 public class GITConnection {
-	
 	private String repoName;
 	private static final String orgnizatioName = "REI-Systems";
 	private String userName;
 	private String pass;
-	private GitHub gitHub;
 	
-	public GITConnection(String userName, String pass, String repoName) {
-		this.userName = userName;
-		this.pass = pass;
-		this.repoName = repoName;
-	}
+	private static final String REMOTE_URL = "https://github.com/vendisys/VendisysBox.git";
 	
-	public GitHub getGitHub() {
-		return gitHub;
-	}
+    public static void main(String[] args) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+        // prepare a new folder for the cloned repository
+        File localPath = File.createTempFile("TestGitRepository", "");
+        localPath.delete();
 	
-	public GitHub connectToGit() throws IOException {
-		gitHub = GitHub.connectUsingPassword(userName, pass);
-		return gitHub;
-	}
-	
-	public GHRepository getRepository() throws IOException {
-		return gitHub.getOrganization(orgnizatioName).getRepository(repoName);
-	}
-	
-	public static void main(String args[]) throws IOException {
-		GITConnection gitConnection = new GITConnection("PankajHingane-REISysIn", "Pankaj@123.com", "REI-Systems");
-		Collection<GHRepository> lst = gitConnection.connectToGit().getUser("PankajHingane-REISysIn").getRepositories().values();
-		GHRepository repo = null;
-		for (GHRepository r : lst) {
-			repo = r;
-	        System.out.println(r.getName());
+        // then clone
+        System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+        try (Git result = Git.cloneRepository()
+                .setURI(REMOTE_URL)
+                .setDirectory(localPath)
+                .call()) {
+	        // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
+	        System.out.println("Having repository: " + result.getRepository().getDirectory());
 	    }
 	}
 }

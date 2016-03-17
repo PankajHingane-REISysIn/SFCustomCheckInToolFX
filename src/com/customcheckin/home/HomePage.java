@@ -3,6 +3,7 @@ package com.customcheckin.home;
 import java.io.IOException;
 
 import com.customcheckin.home.ui.HomeScreenController;
+import com.customcheckin.home.ui.PMOLoginController;
 import com.customcheckin.model.MetadataFile;
 
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class HomePage extends Application {
@@ -24,14 +26,14 @@ public class HomePage extends Application {
     public HomePage() {
     	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
     }
-    
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Custom CheckIn Tool");
         initRootLayout();
         
-        showHomePage();
+        showPMOLoginPage();
+        //showHomePage();
 	}
 	
 	public void initRootLayout() throws IOException {
@@ -59,6 +61,31 @@ public class HomePage extends Application {
         rootLayout.setCenter(homeScreenPane);
         HomeScreenController controller = loader.getController();
         controller.setHomePage(this);
+	}
+	
+	public void showPMOLoginPage() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HomePage.class.getResource("ui/PMOLogin.fxml"));
+        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit Person");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(pmoLoginPane);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        PMOLoginController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        //controller.setPerson(person);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+        
+        /*rootLayout.setCenter(pmoLoginPane);
+        PMOLoginController controller = loader.getController();
+        controller.setHomePage(this);*/
 	}
 	
 	public ObservableList<MetadataFile> getMetadataFileList() {

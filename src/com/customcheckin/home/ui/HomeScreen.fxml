@@ -11,9 +11,9 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.customcheckin.home.ui.HomeScreenController">
    <children>
-      <SplitPane dividerPositions="0.19933184855233854" layoutX="-377.0" layoutY="-126.0" prefHeight="700.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.19933184855233854" layoutX="-377.0" layoutY="-126.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane prefHeight="698.0" prefWidth="228.0">
+          <AnchorPane prefHeight="698.0" prefWidth="220.0">
                <children>
                   <TableView fx:id="metadataFileList" layoutX="33.0" layoutY="93.0" prefHeight="605.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
                     <columns>
@@ -22,8 +22,10 @@
                     </columns>
                   </TableView>
                   <Label layoutX="46.0" layoutY="6.0" text="Metadata" />
-                  <DatePicker layoutX="1.0" layoutY="55.0" />
+                  <DatePicker layoutX="1.0" layoutY="55.0" prefHeight="25.0" prefWidth="59.0" />
                   <Label layoutX="24.0" layoutY="38.0" text="Last CheckIn Date" />
+                  <ComboBox fx:id="jiraTicketCombo1" layoutX="72.0" layoutY="55.0" prefHeight="25.0" prefWidth="85.0" />
+                  <Button layoutX="87.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#handleGetJiraTicketOnClick" text="Retrieve" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="601.0">
@@ -39,9 +41,12 @@
                                 </columns>
                               </TableView>
                               <Label layoutX="219.0" layoutY="14.0" text="Config data" />
+                              <DatePicker layoutX="59.0" layoutY="60.0" />
+                              <Button layoutX="368.0" layoutY="59.0" mnemonicParsing="false" onMouseClicked="#handleGetJiraTicketOnClick" text="Retrieve" />
+                              <ComboBox fx:id="jiraTicketCombo11" layoutX="250.0" layoutY="59.0" prefHeight="25.0" prefWidth="85.0" />
                            </children>
                         </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="106.0" prefWidth="714.0">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="95.0" prefWidth="714.0">
                            <children>
                               <Button layoutX="61.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#handleGetJiraTicketOnClick" text="Jira Tickets" />
                               <ComboBox fx:id="jiraTicketCombo" layoutX="207.0" layoutY="12.0" prefWidth="150.0" />
