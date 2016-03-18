@@ -5,7 +5,6 @@ import com.force.service.vo.CustomVO;
 public class EnvironmentVO extends CustomVO {
 	private String Name;
 	private Boolean Active__c = false;
-	private Boolean DEVSalesforceOrg__c = false;
 	private String Project__c;
 	private Boolean Sandbox__c = false;
 	private Integer Sequence__c;
@@ -23,12 +22,6 @@ public class EnvironmentVO extends CustomVO {
 	}
 	public void setActive__c(Boolean active__c) {
 		Active__c = active__c;
-	}
-	public Boolean getDEVSalesforceOrg__c() {
-		return DEVSalesforceOrg__c;
-	}
-	public void setDEVSalesforceOrg__c(Boolean dEVSalesforceOrg__c) {
-		DEVSalesforceOrg__c = dEVSalesforceOrg__c;
 	}
 	public String getProject__c() {
 		return Project__c;

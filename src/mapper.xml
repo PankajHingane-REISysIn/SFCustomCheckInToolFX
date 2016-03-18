@@ -1,13 +1,9 @@
 <?xml version="1.0"?>
 <service>
 	<mapper>
-		<map sfObject="ChangeSet__c" class="com.ld.vo.ChangeSetVO" />
-		<map sfObject="ChangeSetItem__c" class="com.ld.vo.ChangeSetItemVO" />
-		<map sfObject="Requirement__c" class="com.ld.vo.WorkItemVO" />		
-		<map sfObject="DeploymentChange__c" class="com.ld.vo.DeploymentChangeVO" />
-		<map sfObject="ChangeSetItemStatus__c" class="com.ld.vo.ChangeSetItemStatusVO" />
-		<map sfObject="ChangeSetStatus__c" class="com.ld.vo.ChangeSetStatusVO" />
-		<map sfObject="Environment__c" class="com.ld.vo.EnvironmentVO" />
-		<map sfObject="Attachment" class="com.ld.vo.AttachmentVO" />
+		<map sfObject="EnvironmentUser__c" class="com.customcheckin.service.salesforce.vo.EnvironmentUserVO" />
+		<map sfObject="Environment__c" class="com.customcheckin.service.salesforce.vo.EnvironmentVO" />
+		<map sfObject="User" class="com.customcheckin.service.salesforce.vo.UserVO" />
+		<map sfObject="Project__c" class="com.customcheckin.service.salesforce.vo.ProjectVO" />
 	</mapper>
 </service>   

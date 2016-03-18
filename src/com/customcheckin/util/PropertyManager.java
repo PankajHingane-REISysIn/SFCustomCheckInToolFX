@@ -42,6 +42,10 @@ public class PropertyManager extends PropertyLoader {
 		prop.setProperty(key, value);
 	}
 	
+	public void reload() {
+		this.prop = super.loadProperties(PROPERTY_FILE);
+	}
+	
 	public void storePropertyFile() {
 		OutputStream output = null;
 

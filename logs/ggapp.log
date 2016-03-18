@@ -51,3 +51,42 @@
 17 Mar 2016, 11:02:03 INFO [PropertyManager.java:main():92] - abc
 17 Mar 2016, 11:02:43 INFO [PropertyManager.java:main():92] - abc
 17 Mar 2016, 11:03:13 INFO [PropertyManager.java:main():92] - abc
+17 Mar 2016, 15:46:43 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 15:46:47 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 15:46:47 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true
+17 Mar 2016, 15:46:48 INFO [ForceService.java:queryIt():223] - Total records found: 2
+17 Mar 2016, 15:46:48 ERROR [ForceUtils.java:getAllFields():214] - java.lang.ClassNotFoundException: com.ld.vo.ChangeSetVO
+17 Mar 2016, 15:46:48 WARN [ForceService.java:query():81] - SQL failed: Select Id, Name from Project__c where Active__c=true
+
+: Exception ID: 0317154648124$-100951249
+
+Exception Message: 
+java.lang.ClassNotFoundException: com.ld.vo.ChangeSetVO
+
+Cause: 
+java.lang.ClassNotFoundException: com.ld.vo.ChangeSetVO
+
+Stack Trace: 
+com.force.service.ForceUtils.getAllFields(ForceUtils.java:215)
+com.force.service.Mapper.getFieldsMap(Mapper.java:100)
+com.force.service.Mapper.processMapElement(Mapper.java:92)
+com.force.service.Mapper.initMapper(Mapper.java:73)
+com.force.service.Mapper.<init>(Mapper.java:39)
+com.force.service.Mapper.getInstance(Mapper.java:32)
+com.force.service.RecordParser.parseRecord(RecordParser.java:73)
+com.force.service.RecordParser.parseRecords(RecordParser.java:41)
+com.force.service.ForceService.queryIt(ForceService.java:229)
+com.force.service.ForceService.queryHelper(ForceService.java:99)
+com.force.service.ForceService.query(ForceService.java:77)
+com.force.service.ForceBean.query(ForceBean.java:107)
+com.force.service.ForceBean.query(ForceBean.java:96)
+com.force.service.ForceDelegate.queryMultiple(ForceDelegate.java:70)
+com.customcheckin.service.salesforce.SalesforcePMOConnection.getActiveProjects(SalesforcePMOConnection.java:44)
+com.customcheckin.service.salesforce.SalesforcePMOConnection.main(SalesforcePMOConnection.java:88)
+17 Mar 2016, 15:46:48 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+17 Mar 2016, 15:46:48 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Thu Mar 17 15:46:55 EDT 2016 (total wait: 7 seconds [0 mins])
+17 Mar 2016, 15:48:31 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+17 Mar 2016, 15:48:32 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQBnfTex.wPfCBRzCC3cxyqDtINRoM7DHSK9sQ6NWzJ0bnTXN8q1z9OVLeOXagzomj3CkvqvshZaOm9h5LjQKWNLFwNu6
+17 Mar 2016, 15:48:32 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true
+17 Mar 2016, 15:48:32 INFO [ForceService.java:queryIt():223] - Total records found: 2
+17 Mar 2016, 15:48:32 INFO [ForceService.java:queryHelper():103] - total records retrieved: 2 (Select Id, Name from Project__c where Active__c=true)

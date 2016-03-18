@@ -2,50 +2,22 @@
 <service>
    <repository>
 
-	<sql alias="select.changeset" operation="select">
-	   Select Id, Project__c from ChangeSet__c where Id=?	   
-	</sql>
-
-	<sql alias="select.changeset.status" operation="select">
-	   Select Id, ChangeSet__c, DeploymentStatus__c, Environment__c, Error__c from ChangeSetStatus__c where ChangeSet__c=? and Environment__c=?	   
-	</sql>
-
-	<sql alias="select.changeset.workitems" operation="select">
-	   Select Id, Name, WorkItem__c, Sequence__c from ChangeSetItem__c where ChangeSet__c=?	order by Sequence__c
-	</sql>
-
-	<sql alias="select.changeset.workitems.status" operation="select">
-	   Select Id, ChangeSetItem__c, ChangeSetItem__r.WorkItem__c, Environment__c, Error__c, ConfigDataMigrationStatus__c, MetaDataMigrationStatus__c from ChangeSetItemStatus__c 
-	   where ChangeSetItem__c=? and Environment__c=?
-	</sql>
-
-	<sql alias="select.environment" operation="select">
-	   Select Id, AdminUsername__c, AdminPassword__c, Sandbox__c from Environment__c where Id=?	   
-	</sql>
-
-	<sql alias="select.deployment.change" operation="select">
-	   Select ApexScript__c from DeploymentChange__c where WorkItem__c=? limit 1	   
-	</sql>
-
-	<sql alias="select.attachment.body.using.parentid" operation="select">
-	   Select Id, Name, Body from Attachment where ParentId=?	   
-	</sql>
-	
-	<sql alias="update.change.set.status" table="ChangeSetStatus__c">
-		<field name="ChangeSet__c"/>
-		<field name="DeploymentStatus__c"/>
-		<field name="Environment__c"/>
-		<field name="Error__c"/>
+	<sql alias="update.user.current.project" table="User">
+		<field name="CurrentProjectId__c"/>
 	</sql>	
 
-	<sql alias="update.change.set.item.status" table="ChangeSetItemStatus__c">
-		<field name="ChangeSetItem__c"/>
+	<sql alias="create.environment.user" table="EnvironmentUser__c">
 		<field name="Environment__c"/>
-		<field name="Error__c"/>
-		<field name="MetaDataMigrationStatus__c"/>
-		<field name="ConfigDataMigrationStatus__c"/>
+		<field name="Name"/>
+		<field name="Password__c"/>
+		<field name="PMOUser__c"/>
 	</sql>	
-	
+
+	<sql alias="update.environment.user" table="EnvironmentUser__c">
+		<field name="Name"/>
+		<field name="Password__c"/>
+	</sql>	
+
    </repository>
 </service>
 
