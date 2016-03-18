@@ -5,7 +5,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
@@ -17,12 +16,16 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="User Details" />
+              <MenuItem mnemonicParsing="false" text="Edit PMO login details" />
+                  <MenuItem mnemonicParsing="false" text="Change Project" />
+                  <MenuItem mnemonicParsing="false" text="Edit DEV Login details" />
+                  <MenuItem mnemonicParsing="false" text="Edit Jira Login details" />
+                  <MenuItem mnemonicParsing="false" text="Edit GIT Login details" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="Help" />
             </items>
           </Menu>
         </menus>

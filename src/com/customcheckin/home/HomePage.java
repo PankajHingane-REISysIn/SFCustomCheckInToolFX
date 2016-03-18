@@ -32,8 +32,8 @@ public class HomePage extends Application {
         this.primaryStage.setTitle("Custom CheckIn Tool");
         initRootLayout();
         
-        showPMOLoginPage();
-        //showHomePage();
+        //showPMOLoginPage();
+        showHomePage();
 	}
 	
 	public void initRootLayout() throws IOException {
@@ -55,7 +55,7 @@ public class HomePage extends Application {
 	
 	public void showHomePage() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(HomePage.class.getResource("ui/HomeScreen.fxml"));
+        loader.setLocation(HomePage.class.getResource("ui/HomeScreen2.fxml"));
         AnchorPane homeScreenPane = (AnchorPane) loader.load();
 
         rootLayout.setCenter(homeScreenPane);
