@@ -19,7 +19,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class SFDEVLoginController {
+public class GITLoginController {
 	private HomePage homePage;
 	@FXML
     private TextField userField;
@@ -29,14 +29,7 @@ public class SFDEVLoginController {
 	private Stage dialogStage;
 	
 	@FXML
-	  private ComboBox<ProjectVO> projectListCombo;
-	
-	@FXML
     private void initialize() {
-		ObservableList<ProjectVO> obj = FXCollections.observableArrayList();
-		List<ProjectVO> prjctList = SalesforcePMOConnection.getInstance().getActiveProjects();
-		obj.addAll(prjctList);
-		projectListCombo.setItems(obj);
     }
 	
 	
@@ -46,24 +39,21 @@ public class SFDEVLoginController {
 			//todo - first login to sf then write to file
 			SalesforcePMOConnection pmo = SalesforcePMOConnection.getInstance();
 			//todo - tostring override issue
-			ProjectVO project = projectListCombo.getValue();
-			//todo validation
-			pmo.storeCurrentProject(project.getId());
-			pmo.storeSalesforceDevUser(userField.getText(), passField.getText());
+			pmo.storeGITUser(userField.getText(), passField.getText());
 			
-			SalesforceDevConnection.getInstance();
+			//SalesforceDevConnection.getInstance();
 			
 				Alert alert = new Alert(AlertType.INFORMATION);
-		        alert.setTitle("DEV Login");
+		        alert.setTitle("GIT Login");
 		        alert.setHeaderText("");
-		        alert.setContentText("DEV Login Successfull.");
+		        alert.setContentText("GIT Login Successfull.");
 		        alert.showAndWait();
 		        dialogStage.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Alert alert = new Alert(AlertType.WARNING);
-	        alert.setTitle("PMO Login");
+	        alert.setTitle("GIT Login");
 	        alert.setHeaderText("Login Failed.");
 	        alert.setContentText(e.getMessage());
 	        alert.showAndWait();

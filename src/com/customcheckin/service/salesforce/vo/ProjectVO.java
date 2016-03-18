@@ -28,7 +28,7 @@ public class ProjectVO extends CustomVO {
 	
 	@Override
     public String toString() {
-        return "Project:"+Name;
+        return Name;
     }
 	
 }

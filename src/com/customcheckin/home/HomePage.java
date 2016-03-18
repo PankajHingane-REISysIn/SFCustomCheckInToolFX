@@ -2,7 +2,9 @@ package com.customcheckin.home;
 
 import java.io.IOException;
 
+import com.customcheckin.home.ui.GITLoginController;
 import com.customcheckin.home.ui.HomeScreenController;
+import com.customcheckin.home.ui.JIRALoginController;
 import com.customcheckin.home.ui.PMOLoginController;
 import com.customcheckin.home.ui.SFDEVLoginController;
 import com.customcheckin.model.MetadataFile;
@@ -111,6 +113,50 @@ public class HomePage extends Application {
 
         // Set the person into the controller.
         SFDEVLoginController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        //controller.setPerson(person);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+        showJIRALoginPage();
+	}
+	
+	public void showJIRALoginPage() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HomePage.class.getResource("ui/JiraLogin.fxml"));
+        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("JIRA Login");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(pmoLoginPane);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        JIRALoginController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        //controller.setPerson(person);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+        showGITLoginPage();
+	}
+	
+	public void showGITLoginPage() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HomePage.class.getResource("ui/GITLogin.fxml"));
+        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("GIT Login");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(pmoLoginPane);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        GITLoginController controller = loader.getController();
         controller.setDialogStage(dialogStage);
         //controller.setPerson(person);
 

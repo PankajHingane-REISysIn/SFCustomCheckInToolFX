@@ -16,6 +16,8 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	private String username;
 	private UserVO pmoUser;
 	private EnvironmentUserVO devUser;
+	private EnvironmentUserVO gitUser;
+	private EnvironmentUserVO jiraUser;
 	private List<ProjectVO> activeProjects;
 	private ProjectVO currentProject;
 	
@@ -82,6 +84,60 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 			devUser.setName(username);
 			devUser.setPassword__c(password);
 			gate.updateSingle("update.environment.user", devUser);
+		}
+	}
+	
+	public EnvironmentUserVO getJiraUser() {
+		if (jiraUser == null) {
+			jiraUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+					+ "PMOUser__c=? and Environment__r.Active__c=true", 
+					new Object[]{"JIRA", getCurrentPMOUser().getId()});
+		}
+		return jiraUser;
+	}
+	
+	public void storeJiraDevUser(String username, String password) {
+		if (getJiraUser() == null) {
+			EnvironmentVO jiraEnv = (EnvironmentVO) gate.querySingle("Select Id from Environment__c where Type__c=? and Active__c=true", 
+					new Object[]{"JIRA"});
+			jiraUser = new EnvironmentUserVO();
+			jiraUser.setEnvironment__c(jiraEnv.getId());
+			jiraUser.setPMOUser__c(getCurrentPMOUser().getId());
+			jiraUser.setName(username);
+			jiraUser.setPassword__c(password);
+			gate.createSingle("create.environment.user", jiraUser);
+		}
+		else {
+			jiraUser.setName(username);
+			jiraUser.setPassword__c(password);
+			gate.updateSingle("update.environment.user", jiraUser);
+		}
+	}
+	
+	public EnvironmentUserVO getGITUser() {
+		if (gitUser == null) {
+			gitUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+					+ "PMOUser__c=? and Environment__r.Active__c=true", 
+					new Object[]{"GitHub", getCurrentPMOUser().getId()});
+		}
+		return gitUser;
+	}
+	
+	public void storeGITUser(String username, String password) {
+		if (getGITUser() == null) {
+			EnvironmentVO gitEnv = (EnvironmentVO) gate.querySingle("Select Id from Environment__c where Type__c=? and Active__c=true", 
+					new Object[]{"GitHub"});
+			gitUser = new EnvironmentUserVO();
+			gitUser.setEnvironment__c(gitEnv.getId());
+			gitUser.setPMOUser__c(getCurrentPMOUser().getId());
+			gitUser.setName(username);
+			gitUser.setPassword__c(password);
+			gate.createSingle("create.environment.user", gitUser);
+		}
+		else {
+			gitUser.setName(username);
+			gitUser.setPassword__c(password);
+			gate.updateSingle("update.environment.user", gitUser);
 		}
 	}
 	
