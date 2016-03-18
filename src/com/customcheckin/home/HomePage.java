@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.customcheckin.home.ui.HomeScreenController;
 import com.customcheckin.home.ui.PMOLoginController;
 import com.customcheckin.model.MetadataFile;
+import com.customcheckin.util.PropertyManager;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -32,8 +33,13 @@ public class HomePage extends Application {
         this.primaryStage.setTitle("Custom CheckIn Tool");
         initRootLayout();
         
-        //showPMOLoginPage();
-        showHomePage();
+        //
+        if(PropertyManager.getInstance().getString("pmo.username").isEmpty()){
+        	showPMOLoginPage();
+        } else {
+        	showHomePage();
+        }
+        //todo add condition for other logins
 	}
 	
 	public void initRootLayout() throws IOException {
@@ -69,7 +75,7 @@ public class HomePage extends Application {
         AnchorPane pmoLoginPane = (AnchorPane) loader.load();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle("Edit Person");
+        dialogStage.setTitle("PMO Login");
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(pmoLoginPane);

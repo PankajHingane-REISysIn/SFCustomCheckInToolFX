@@ -12,6 +12,9 @@ import com.customcheckin.model.PMOLogin;
 import com.customcheckin.service.SessionData.SessionData;
 import com.customcheckin.service.salesforce.Login;
 import com.customcheckin.service.salesforce.SFService;
+import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.util.PropertyManager;
+import com.customcheckin.util.SalesforceConnection;
 import com.sforce.ws.ConnectionException;
 
 import javafx.fxml.FXML;
@@ -36,36 +39,26 @@ public class PMOLoginController {
 	
 	@FXML
     private void handleLogin() throws JAXBException {
-		//todo remove duplicate Bean
-		SFService sfService = new SFService();
-		Login login =new Login(userField.getText(), passField.getText());
 		try {
-			sfService.connectToSF(login);
-			Boolean isSFOrg = sfService.validePMOOrg();
-			SessionData.pmoPartnerConnection = sfService.getPartnerConnection();
-			if(isSFOrg) {
-				JAXBContext context = JAXBContext
-						.newInstance(PMOLogin.class);
-				Marshaller m = context.createMarshaller();
-				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-				PMOLogin p =new PMOLogin(userField.getText(), passField.getText());
-				File file = new File("PMOLogin.xml");
-				m.marshal(p, file);
-				System.out.println(file.getAbsolutePath());
+			//todo - first login to sf then write to file
+			PropertyManager.getInstance().setString("pmo.username", userField.getText());
+			PropertyManager.getInstance().setString("pmo.password", passField.getText());
+			PropertyManager.getInstance().storePropertyFile();
+			SalesforcePMOConnection.getInstance();
+			
 				Alert alert = new Alert(AlertType.INFORMATION);
-		        //alert.initOwner(homePage.getPrimaryStage());
 		        alert.setTitle("PMO Login");
 		        alert.setHeaderText("");
 		        alert.setContentText("PMO Login Successfull.");
 		        alert.showAndWait();
 		        dialogStage.close();
-		        System.out.println("====>> Completed");
-			}
-		} catch (FileNotFoundException | ConnectionException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
+			PropertyManager.getInstance().setString("pmo.username", "");
+			PropertyManager.getInstance().setString("pmo.password", "");
+			PropertyManager.getInstance().storePropertyFile();
 			Alert alert = new Alert(AlertType.WARNING);
-	        //alert.initOwner(homePage.getPrimaryStage());
 	        alert.setTitle("PMO Login");
 	        alert.setHeaderText("Login Failed.");
 	        alert.setContentText(e.getMessage());
