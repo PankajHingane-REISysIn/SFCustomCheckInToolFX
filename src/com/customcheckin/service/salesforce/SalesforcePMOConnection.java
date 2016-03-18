@@ -41,7 +41,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public List<ProjectVO> getActiveProjects() {
 		if (activeProjects == null) {
-			activeProjects = gate.queryMultiple("Select Id, Name from Project__c where Active__c=true");
+			activeProjects = gate.queryMultiple("Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true");
 		}
 		return activeProjects;
 	}
@@ -54,21 +54,23 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	}
 	
 	public void storeCurrentProject(String projectId) {
-		pmoUser.setCurrentProjectId__c(projectId);
+		getCurrentPMOUser().setCurrentProjectId__c(projectId);
 		gate.updateSingle("update.user.current.project", pmoUser);
 	}
 	
 	public EnvironmentUserVO getSalesforceDevUser() {
 		if (devUser == null) {
-			devUser = (EnvironmentUserVO) gate.querySingle("Select Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
-					+ "Environment__r.Project__c=? and PMOUser__c=? and Environment__r.Active__c=true", new Object[]{"Salesforce DEV", getCurrentProject().getId(), getCurrentPMOUser().getId()});
+			devUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+					+ "Environment__r.Project__c=? and PMOUser__c=? and Environment__r.Active__c=true", 
+					new Object[]{"Salesforce DEV", getCurrentProject().getId(), getCurrentPMOUser().getId()});
 		}
 		return devUser;
 	}
 	
 	public void storeSalesforceDevUser(String username, String password) {
 		if (getSalesforceDevUser() == null) {
-			EnvironmentVO devEnv = (EnvironmentVO) gate.querySingle("Select Id from Environment__c where Project__c=? and Type__c=? and Active__c=true", new Object[]{currentProject.getId(), "Salesforce DEV"});
+			EnvironmentVO devEnv = (EnvironmentVO) gate.querySingle("Select Id from Environment__c where Project__c=? and Type__c=? and Active__c=true", 
+					new Object[]{currentProject.getId(), "Salesforce DEV"});
 			devUser = new EnvironmentUserVO();
 			devUser.setEnvironment__c(devEnv.getId());
 			devUser.setPMOUser__c(getCurrentPMOUser().getId());
@@ -86,6 +88,8 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	public static void main(String[] args) {
 		SalesforcePMOConnection pmo = SalesforcePMOConnection.getInstance();
 		pmo.getActiveProjects();
+		pmo.storeCurrentProject("a0AG000000gxW1P");
+		pmo.storeSalesforceDevUser("manasi.gangal@ggframework.dev", "test1234");
 
 	}
 

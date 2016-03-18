@@ -90,3 +90,157 @@ com.customcheckin.service.salesforce.SalesforcePMOConnection.main(SalesforcePMOC
 17 Mar 2016, 15:48:32 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true
 17 Mar 2016, 15:48:32 INFO [ForceService.java:queryIt():223] - Total records found: 2
 17 Mar 2016, 15:48:32 INFO [ForceService.java:queryHelper():103] - total records retrieved: 2 (Select Id, Name from Project__c where Active__c=true)
+18 Mar 2016, 07:03:14 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:03:17 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:03:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:04:01 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:04:03 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:04:03 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:04:03 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:04:03 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:04:21 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:04:21 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:04:21 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:05:52 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:05:54 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:05:54 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:05:54 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:05:54 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:06:18 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:06:19 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:06:19 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:06:19 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:19 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:06:19 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:06:20 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:06:20 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():220] - SOQL: Select Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():223] - Total records found: 0
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryHelper():103] - total records retrieved: 0 (Select Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():220] - SOQL: Select Id from Environment__c where Project__c='a0AG000000gxW1PMAU' and Type__c='Salesforce DEV' and Active__c=true
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:20 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id from Environment__c where Project__c='a0AG000000gxW1PMAU' and Type__c='Salesforce DEV' and Active__c=true)
+18 Mar 2016, 07:06:20 INFO [ForceBean.java:create():205] - trying to create 1 record out of 1 using sql alias: create.environment.user
+18 Mar 2016, 07:06:20 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=insert
+18 Mar 2016, 07:06:41 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:06:43 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:06:43 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:06:43 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():220] - SOQL: Select Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:06:43 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:06:43 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.environment.user
+18 Mar 2016, 07:06:43 INFO [ForceBean.java:checkErrors():821] - 1 out of 1 records failed. operation=update
+18 Mar 2016, 07:06:43 INFO [ForceBean.java:throwException():883] - Grand errors count: 1
+18 Mar 2016, 07:07:25 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:07:27 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:07:27 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:07:27 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:07:27 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:07:27 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.environment.user
+18 Mar 2016, 07:07:27 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:07:59 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:08:00 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:00 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:08:00 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:08:01 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:01 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:08:01 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.environment.user
+18 Mar 2016, 07:08:01 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:08:15 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:08:17 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:08:17 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:08:17 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():223] - Total records found: 0
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryHelper():103] - total records retrieved: 0 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:08:17 INFO [ForceService.java:queryIt():220] - SOQL: Select Id from Environment__c where Project__c='a0AG000000gxW1PMAU' and Type__c='Salesforce DEV' and Active__c=true
+18 Mar 2016, 07:08:18 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:18 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id from Environment__c where Project__c='a0AG000000gxW1PMAU' and Type__c='Salesforce DEV' and Active__c=true)
+18 Mar 2016, 07:08:18 INFO [ForceBean.java:create():205] - trying to create 1 record out of 1 using sql alias: create.environment.user
+18 Mar 2016, 07:08:18 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=insert
+18 Mar 2016, 07:08:28 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:08:30 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:30 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:08:30 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:08:31 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:08:31 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:08:31 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.environment.user
+18 Mar 2016, 07:08:31 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:10:45 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+18 Mar 2016, 07:10:47 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+18 Mar 2016, 07:10:47 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.user.current.project
+18 Mar 2016, 07:10:47 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1P'
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1P')
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryIt():223] - Total records found: 1
+18 Mar 2016, 07:10:47 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+18 Mar 2016, 07:10:47 INFO [ForceBean.java:update():257] - trying to update 1 record out of 1 using sql alias: update.environment.user
+18 Mar 2016, 07:10:47 INFO [ForceBean.java:checkErrors():824] - all 1 records success. operation=update
