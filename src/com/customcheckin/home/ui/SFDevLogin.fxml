@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="367.0" prefWidth="626.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.customcheckin.home.ui.SFDEVLoginController">
+   <children>
+      <Label layoutX="225.0" layoutY="45.0" text="SF Dev Login" />
+      <Label layoutX="158.0" layoutY="123.0" text="User Name" />
+      <Label layoutX="167.0" layoutY="165.0" text="Password" />
+      <TextField fx:id="userField" layoutX="253.0" layoutY="119.0" />
+      <TextField fx:id="passField" layoutX="253.0" layoutY="161.0" />
+      <Button layoutX="312.0" layoutY="226.0" mnemonicParsing="false" onAction="#handleLogin" text="Login to DEV" />
+      <ComboBox fx:id="projectListCombo" layoutX="253.0" layoutY="78.0" prefWidth="150.0" />
+      <Label layoutX="174.0" layoutY="82.0" text="Project" />
+   </children>
+</AnchorPane>

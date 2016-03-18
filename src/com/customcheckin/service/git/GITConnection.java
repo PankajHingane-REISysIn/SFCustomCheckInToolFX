@@ -7,7 +7,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.errors.TransportException;
-import org.kohsuke.github.GitHub;
 
 public class GITConnection {
 	private String repoName;

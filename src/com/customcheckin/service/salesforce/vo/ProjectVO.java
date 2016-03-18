@@ -26,5 +26,9 @@ public class ProjectVO extends CustomVO {
 		Organization_ID__c = organization_ID__c;
 	}
 	
+	@Override
+    public String toString() {
+        return "Project:"+Name;
+    }
 	
 }

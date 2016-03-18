@@ -3,7 +3,6 @@ package com.customcheckin.service.jira;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.SearchResult;

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.customcheckin.home.ui.HomeScreenController;
 import com.customcheckin.home.ui.PMOLoginController;
+import com.customcheckin.home.ui.SFDEVLoginController;
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.util.PropertyManager;
 
@@ -39,6 +40,7 @@ public class HomePage extends Application {
         } else {
         	showHomePage();
         }
+        showHomePage();
         //todo add condition for other logins
 	}
 	
@@ -89,9 +91,31 @@ public class HomePage extends Application {
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
         
+        showDEVLoginPage();
         /*rootLayout.setCenter(pmoLoginPane);
         PMOLoginController controller = loader.getController();
         controller.setHomePage(this);*/
+	}
+	
+	public void showDEVLoginPage() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HomePage.class.getResource("ui/SFDevLogin.fxml"));
+        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("SF DEV Login");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(pmoLoginPane);
+        dialogStage.setScene(scene);
+
+        // Set the person into the controller.
+        SFDEVLoginController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        //controller.setPerson(person);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
 	}
 	
 	public ObservableList<MetadataFile> getMetadataFileList() {
