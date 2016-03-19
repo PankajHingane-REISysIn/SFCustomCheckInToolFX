@@ -57,7 +57,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public void storeCurrentProject(String projectId) {
 		getCurrentPMOUser().setCurrentProjectId__c(projectId);
-		gate.updateSingle("update.user.current.project", pmoUser);
+		gate.updateSingle("CurrentProjectId__c", pmoUser);
 	}
 	
 	public EnvironmentUserVO getSalesforceDevUser() {
@@ -78,12 +78,12 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 			devUser.setPMOUser__c(getCurrentPMOUser().getId());
 			devUser.setName(username);
 			devUser.setPassword__c(password);
-			gate.createSingle("create.environment.user", devUser);
+			gate.createSingle("Environment__c, Name, Password__c, PMOUser__c", devUser);
 		}
 		else {
 			devUser.setName(username);
 			devUser.setPassword__c(password);
-			gate.updateSingle("update.environment.user", devUser);
+			gate.updateSingle("Name, Password__c", devUser);
 		}
 	}
 	

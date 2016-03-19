@@ -2,22 +2,6 @@
 <service>
    <repository>
 
-	<sql alias="update.user.current.project" table="User">
-		<field name="CurrentProjectId__c"/>
-	</sql>	
-
-	<sql alias="create.environment.user" table="EnvironmentUser__c">
-		<field name="Environment__c"/>
-		<field name="Name"/>
-		<field name="Password__c"/>
-		<field name="PMOUser__c"/>
-	</sql>	
-
-	<sql alias="update.environment.user" table="EnvironmentUser__c">
-		<field name="Name"/>
-		<field name="Password__c"/>
-	</sql>	
-
    </repository>
 </service>
 
