@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX8New"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/annotation-indexer-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/antlr-2.7.7.jar"/>
@@ -13,21 +14,29 @@
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/atlassian-httpclient-api-0.13.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/atlassian-httpclient-spi-0.13.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/atlassian-util-concurrent-2.4.0-M9.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/axis.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/bridge-method-annotation-1.14.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-discovery-0.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-logging-1.1.3.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/diff_match_patch-current.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/everyDayUtils.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/force-partner-api-36.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/forceService.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/force-wsc-36.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/github-api-1.73.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/guava-10.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpasyncclient-4.0-beta3-atlassian-1.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpasyncclient-cache-4.0-beta3-atlassian-1.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpclient-4.2.1-atlassian-2.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpclient-4.3.6.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpclient-cache-4.2.1-atlassian-2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpcore-4.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpcore-4.3.3.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpcore-nio-4.2.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/httpmime-4.1.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jackson-annotations-2.2.3.jar"/>
@@ -39,8 +48,10 @@
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jackson-mapper-asl-1.5.5.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jackson-mapper-asl-1.9.13.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jackson-xc-1.5.5.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/JavaEWAH-0.7.9.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jaxb-api-2.2.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jaxb-impl-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jaxrpc.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jersey-client-1.5.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jersey-core-1.5.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jersey-json-1.5.jar"/>
@@ -48,9 +59,15 @@
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jira-rest-java-client-2.0.0-m2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jira-rest-java-client-api-2.0.0-m26.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/joda-time-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jsch-0.1.53.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jsr305-1.3.9.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/Kanaputs.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/org.eclipse.jgit-4.2.0.201601211800-r.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/parterWSDL_client.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/sal-api-2.7.0.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/spring-beans-2.5.6.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/spring-context-2.5.6.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/spring-core-2.5.6.jar"/>
@@ -58,15 +75,6 @@
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/stax-api-1.0-2.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/stringtemplate-3.2.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/Kanaputs.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/parterWSDL_client.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/axis.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/jaxrpc.jar"/>
 	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/wsdl4j-1.5.1.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/commons-discovery-0.2.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/forceService.jar"/>
-	<classpathentry kind="lib" path="C:/_Projects/Salesforce/REI/REI Internal/Projects/GovGrants/Source Code/SFCustomCheckInToolFX/ext lib/everyDayUtils.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
