@@ -12,6 +12,7 @@ import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.customcheckin.model.JiraSearchCriteriaBean;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
@@ -57,7 +58,7 @@ public class JIRAConnection {
 		List<JiraSearchCriteriaBean> searchCriteriaList = new ArrayList<JiraSearchCriteriaBean>();
 		searchCriteriaList.add(new JiraSearchCriteriaBean("project", "=", "\""+projectName+"\""));
 		searchCriteriaList.add(new JiraSearchCriteriaBean("assignee", "=", "\""+userName+"\""));
-		searchCriteriaList.add(new JiraSearchCriteriaBean("status", "in", "(Open)"));
+		searchCriteriaList.add(new JiraSearchCriteriaBean("status", "in", "(Open,Development)"));
 		return getTickets(searchCriteriaList);
 	}
 	
@@ -79,6 +80,7 @@ public class JIRAConnection {
 			j.setId(new SimpleStringProperty(issue.getKey()));
 			j.setName(new SimpleStringProperty(issue.getKey()));
 			j.setIsSelected(new SimpleBooleanProperty(false));
+			
 			jiraTicketList.add(j);
 		}
 		return jiraTicketList;

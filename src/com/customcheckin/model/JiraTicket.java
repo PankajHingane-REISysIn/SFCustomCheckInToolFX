@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 public class JiraTicket implements Serializable {
 	private StringProperty id;
 	private StringProperty name;
+	private StringProperty description;
 	private BooleanProperty isSelected = new SimpleBooleanProperty(false);
 	
 	public JiraTicket() {
@@ -57,6 +58,18 @@ public class JiraTicket implements Serializable {
 	 */
 	public void setIsSelected(BooleanProperty isSelected) {
 		this.isSelected = isSelected;
+	}
+	/**
+	 * @return the description
+	 */
+	public StringProperty getDescription() {
+		return description;
+	}
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(StringProperty description) {
+		this.description = description;
 	}
 
 }

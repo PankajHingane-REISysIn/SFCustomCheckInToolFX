@@ -7,6 +7,7 @@ import com.customcheckin.home.ui.HomeScreenController;
 import com.customcheckin.home.ui.JIRALoginController;
 import com.customcheckin.home.ui.PMOLoginController;
 import com.customcheckin.home.ui.SFDEVLoginController;
+import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.util.PropertyManager;
 
@@ -25,7 +26,7 @@ public class HomePage extends Application {
     private BorderPane rootLayout;
     private ObservableList<MetadataFile> metadataFileList = FXCollections.observableArrayList();
       
-    private ObservableList<String> jiraTicketComboList = FXCollections.observableArrayList();
+    private ObservableList<JiraTicket> jiraTicketComboList = FXCollections.observableArrayList();
 
     public HomePage() {
     	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
@@ -182,7 +183,7 @@ public class HomePage extends Application {
 	/**
 	 * @return the jiraTicketComboList
 	 */
-	public ObservableList<String> getJiraTicketComboList() {
+	public ObservableList<JiraTicket> getJiraTicketComboList() {
 		return jiraTicketComboList;
 	}
 }

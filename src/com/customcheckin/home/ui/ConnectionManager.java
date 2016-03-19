@@ -40,7 +40,7 @@ public class ConnectionManager  extends Thread{
 		Thread gitConn = new ConnectionManager("GIT");
 		gitConn.start();
 		
-		try {
+		/*try {
 			sfDEVConn.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -57,9 +57,9 @@ public class ConnectionManager  extends Thread{
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
-		log.info("All connection avaailable");
+		log.info("All connection available");
 	}
 	
 	public static void main(String []str) {

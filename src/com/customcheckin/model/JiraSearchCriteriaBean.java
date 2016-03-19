@@ -1,4 +1,4 @@
-package com.customcheckin.service.jira;
+package com.customcheckin.model;
 
 
 

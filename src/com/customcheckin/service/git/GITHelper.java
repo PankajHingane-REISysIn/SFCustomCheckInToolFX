@@ -40,7 +40,7 @@ public class GITHelper {
     	return true;
 	}
 	
-	public Boolean pullRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public Boolean pushRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		/*CloneCommand cloneCommand = Git.cloneRepository();
 		cloneCommand.setURI(gitCredential.getRemoteURL());
 		File localPath = new File(gitCredential.getLocalURL());
@@ -93,7 +93,7 @@ public class GITHelper {
     						"https://github.com/PankajHingane-REISysIn/SFCustomCheckInToolStruts.git");
     	GITHelper gitHelper = new GITHelper(gitCredential);
     	//gitHelper.cloneRepo();
-    	gitHelper.pullRepo();
+    	gitHelper.pushRepo();
     	/*CloneCommand cloneCommand = Git.cloneRepository();
     	cloneCommand.setURI( "https://github.com/PankajHingane-REISysIn/SFCustomCheckInToolStruts.git" );
     	 File localPath = File.createTempFile("TestGitRepositoryPankaj", "");
