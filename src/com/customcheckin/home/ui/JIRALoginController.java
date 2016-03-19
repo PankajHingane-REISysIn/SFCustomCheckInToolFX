@@ -5,6 +5,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import com.customcheckin.home.HomePage;
+import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.ProjectVO;
@@ -38,8 +39,8 @@ public class JIRALoginController {
 		try {
 			//todo - first login to sf then write to file
 			SalesforcePMOConnection pmo = SalesforcePMOConnection.getInstance();
-			//todo - tostring override issue
 			pmo.storeJiraDevUser(userField.getText(), passField.getText());
+			JIRAConnection.getInstance();
 			
 			//SalesforceDevConnection.getInstance();
 			
