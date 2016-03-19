@@ -9,6 +9,8 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
@@ -91,8 +93,16 @@ public class GITConnection {
     	return true;
 	}
 	
+	public Boolean pullRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		PullCommand pullcmd = git.pull();
+		pullcmd.setCredentialsProvider(gitUserPass);
+		PullResult pullList = pullcmd.call();
+		log.info("=====Completed===" + pullList);
+    	return true;
+	}
+	
 	public static void main(String str[]) throws InvalidRemoteException, TransportException, IOException, GitAPIException {
-		GITConnection.getInstance().pushRepo();
+		GITConnection.getInstance().pullRepo();
 	}
 	
 }
