@@ -116,7 +116,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public EnvironmentUserVO getGITUser() {
 		if (gitUser == null) {
-			gitUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+			gitUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c,LocalWorkspacePath__c from EnvironmentUser__c where Environment__r.Type__c=? and "
 					+ "PMOUser__c=? and Environment__r.Active__c=true", 
 					new Object[]{"GitHub", getCurrentPMOUser().getId()});
 		}
