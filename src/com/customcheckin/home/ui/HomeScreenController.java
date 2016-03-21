@@ -9,7 +9,10 @@ import java.util.ResourceBundle;
 import com.customcheckin.home.HomePage;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
+import com.customcheckin.service.filecomparison.CompareFiles;
+import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
+import com.customcheckin.service.salesforce.SalesforceFileBasedRetrieve;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -143,11 +146,12 @@ public class HomeScreenController implements Initializable {
 	@FXML
 	private void handleGetMetadaOnClick() throws URISyntaxException, Exception {
 		List<MetadataFile> metadataFileList = new ArrayList<>();
-		metadataFileList.add(new MetadataFile(new SimpleStringProperty("sample4"), new SimpleBooleanProperty(false)));
+		/*metadataFileList.add(new MetadataFile(new SimpleStringProperty("sample4"), new SimpleBooleanProperty(false)));
 		metadataFileList.add(new MetadataFile(new SimpleStringProperty("sample5"), new SimpleBooleanProperty(false)));
-		homePage.getMetadataFileList().addAll(metadataFileList);
+		homePage.getMetadataFileList().addAll(metadataFileList);*/
+		GetMetadataThreads.getAllData();
+		metadataFileList = new CompareFiles().getMetadataFilesWithDifference();
 		System.out.println("=========Completed");
-
 	}
 
 	public void setHomePage(HomePage homePage) {

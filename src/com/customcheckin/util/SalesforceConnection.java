@@ -12,4 +12,8 @@ public class SalesforceConnection {
 		}
 		this.gate = ForceDelegate.login(username, password, false, apiVersion);
 	}
+	
+	public String getSessionId() {
+		return gate.getSessionId();
+	}
 }

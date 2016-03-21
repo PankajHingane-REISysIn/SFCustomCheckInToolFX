@@ -29,7 +29,8 @@ import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
 import com.lib.util.StringUtils;
 
 public class GITConnection {
-	private String remoteURL = "https://github.com/PankajHingane-REISysIn/SFCustomCheckInToolStruts.git";
+	//todo - read from SF PMO
+	private String remoteURL = "https://github.com/PankajHingane-REISysIn/TestSFRepo";
 	private String localURL;
 	private UsernamePasswordCredentialsProvider gitUserPass;
 	private Git git;
@@ -86,7 +87,6 @@ public class GITConnection {
 		
 		PushCommand pushcmd = git.push();
 		pushcmd.setCredentialsProvider(gitUserPass);
-		//pushcmd.setCredentialsProvider(new UsernamePasswordCredentialsProvider( "edeb76f18c361c42a870f5034796692183af28fe", ""));
 		RefSpec spec = new RefSpec("refs/heads/master");
 		Iterable<PushResult> pushList = pushcmd.setRemote(remoteURL).setRefSpecs(spec).call();
 		log.info("=====Completed===" + pushList);

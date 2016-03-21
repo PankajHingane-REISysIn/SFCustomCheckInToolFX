@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.customcheckin.model.MetadataFile;
+import com.customcheckin.service.salesforce.SalesforceDevConnection;
+import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.util.UnzipUtility;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,6 +21,7 @@ import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
 
 public class CompareFiles {
+	private static Logger log = Logger.getRootLogger();
 	public static void main(String args[]) {
 		List<MetadataFile> metadaList = new CompareFiles().getMetadataFilesWithDifference();
 		for (MetadataFile metadata : metadaList) {
@@ -23,14 +29,15 @@ public class CompareFiles {
 		}
 	}
 
-	List<MetadataFile> getMetadataFilesWithDifference() {
+	public List<MetadataFile> getMetadataFilesWithDifference() {
 		List<MetadataFile> returnMetadata = new ArrayList<>();
 		//returnMetadata.add(new MetadataFile(new SimpleStringProperty("Simple1"), new SimpleBooleanProperty(false)));
 		//returnMetadata.add(new MetadataFile(new SimpleStringProperty("Simple2"), new SimpleBooleanProperty(false)));
 		//returnMetadata.add(new MetadataFile(new SimpleStringProperty("Simple3"), new SimpleBooleanProperty(false)));
-		String text1 = "D:\\logs\\";
-		String text2 = "D:\\logs\\log1\\";
-
+		String text1 = SalesforcePMOConnection.getInstance().getGITUser().getLocalWorkspacePath__c();
+		String text2 = UnzipUtility.DEST_DIR+"\\unpackaged\\";
+		log.info("text1====" + text1);
+		log.info("text2====" + text2);
 		List<String> fileList1 = getfileList(text1);
 		List<String> fileList2 = getfileList(text2);
 		fileList1.retainAll(fileList2);

@@ -62,6 +62,8 @@
                     <columns>
                       <TableColumn fx:id="metaDataChekBoxColumn" maxWidth="30.0" prefWidth="30.0" text="Select" />
                       <TableColumn fx:id="metadataNameColumn" minWidth="30.0" prefWidth="100.0" text="Name" />
+                        <TableColumn fx:id="metadataNameColumn1" minWidth="30.0" prefWidth="100.0" text="Created Date" />
+                        <TableColumn fx:id="metadataNameColumn11" minWidth="30.0" prefWidth="100.0" text="Last Modified" />
                     </columns>
                      <GridPane.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -147,6 +149,8 @@
                                 <columns>
                                   <TableColumn fx:id="jiraChekBoxColumn" prefWidth="75.0" text="Select" />
                                   <TableColumn fx:id="jiraNameColumn" prefWidth="75.0" text="Key" />
+                                    <TableColumn fx:id="jiraNameColumn1" prefWidth="75.0" text="Description" />
+                                    <TableColumn fx:id="jiraNameColumn11" prefWidth="75.0" text="Reporter" />
                                 </columns>
                               </TableView>
                               <Button mnemonicParsing="false" onAction="#handleGetJiraTicketOnClick" text="Fetch">

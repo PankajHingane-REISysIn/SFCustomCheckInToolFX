@@ -9,11 +9,16 @@ import com.lib.util.StringUtils;
 public class SalesforceDevConnection extends SalesforceConnection {
 	private static SalesforceDevConnection instance;
 	private static Logger log = Logger.getRootLogger();
+	private EnvironmentUserVO devUserInfo;
+	//todo - replace userName and pass instance with devUserInfo
+	private String userName;
+	private String pass;
 	
 	private SalesforceDevConnection() {
-		EnvironmentUserVO devUserInfo = SalesforcePMOConnection.getInstance().getSalesforceDevUser();
+		devUserInfo = SalesforcePMOConnection.getInstance().getSalesforceDevUser();
 		if (devUserInfo != null && StringUtils.isNonEmpty(devUserInfo.getName()) && StringUtils.isNonEmpty(devUserInfo.getPassword__c())) {
-			log.info(devUserInfo.getPassword__c() + "Password");
+			userName = devUserInfo.getName();
+			pass = devUserInfo.getPassword__c();
 			init(devUserInfo.getName(), devUserInfo.getPassword__c());
 		}
 	}
@@ -32,4 +37,21 @@ public class SalesforceDevConnection extends SalesforceConnection {
 
 	}
 
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @return the pass
+	 */
+	public String getPass() {
+		return pass;
+	}
+	
+	public EnvironmentUserVO getDevUserInfo() {
+		return devUserInfo;
+	}
 }
