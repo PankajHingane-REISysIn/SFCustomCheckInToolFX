@@ -1055,3 +1055,74 @@ com.sun.glass.ui.win.WinApplication.lambda$null$148(Unknown Source)
 java.lang.Thread.run(Unknown Source)
 18 Mar 2016, 21:25:40 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
 18 Mar 2016, 21:25:45 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+19 Mar 2016, 06:57:36 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+19 Mar 2016, 06:57:42 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+19 Mar 2016, 06:57:42 INFO [ConnectionManager.java:run():19] - type========JIRA
+19 Mar 2016, 06:57:42 INFO [ConnectionManager.java:run():19] - type========GIT
+19 Mar 2016, 06:57:42 INFO [ConnectionManager.java:run():30] - type========Completed:GIT
+19 Mar 2016, 06:57:42 INFO [ConnectionManager.java:run():19] - type========SFDEV
+19 Mar 2016, 06:57:42 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:42 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:42 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:42 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:42 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:42 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:42 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:57:49 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 06:57:42 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:57:49 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 06:57:49 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:49 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:49 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:49 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:49 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:57:56 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 06:57:49 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:49 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:49 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:57:56 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 06:57:56 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:56 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:56 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:56 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:58:03 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 06:57:56 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 06:57:56 WARN [ForceService.java:query():81] - SQL failed: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+
+: java.lang.NullPointerException
+19 Mar 2016, 06:57:56 INFO [ForceService.java:query():82] - will make another attempt in few seconds...
+19 Mar 2016, 06:57:56 INFO [GenericUtils.java:wait():69] - ForceService: currently waiting, next run time Sat Mar 19 06:58:03 EDT 2016 (total wait: 7 seconds [0 mins])
+19 Mar 2016, 07:10:57 WARN [JavaUtils.java:isAttachmentSupported():1308] - Unable to find required classes (javax.activation.DataHandler and javax.mail.internet.MimeMultipart). Attachment support is disabled.
+19 Mar 2016, 07:10:59 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: shah@force.pmo; SessionId: 00DG0000000kMVy!ARUAQLIgPZ7zlMPCdKLae.HibJFAHk1oObinI7dYuT8ZuuE6MLB_mgdiV7sM8UHmg.wfE0W1.4Raj1kTDsU61E.1h2zUkIh1
+19 Mar 2016, 07:11:08 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true
+19 Mar 2016, 07:11:09 INFO [ForceService.java:queryIt():223] - Total records found: 1
+19 Mar 2016, 07:11:09 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Active__c=true and EnableCustomCheckIn__c=true)
+19 Mar 2016, 07:12:33 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo'
+19 Mar 2016, 07:12:33 INFO [ForceService.java:queryIt():223] - Total records found: 1
+19 Mar 2016, 07:12:33 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username='shah@force.pmo')
+19 Mar 2016, 07:12:33 INFO [ForceBean.java:update():258] - trying to update 1 record out of 1 using sql alias: CurrentProjectId__c
+19 Mar 2016, 07:12:47 INFO [ForceBean.java:update():258] - trying to update 1 record out of 1 using sql alias: CurrentProjectId__c
+19 Mar 2016, 07:17:09 INFO [ConnectionManager.java:run():19] - type========SFDEV
+19 Mar 2016, 07:17:09 INFO [ConnectionManager.java:run():19] - type========GIT
+19 Mar 2016, 07:17:09 INFO [ConnectionManager.java:run():19] - type========JIRA
+19 Mar 2016, 07:17:09 INFO [ConnectionManager.java:run():30] - type========Completed:GIT
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name from Project__c where Id='a0AG000000gxW1PMAU'
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='JIRA' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():223] - Total records found: 1
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name from Project__c where Id='a0AG000000gxW1PMAU')
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():220] - SOQL: Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():223] - Total records found: 1
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='JIRA' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryIt():223] - Total records found: 1
+19 Mar 2016, 07:17:09 INFO [ForceService.java:queryHelper():103] - total records retrieved: 1 (Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c='Salesforce DEV' and Environment__r.Project__c='a0AG000000gxW1PMAU' and PMOUser__c='005G0000003kp6VIAQ' and Environment__r.Active__c=true)
+19 Mar 2016, 07:17:09 INFO [SalesforceDevConnection.java:<init>():16] - test@1234Password
+19 Mar 2016, 07:17:10 INFO [ForceSessionManager.java:login():135] - ForceSessionManager login successful for salesforce; User: Pankaj.hingane@demo2.com; SessionId: 00D37000000Hg0i!ARYAQJ6raVQxoTTfKtIyCiGNfAkZG7sUJsY6l1RcBWA_6uBSsD6WAXjs_p14qkn1X2pqbO6z3cGZVoHa8VAyiqx1DHgS2IzW
+19 Mar 2016, 07:17:10 INFO [ConnectionManager.java:run():30] - type========Completed:SFDEV
+19 Mar 2016, 07:17:10 INFO [JIRAConnection.java:<init>():38] - Jira==Ved@123.com
+19 Mar 2016, 07:17:10 INFO [ConnectionManager.java:run():30] - type========Completed:JIRA
+19 Mar 2016, 07:17:10 INFO [ConnectionManager.java:getAllConnections():62] - All connection avaailable

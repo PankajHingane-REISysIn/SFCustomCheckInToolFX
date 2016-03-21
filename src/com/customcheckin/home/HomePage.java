@@ -34,7 +34,7 @@ public class HomePage extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Custom CheckIn Tool");
+        this.primaryStage.setTitle("Flex CheckIn Tool");
         initRootLayout();
         
         //
