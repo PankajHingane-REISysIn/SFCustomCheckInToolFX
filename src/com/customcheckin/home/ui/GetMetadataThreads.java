@@ -36,8 +36,8 @@ public class GetMetadataThreads  extends Thread{
 		
 	}
 	public static void getAllData() {
-		Thread pullRepo = new GetMetadataThreads("pullRepo");
-		pullRepo.start();
+		/*Thread pullRepo = new GetMetadataThreads("pullRepo");
+		pullRepo.start();*/
 		
 		Thread fetchMetada = new GetMetadataThreads("fetchMetadata");
 		fetchMetada.start();
@@ -45,12 +45,12 @@ public class GetMetadataThreads  extends Thread{
 		Thread sfRecords = new GetMetadataThreads("getSFRecords");
 		sfRecords.start();
 		
-		try {
+		/*try {
 			pullRepo.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		try {
 			fetchMetada.join();
 		} catch (InterruptedException e) {

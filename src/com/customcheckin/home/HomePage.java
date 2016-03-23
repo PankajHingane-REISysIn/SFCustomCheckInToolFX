@@ -156,11 +156,8 @@ public class HomePage extends Application {
         Scene scene = new Scene(pmoLoginPane);
         dialogStage.setScene(scene);
 
-        // Set the person into the controller.
         GITLoginController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-        //controller.setPerson(person);
-
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
 	}

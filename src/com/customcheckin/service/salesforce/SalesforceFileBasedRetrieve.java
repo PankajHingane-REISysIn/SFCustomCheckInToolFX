@@ -88,7 +88,7 @@ public class SalesforceFileBasedRetrieve {
 
     public void run() throws Exception {
     	retrieveZip();
-    	new UnzipUtility().unZipIt(ZIP_FILE, "src1\\");
+    	new UnzipUtility().unZipIt(ZIP_FILE, UnzipUtility.DEST_DIR);
     }
 
     private void retrieveZip() throws Exception {

@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
@@ -15,11 +18,16 @@ import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.errors.TransportException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
@@ -76,13 +84,40 @@ public class GITConnection {
     	return true;
 	}
 	
-	public Boolean pushRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public Boolean pushRepo(String jiraTicketNo, List<String> filesToAdd) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		Repository repo = git.getRepository();
 		String branch = repo.getBranch();
 		log.info("Branch=="+branch);
-		git.add().addFilepattern(".").call();
+		
+		Ref head = repo.getRef("HEAD");
+		RevWalk walk = new RevWalk(repo);
+		RevCommit commit = walk.parseCommit(head.getObjectId());
+		TreeWalk treeWalk = new TreeWalk(repo);
+		RevTree tree = commit.getTree();
+		treeWalk.addTree(tree);
+		treeWalk.setRecursive(false);
+		while (treeWalk.next()) {
+		    if (treeWalk.isSubtree()) {
+		        System.out.println("dir: " + treeWalk.getPathString());
+		        treeWalk.enterSubtree();
+		    } else {
+		        System.out.println("file: " + treeWalk.getPathString());
+		    }
+		}
+		
+		//git.add().addFilepattern(".").call();
+		AddCommand ac = git.add();
+		//File myfile = new File(repo.getDirectory().getParent(), "testfile1");
+		//log.info("repo.getDirectory().getParent()=======" + repo.getDirectory().getParent());
+        //myfile.createNewFile();
+        ac.addFilepattern("src/layouts/ApprovalDecisionActionConfig__c-Approval Decision Action Config Layout.layout");
+		for (String file : filesToAdd) {
+			log.info("Adding File TO repo:" + file);
+			ac.addFilepattern(file);
+		}
+		ac.call();
 		git.commit()
-        .setMessage("Commit all changes including additions.  Jira ticket no. goes here")
+        .setMessage("CheckIn By FX Tool- Jira Ticket No :" + jiraTicketNo)
         .call();
 		
 		PushCommand pushcmd = git.push();
@@ -93,6 +128,21 @@ public class GITConnection {
     	return true;
 	}
 	
+	protected File getRelativeFile(String path) { 
+        return new File(localURL, trimLeadingSlash(path)); 
+    }
+	
+	public static String trimLeadingSlash(String name) { 
+        if (name != null && name.startsWith("/")) { 
+            name = name.substring(1); 
+        } 
+        return name; 
+    }
+	
+	protected static String getFilePattern(String path) { 
+        return trimLeadingSlash(path); 
+    }
+	
 	public Boolean pullRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		PullCommand pullcmd = git.pull();
 		pullcmd.setCredentialsProvider(gitUserPass);
@@ -102,7 +152,7 @@ public class GITConnection {
 	}
 	
 	public static void main(String str[]) throws InvalidRemoteException, TransportException, IOException, GitAPIException {
-		GITConnection.getInstance().pullRepo();
+		GITConnection.getInstance().pushRepo("fdd", new ArrayList<String>());
 	}
 	
 }
