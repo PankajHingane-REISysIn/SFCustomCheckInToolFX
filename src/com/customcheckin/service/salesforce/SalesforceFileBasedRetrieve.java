@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,6 +23,8 @@ import com.customcheckin.util.UnzipUtility;
 import com.sforce.soap.enterprise.EnterpriseConnection;
 import com.sforce.soap.enterprise.LoginResult;
 import com.sforce.soap.metadata.AsyncResult;
+import com.sforce.soap.metadata.FileProperties;
+import com.sforce.soap.metadata.ListMetadataQuery;
 import com.sforce.soap.metadata.MetadataConnection;
 import com.sforce.soap.metadata.PackageTypeMembers;
 import com.sforce.soap.metadata.RetrieveMessage;
@@ -36,170 +39,199 @@ import com.sforce.ws.ConnectorConfig;
  */
 public class SalesforceFileBasedRetrieve {
 	private static SalesforceFileBasedRetrieve instance;
-    private MetadataConnection metadataConnection;
+	private MetadataConnection metadataConnection;
 
-    private static String ZIP_FILE = "src.zip";
+	private static String ZIP_FILE = "src.zip";
 
-    // manifest file that controls which components get retrieved
-    private static String MANIFEST_FILE = "package.xml";
+	// manifest file that controls which components get retrieved
+	private static String MANIFEST_FILE = "package.xml";
 
-    private static final double API_VERSION = 36.0;
+	private static final double API_VERSION = 36.0;
 
-    // one second in milliseconds
-    private static final long ONE_SECOND = 1000;
+	// one second in milliseconds
+	private static final long ONE_SECOND = 1000;
 
-    // maximum number of attempts to deploy the zip file
-    private static final int MAX_NUM_POLL_REQUESTS = 50;
+	// maximum number of attempts to deploy the zip file
+	private static final int MAX_NUM_POLL_REQUESTS = 50;
 
-    private static Logger log = Logger.getRootLogger();
+	private static Logger log = Logger.getRootLogger();
 
-    public static void main(String[] args) throws Exception {
-    	SalesforceFileBasedRetrieve sample = SalesforceFileBasedRetrieve.getInstance();
-        sample.run();
-    }
+	private SalesforceFileBasedRetrieve() throws ConnectionException {
+		getSFConnection();
+	}
 
-    private SalesforceFileBasedRetrieve() throws ConnectionException {
-    	getSFConnection();
-    }
-    
-    public static SalesforceFileBasedRetrieve getInstance() throws ConnectionException {
-    	if(instance == null) {
-    		instance = new SalesforceFileBasedRetrieve();
-    	}
-    	return instance;
-    }
-    
-    //todo -make use of existing session id
-    private void getSFConnection() throws ConnectionException {
-    	SalesforceDevConnection sfDev = SalesforceDevConnection.getInstance();
-    	final ConnectorConfig config = new ConnectorConfig();
-        config.setAuthEndpoint("https://login.salesforce.com/services/Soap/c/36.0");
-        config.setServiceEndpoint("https://login.salesforce.com/services/Soap/c/36.0");
-        config.setManualLogin(true);
+	public static SalesforceFileBasedRetrieve getInstance() throws ConnectionException {
+		if (instance == null) {
+			instance = new SalesforceFileBasedRetrieve();
+		}
+		return instance;
+	}
 
-    	EnterpriseConnection enter = new EnterpriseConnection(config);
-    	LoginResult loginRes = enter.login(sfDev.getUserName(), sfDev.getPass());
-    	final ConnectorConfig configWithSession = new ConnectorConfig();
-    	configWithSession.setServiceEndpoint(loginRes.getMetadataServerUrl());
-    	configWithSession.setSessionId(loginRes.getSessionId());
+	// todo -make use of existing session id
+	private void getSFConnection() throws ConnectionException {
+		SalesforceDevConnection sfDev = SalesforceDevConnection.getInstance();
+		final ConnectorConfig config = new ConnectorConfig();
+		config.setAuthEndpoint("https://login.salesforce.com/services/Soap/c/36.0");
+		config.setServiceEndpoint("https://login.salesforce.com/services/Soap/c/36.0");
+		config.setManualLogin(true);
 
-    	metadataConnection = new MetadataConnection(configWithSession);
-    }
+		EnterpriseConnection enter = new EnterpriseConnection(config);
+		LoginResult loginRes = enter.login(sfDev.getUserName(), sfDev.getPass());
+		final ConnectorConfig configWithSession = new ConnectorConfig();
+		configWithSession.setServiceEndpoint(loginRes.getMetadataServerUrl());
+		configWithSession.setSessionId(loginRes.getSessionId());
 
-    public void run() throws Exception {
-    	retrieveZip();
-    	new UnzipUtility().unZipIt(ZIP_FILE, UnzipUtility.DEST_DIR);
-    }
+		metadataConnection = new MetadataConnection(configWithSession);
+	}
 
-    private void retrieveZip() throws Exception {
-        RetrieveRequest retrieveRequest = new RetrieveRequest();
-        // The version in package.xml overrides the version in RetrieveRequest
-        retrieveRequest.setApiVersion(API_VERSION);
-        setUnpackaged(retrieveRequest);
-        log.info("========" + metadataConnection.getConfig().getAuthEndpoint() );
-        AsyncResult asyncResult = metadataConnection.retrieve(retrieveRequest);
-        RetrieveResult result = waitForRetrieveCompletion(asyncResult);
+	public void run(Calendar cal) throws Exception {
+		//todo - replace Date
+		SalesforceMetadaProperties.getSFMetadataProperty(metadataConnection, cal);
+		retrieveZip();
+		new UnzipUtility().unZipIt(ZIP_FILE, UnzipUtility.DEST_DIR);
+		List<Thread> threadLst = SalesforceMetadaProperties.threadListToWait;
+		for(Thread thread : threadLst) {
+			thread.join();
+		}
+	}
 
-        if (result.getStatus() == RetrieveStatus.Failed) {
-            throw new Exception(result.getErrorStatusCode() + " msg: " +
-                    result.getErrorMessage());
-        } else if (result.getStatus() == RetrieveStatus.Succeeded) {  
-	        // Print out any warning messages
-	        StringBuilder stringBuilder = new StringBuilder();
-	        if (result.getMessages() != null) {
-	            for (RetrieveMessage rm : result.getMessages()) {
-	                stringBuilder.append(rm.getFileName() + " - " + rm.getProblem() + "\n");
-	            }
-	        }
-	        if (stringBuilder.length() > 0) {
-	            log.info("Retrieve warnings:\n" + stringBuilder);
-	        }
+	private void retrieveZip() throws Exception {
+		RetrieveRequest retrieveRequest = new RetrieveRequest();
+		// The version in package.xml overrides the version in RetrieveRequest
+		retrieveRequest.setApiVersion(API_VERSION);
+		setUnpackaged(retrieveRequest);
+		log.info("========" + metadataConnection.getConfig().getAuthEndpoint());
+		AsyncResult asyncResult = metadataConnection.retrieve(retrieveRequest);
+		RetrieveResult result = waitForRetrieveCompletion(asyncResult);
+
+		if (result.getStatus() == RetrieveStatus.Failed) {
+			throw new Exception(result.getErrorStatusCode() + " msg: " + result.getErrorMessage());
+		} else if (result.getStatus() == RetrieveStatus.Succeeded) {
+			// Print out any warning messages
+			StringBuilder stringBuilder = new StringBuilder();
+			if (result.getMessages() != null) {
+				for (RetrieveMessage rm : result.getMessages()) {
+					stringBuilder.append(rm.getFileName() + " - " + rm.getProblem() + "\n");
+				}
+			}
+			if (stringBuilder.length() > 0) {
+				log.info("Retrieve warnings:\n" + stringBuilder);
+			}
+
+			log.info("Writing results to zip file");
+			File resultsFile = new File(ZIP_FILE);
+			FileOutputStream os = new FileOutputStream(resultsFile);
+
+			try {
+				os.write(result.getZipFile());
+			} finally {
+				os.close();
+			}
+		}
+	}
+
+	private RetrieveResult waitForRetrieveCompletion(AsyncResult asyncResult) throws Exception {
+		// Wait for the retrieve to complete
+		int poll = 0;
+		long waitTimeMilliSecs = ONE_SECOND;
+		String asyncResultId = asyncResult.getId();
+		RetrieveResult result = null;
+		do {
+			Thread.sleep(waitTimeMilliSecs);
+			// Double the wait time for the next iteration
+			waitTimeMilliSecs *= 2;
+			if (poll++ > MAX_NUM_POLL_REQUESTS) {
+				throw new Exception("Request timed out.  If this is a large set "
+						+ "of metadata components, check that the time allowed "
+						+ "by MAX_NUM_POLL_REQUESTS is sufficient.");
+			}
+			result = metadataConnection.checkRetrieveStatus(asyncResultId, true);
+			log.info("Retrieve Status: " + result.getStatus());
+		} while (!result.isDone());
+
+		return result;
+	}
+
+	private void setUnpackaged(RetrieveRequest request) throws Exception {
+		// Edit the path, if necessary, if your package.xml file is located
+		// elsewhere
+		File unpackedManifest = new File(MANIFEST_FILE);
+		log.info("Manifest file: " + unpackedManifest.getAbsolutePath());
+
+		if (!unpackedManifest.exists() || !unpackedManifest.isFile()) {
+			throw new Exception("Should provide a valid retrieve manifest " + "for unpackaged content. Looking for "
+					+ unpackedManifest.getAbsolutePath());
+		}
+
+		// Note that we use the fully quualified class name because
+		// of a collision with the java.lang.Package class
+		com.sforce.soap.metadata.Package p = parsePackageManifest(unpackedManifest);
+		request.setUnpackaged(p);
+	}
+
+	private com.sforce.soap.metadata.Package parsePackageManifest(File file)
+			throws ParserConfigurationException, IOException, SAXException {
+		com.sforce.soap.metadata.Package packageManifest = null;
+		List<PackageTypeMembers> listPackageTypes = new ArrayList<PackageTypeMembers>();
+		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		InputStream inputStream = new FileInputStream(file);
+		Element d = db.parse(inputStream).getDocumentElement();
+		for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling()) {
+			if (c instanceof Element) {
+				Element ce = (Element) c;
+				NodeList nodeList = ce.getElementsByTagName("name");
+				if (nodeList.getLength() == 0) {
+					continue;
+				}
+				String name = nodeList.item(0).getTextContent();
+				NodeList m = ce.getElementsByTagName("members");
+				List<String> members = new ArrayList<String>();
+				for (int i = 0; i < m.getLength(); i++) {
+					Node mm = m.item(i);
+					members.add(mm.getTextContent());
+				}
+				PackageTypeMembers packageTypes = new PackageTypeMembers();
+				packageTypes.setName(name);
+				packageTypes.setMembers(members.toArray(new String[members.size()]));
+				listPackageTypes.add(packageTypes);
+			}
+		}
+		packageManifest = new com.sforce.soap.metadata.Package();
+		PackageTypeMembers[] packageTypesArray = new PackageTypeMembers[listPackageTypes.size()];
+		packageManifest.setTypes(listPackageTypes.toArray(packageTypesArray));
+		packageManifest.setVersion(API_VERSION + "");
+		return packageManifest;
+	}
+
+	public List<String> listMetadataWithFilter(Calendar date) {
+		if(date==null) {
+			date =  Calendar.getInstance();
+		}
+		try {
+			ListMetadataQuery query = new ListMetadataQuery();
+			query.setType("CustomObject");
+			// query.setFolder(null);
+			double asOfVersion = 36.0;
+			// Assuming that the SOAP binding has already been established.
+			FileProperties[] lmr = metadataConnection.listMetadata(new ListMetadataQuery[] { query }, asOfVersion);
+			if (lmr != null) {
+				for (FileProperties n : lmr) {
+					System.out.println("Component fullName: " + n.getFullName());
+					System.out.println("Component type: " + n.getType());
+					if( date.compareTo(n.getLastModifiedDate()) < 0 ) {
+						System.out.println("Component type: " + n.getLastModifiedDate());
+					}
+				}
+			}
+		} catch (ConnectionException ce) {
+			ce.printStackTrace();
+		}
+		return null;
+	}
 	
-	        log.info("Writing results to zip file");
-	        File resultsFile = new File(ZIP_FILE);
-	        FileOutputStream os = new FileOutputStream(resultsFile);
-	
-	        try {
-	            os.write(result.getZipFile());
-	        } finally {
-	            os.close();
-	        }
-        }
-    }
+	public static void main(String[] args) throws Exception {
+		SalesforceFileBasedRetrieve sample = SalesforceFileBasedRetrieve.getInstance();
+		sample.listMetadataWithFilter(Calendar.getInstance());
+	}
 
-    private RetrieveResult waitForRetrieveCompletion(AsyncResult asyncResult) throws Exception {
-    	// Wait for the retrieve to complete
-        int poll = 0;
-        long waitTimeMilliSecs = ONE_SECOND;
-        String asyncResultId = asyncResult.getId();
-        RetrieveResult result = null;
-        do {
-            Thread.sleep(waitTimeMilliSecs);
-            // Double the wait time for the next iteration
-            waitTimeMilliSecs *= 2;
-            if (poll++ > MAX_NUM_POLL_REQUESTS) {
-                throw new Exception("Request timed out.  If this is a large set " +
-                "of metadata components, check that the time allowed " +
-                "by MAX_NUM_POLL_REQUESTS is sufficient.");
-            }
-            result = metadataConnection.checkRetrieveStatus(
-                    asyncResultId, true);
-            log.info("Retrieve Status: " + result.getStatus());
-        } while (!result.isDone());         
-
-        return result;
-    }
-
-    private void setUnpackaged(RetrieveRequest request) throws Exception {
-        // Edit the path, if necessary, if your package.xml file is located elsewhere
-        File unpackedManifest = new File(MANIFEST_FILE);
-        log.info("Manifest file: " + unpackedManifest.getAbsolutePath());
-
-        if (!unpackedManifest.exists() || !unpackedManifest.isFile()) {
-            throw new Exception("Should provide a valid retrieve manifest " +
-                "for unpackaged content. Looking for " +
-                unpackedManifest.getAbsolutePath());
-        }
-
-        // Note that we use the fully quualified class name because
-        // of a collision with the java.lang.Package class
-        com.sforce.soap.metadata.Package p = parsePackageManifest(unpackedManifest);
-        request.setUnpackaged(p);
-    }
-
-    private com.sforce.soap.metadata.Package parsePackageManifest(File file)
-            throws ParserConfigurationException, IOException, SAXException {
-        com.sforce.soap.metadata.Package packageManifest = null;
-        List<PackageTypeMembers> listPackageTypes = new ArrayList<PackageTypeMembers>();
-        DocumentBuilder db =
-                DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        InputStream inputStream = new FileInputStream(file);
-        Element d = db.parse(inputStream).getDocumentElement();
-        for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling()) {
-            if (c instanceof Element) {
-                Element ce = (Element) c;
-                NodeList nodeList = ce.getElementsByTagName("name");
-                if (nodeList.getLength() == 0) {
-                    continue;
-                }
-                String name = nodeList.item(0).getTextContent();
-                NodeList m = ce.getElementsByTagName("members");
-                List<String> members = new ArrayList<String>();
-                for (int i = 0; i < m.getLength(); i++) {
-                    Node mm = m.item(i);
-                    members.add(mm.getTextContent());
-                }
-                PackageTypeMembers packageTypes = new PackageTypeMembers();
-                packageTypes.setName(name);
-                packageTypes.setMembers(members.toArray(new String[members.size()]));
-                listPackageTypes.add(packageTypes);
-            }
-        }
-        packageManifest = new com.sforce.soap.metadata.Package();
-        PackageTypeMembers[] packageTypesArray =
-                new PackageTypeMembers[listPackageTypes.size()];
-        packageManifest.setTypes(listPackageTypes.toArray(packageTypesArray));
-        packageManifest.setVersion(API_VERSION + "");
-        return packageManifest;
-    }
 }

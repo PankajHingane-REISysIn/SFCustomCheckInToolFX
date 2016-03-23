@@ -10,18 +10,24 @@ public class MetadataFile {
 	private String gitPath;
 	private String sfPath;
 	private BooleanProperty isSelected = new SimpleBooleanProperty(false);
+	private StringProperty createDate;
+	private StringProperty lastModifiedDate;
+	
 	
 	public MetadataFile(StringProperty name, BooleanProperty isSelected) {
 		this.setName(name);
 		this.setIsSelected(isSelected);
 	}
 	
-	public MetadataFile(StringProperty name, String filePath, String gitPath, String sfPath, BooleanProperty isSelected) {
+	public MetadataFile(StringProperty name, String filePath, String gitPath, String sfPath, BooleanProperty isSelected,
+			StringProperty createDate, StringProperty lastModifiedDate) {
 		this.setName(name);
 		this.setIsSelected(isSelected);
 		this.relativeFilePath = filePath;
 		this.gitPath = gitPath;
 		this.sfPath = sfPath;
+		this.setCreateDate(createDate);
+		this.setLastModifiedDate(lastModifiedDate);
 	}
 
 	/**
@@ -96,5 +102,33 @@ public class MetadataFile {
 	 */
 	public void setSfPath(String sfPath) {
 		this.sfPath = sfPath;
+	}
+
+	/**
+	 * @return the createDate
+	 */
+	public StringProperty getCreateDate() {
+		return createDate;
+	}
+
+	/**
+	 * @param createDate the createDate to set
+	 */
+	public void setCreateDate(StringProperty createDate) {
+		this.createDate = createDate;
+	}
+
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public StringProperty getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(StringProperty lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 }

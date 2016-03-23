@@ -1,6 +1,7 @@
 package com.customcheckin.home.ui;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -11,8 +12,10 @@ import com.customcheckin.service.salesforce.SalesforceFileBasedRetrieve;
 public class GetMetadataThreads  extends Thread{
 	private String type;
 	private static Logger log = Logger.getRootLogger();
-	public GetMetadataThreads(String type) {
+	Calendar cal;
+	public GetMetadataThreads(String type, Calendar cal) {
 		this.type = type;
+		this.cal = cal;
 	}
 	public void run() {
 		log.info("type========" + type);
@@ -25,7 +28,7 @@ public class GetMetadataThreads  extends Thread{
 			}
 		} else if(type.equalsIgnoreCase("fetchMetadata")) {
 			try {
-				SalesforceFileBasedRetrieve.getInstance().run();
+				SalesforceFileBasedRetrieve.getInstance().run(cal);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -35,14 +38,14 @@ public class GetMetadataThreads  extends Thread{
 		log.info("type========Completed:" + type);
 		
 	}
-	public static void getAllData() {
+	public static void getAllData(Calendar cal) {
 		/*Thread pullRepo = new GetMetadataThreads("pullRepo");
 		pullRepo.start();*/
 		
-		Thread fetchMetada = new GetMetadataThreads("fetchMetadata");
+		Thread fetchMetada = new GetMetadataThreads("fetchMetadata", cal);
 		fetchMetada.start();
 		
-		Thread sfRecords = new GetMetadataThreads("getSFRecords");
+		Thread sfRecords = new GetMetadataThreads("getSFRecords", cal);
 		sfRecords.start();
 		
 		/*try {
@@ -68,7 +71,7 @@ public class GetMetadataThreads  extends Thread{
 	}
 	
 	public static void main(String []str) {
-		GetMetadataThreads.getAllData();
+		GetMetadataThreads.getAllData(null);
 	}
 
 }

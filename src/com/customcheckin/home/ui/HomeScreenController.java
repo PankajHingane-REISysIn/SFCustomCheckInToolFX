@@ -4,7 +4,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,6 +38,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -52,7 +59,14 @@ public class HomeScreenController implements Initializable {
 	@FXML
 	private TableColumn<MetadataFile, String> metadataNameColumn;
 	@FXML
+	private TableColumn<MetadataFile, String> metadataCreateDateColumn;
+	@FXML
+	private TableColumn<MetadataFile, String> metadataModifiedDateColumn;
+	@FXML
 	private TableColumn<MetadataFile, Boolean> metaDataChekBoxColumn;
+	
+	@FXML
+    DatePicker metadataDatePicker;
 
 	// jira table
 	@FXML
@@ -61,6 +75,7 @@ public class HomeScreenController implements Initializable {
 	private TableColumn<JiraTicket, String> jiraNameColumn;
 	@FXML
 	private TableColumn<JiraTicket, Boolean> jiraChekBoxColumn;
+	
 
 	public HomeScreenController() {
 
@@ -83,6 +98,8 @@ public class HomeScreenController implements Initializable {
 
 	private void initilizeMetadataTable() {
 		metadataNameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
+		metadataModifiedDateColumn.setCellValueFactory(cellData -> cellData.getValue().getLastModifiedDate());
+		metadataCreateDateColumn.setCellValueFactory(cellData -> cellData.getValue().getCreateDate());
 
 		metaDataChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected()); 
 		metaDataChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<MetadataFile, Boolean>());
@@ -128,9 +145,17 @@ public class HomeScreenController implements Initializable {
 
 	@FXML
 	private void handleGetMetadaOnClick() throws URISyntaxException, Exception {
+		LocalDate localeDate = metadataDatePicker.getValue();
+		Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+		DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
+		format.format(convertToDate);
+		Calendar cal=format.getCalendar();
 		List<MetadataFile> metadataFileList = new ArrayList<>();
-		GetMetadataThreads.getAllData();
+		GetMetadataThreads.getAllData(cal);
 		metadataFileList = new CompareFiles().getMetadataFilesWithDifference();
+		/*ObservableList<MetadataFile> metadataFileList1 = homePage.getMetadataFileList();
+		metadataFileList1 = FXCollections.observableArrayList();*/
+		homePage.getMetadataFileList().clear();
 		homePage.getMetadataFileList().addAll(metadataFileList);
 		System.out.println("=========Completed");
 	}

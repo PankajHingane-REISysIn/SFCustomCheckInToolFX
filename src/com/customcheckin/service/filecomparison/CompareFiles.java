@@ -6,16 +6,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
+import com.customcheckin.service.salesforce.SalesforceMetadaProperties;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.util.UnzipUtility;
+import com.sforce.soap.metadata.FileProperties;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,6 +30,7 @@ public class CompareFiles {
 	private static Logger log = Logger.getRootLogger();
 	private String gitWorkspaceURL;
 	private String sfWorkspaceURL;
+	private Map<String, FileProperties> fileURLToPropertyForCompare = SalesforceMetadaProperties.fileURLToPropertyForCompare;
 
 	public static void main(String args[]) {
 		List<MetadataFile> metadaList = new CompareFiles().getMetadataFilesWithDifference();
@@ -77,16 +82,24 @@ public class CompareFiles {
 		} else {
 			File file = new File(gitWorkspaceURL+relativePath.replaceFirst("src", ""));
 			log.info("File==" + file.getAbsolutePath());
-			if(file.exists()) {
-				if(isFileDifferent(node.getAbsolutePath(), gitWorkspaceURL +relativePath.replaceFirst("src", ""))) {
-					log.info("file Different:" + file.getName());
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			if(fileURLToPropertyForCompare.containsKey(relativePath)) {
+				FileProperties fileProperty = fileURLToPropertyForCompare.get(relativePath);
+				String createDate = sdf.format(fileProperty.getCreatedDate().getTime());
+				String modifiedDate = sdf.format(fileProperty.getLastModifiedDate().getTime());
+				if(file.exists()) {
+					if(isFileDifferent(node.getAbsolutePath(), gitWorkspaceURL +relativePath.replaceFirst("src", ""))) {
+						log.info("file Different:" + file.getName());
+						returnMetadata.add(
+								new MetadataFile(new SimpleStringProperty(file.getName()), relativePath, gitWorkspaceURL +relativePath.replaceFirst("src", ""),node.getAbsolutePath(),  new SimpleBooleanProperty(false),
+										new SimpleStringProperty(createDate), new SimpleStringProperty(modifiedDate)));
+					}
+				} else {
+					log.info("New file:" + file.getName());
 					returnMetadata.add(
-							new MetadataFile(new SimpleStringProperty(file.getName()), relativePath,gitWorkspaceURL +relativePath.replaceFirst("src", ""),node.getAbsolutePath(),  new SimpleBooleanProperty(false)));
+							new MetadataFile(new SimpleStringProperty(file.getName()), relativePath, gitWorkspaceURL +relativePath.replaceFirst("src", ""), node.getAbsolutePath(),  new SimpleBooleanProperty(false),
+									new SimpleStringProperty(createDate), new SimpleStringProperty(modifiedDate)));
 				}
-			} else {
-				log.info("New file:" + file.getName());
-				returnMetadata.add(
-						new MetadataFile(new SimpleStringProperty(file.getName()), relativePath,gitWorkspaceURL +relativePath.replaceFirst("src", ""), node.getAbsolutePath(),  new SimpleBooleanProperty(false)));
 			}
 		}
 
