@@ -109,17 +109,17 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <DatePicker>
+                              <DatePicker fx:id="configDatePicker">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </DatePicker>
-                              <ComboBox prefWidth="150.0" GridPane.columnIndex="1">
+                              <ComboBox fx:id="configObjList" prefWidth="150.0" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </ComboBox>
-                              <Button mnemonicParsing="false" text="Fetch" GridPane.columnIndex="2">
+                              <Button mnemonicParsing="false" onAction="#handleGetConfigDataOnClick" text="Fetch" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>

@@ -41,30 +41,9 @@ public class CompareFiles {
 
 	public List<MetadataFile> getMetadataFilesWithDifference() {
 		List<MetadataFile> returnMetadata = new ArrayList<>();
-		// returnMetadata.add(new MetadataFile(new
-		// SimpleStringProperty("Simple1"), new SimpleBooleanProperty(false)));
-		// returnMetadata.add(new MetadataFile(new
-		// SimpleStringProperty("Simple2"), new SimpleBooleanProperty(false)));
-		// returnMetadata.add(new MetadataFile(new
-		// SimpleStringProperty("Simple3"), new SimpleBooleanProperty(false)));
 		gitWorkspaceURL = SalesforcePMOConnection.getInstance().getGITUser().getLocalWorkspacePath__c()
 				+ "\\src\\";
 		sfWorkspaceURL = UnzipUtility.DEST_DIR+"\\unpackaged";
-		/*log.info("text1====" + gitWorkspaceURL);
-		Path currentRelativePath = Paths.get("");
-		String currentPath = currentRelativePath.toAbsolutePath().toString();
-		log.info("text2====" + currentPath + "\\" + sfWorkspaceURL);
-		List<String> fileList1 = getfileList(gitWorkspaceURL);
-		List<String> fileList2 = getfileList(currentPath + "\\" + sfWorkspaceURL);
-		fileList1.retainAll(fileList2);
-		for (String fileName : fileList1) {
-			log.info("Comparing==" + fileName);
-			if (isFileDifferent(gitWorkspaceURL + fileName, sfWorkspaceURL + fileName)) {
-				log.info("Found Difference==" + fileName);
-				returnMetadata.add(
-						new MetadataFile(new SimpleStringProperty(fileName), "", new SimpleBooleanProperty(false)));
-			}
-		}*/
 		traverseToFolders(new File(sfWorkspaceURL), "src", returnMetadata);
 		// todo - show newly created files.
 		return returnMetadata;

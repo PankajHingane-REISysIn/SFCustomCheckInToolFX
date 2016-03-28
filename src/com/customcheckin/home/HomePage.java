@@ -27,6 +27,8 @@ public class HomePage extends Application {
     private ObservableList<MetadataFile> metadataFileList = FXCollections.observableArrayList();
       
     private ObservableList<JiraTicket> jiraTicketComboList = FXCollections.observableArrayList();
+    
+    private ObservableList<String> configObjComboList = FXCollections.observableArrayList();
 
     public HomePage() {
     	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
@@ -182,5 +184,9 @@ public class HomePage extends Application {
 	 */
 	public ObservableList<JiraTicket> getJiraTicketComboList() {
 		return jiraTicketComboList;
+	}
+	
+	public ObservableList<String> getConfigObjComboList() {
+		return configObjComboList;
 	}
 }

@@ -22,6 +22,7 @@ import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.filecomparison.CompareFiles;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
+import com.customcheckin.service.salesforce.SalesforceConfigDataService;
 import com.customcheckin.service.salesforce.SalesforceFileBasedRetrieve;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.util.UnzipUtility;
@@ -65,8 +66,15 @@ public class HomeScreenController implements Initializable {
 	@FXML
 	private TableColumn<MetadataFile, Boolean> metaDataChekBoxColumn;
 	
+	//Config Data
+	@FXML
+	private ComboBox<String> configObjList;
+	
 	@FXML
     DatePicker metadataDatePicker;
+	
+	@FXML
+    DatePicker configDatePicker;
 
 	// jira table
 	@FXML
@@ -109,6 +117,18 @@ public class HomeScreenController implements Initializable {
 	private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
 		List<JiraTicket> rickets = JIRAConnection.getInstance().getOpenTickets("GGP");
 		homePage.getJiraTicketComboList().addAll(rickets);
+	}
+	
+	@FXML
+	private void handleGetConfigDataOnClick() throws URISyntaxException, Exception {
+		LocalDate localeDate = configDatePicker.getValue();
+		Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+		DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
+		format.format(convertToDate);
+		Calendar cal=format.getCalendar();
+		List<String> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
+		homePage.getConfigObjComboList().clear();
+		homePage.getConfigObjComboList().addAll(sobjList);
 	}
 	
 	@FXML
@@ -164,6 +184,7 @@ public class HomeScreenController implements Initializable {
 		this.homePage = homePage;
 		metadataFileList.setItems(homePage.getMetadataFileList());
 		jiraList.setItems(homePage.getJiraTicketComboList());
+		configObjList.setItems(homePage.getConfigObjComboList());
 	}
 
 }
