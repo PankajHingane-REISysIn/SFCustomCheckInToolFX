@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 
 import com.force.service.ForceDelegate;
 import com.force.service.raw.ForceDelegateRaw;
+import com.sforce.soap.partner.DescribeSObjectResult;
+import com.sforce.soap.partner.Field;
 import com.sforce.soap.partner.sobject.SObject;
 
 public class SalesforceConfigDataThread{
@@ -34,13 +36,14 @@ public class SalesforceConfigDataThread{
 		
 		// todo - cache of objects
 		List<String> fieldsListToQuery = new ArrayList<>();
-		//fieldsListToQuery.add("Name");
+		fieldsListToQuery.add("Name");
+		fieldsListToQuery.add("GGDemo2__InternalUniqueID__c");
 		//instead of describle we should store it into SF PMO org
-		/*DescribeSObjectResult desc = gate.describeSObject(objName);
+		DescribeSObjectResult desc = gate.describeSObject(objName);
 		Field[] fields = desc.getFields();
 		for(Field field : fields) {
 			log.info(field.getName() );
-		}*/
+		}
 		String query = "select Id";
 		for(String fieldAPIName : fieldsListToQuery) {
 			query += ", " + fieldAPIName;

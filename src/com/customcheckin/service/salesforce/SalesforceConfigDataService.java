@@ -40,6 +40,7 @@ public class SalesforceConfigDataService {
 	        throws InterruptedException, ExecutionException {
 
 	    int threads = Runtime.getRuntime().availableProcessors();
+	    //todo - hardcode to 10
 	    ExecutorService service = Executors.newFixedThreadPool(threads);
 
 	    List<Future<Map<String, SObject[]>>> futures = new ArrayList<Future<Map<String, SObject[]>>>();
@@ -108,6 +109,7 @@ public class SalesforceConfigDataService {
 			log.info("obj Name:" + sobjNameToRecordsMap.get(str));
 			if(sobjNameToRecordsMap.get(str) != null && sobjNameToRecordsMap.get(str).length > 0) {
 				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMap.get(str).length);
+				
 				objLstToReturn.add(str);
 			}
 		}
@@ -118,14 +120,18 @@ public class SalesforceConfigDataService {
 		return Arrays.asList(sobjNameToRecordsMap.get(objName));
 	}
 	
+	public static void readConfigFile(String fileURL) {
+		
+	}
+	
 	private List<String> getConfigObjListFromPMO() {
 		//todo - read from SF
 		List<String> objList = new ArrayList<>();
 		objList.add("GGDemo2__DataTableConfig__c");
 		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
+		//objList.add("GGDemo2__CustomApp__c");
 		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
+		//objList.add("GGDemo2__DataTableConfig__c");
 		/*objList.add("GGDemo2__FlexGridConfig__c");
 		objList.add("GGDemo2__ErrorMessageConfig__c");
 		objList.add("GGDemo2__PageAttachmentConfig__c");

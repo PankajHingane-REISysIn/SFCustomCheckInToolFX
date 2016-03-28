@@ -42,11 +42,12 @@ public class GITConnection {
 	private String localURL;
 	private UsernamePasswordCredentialsProvider gitUserPass;
 	private Git git;
+	private EnvironmentUserVO gitUserInfo;
 	private static GITConnection instance;
 	private static Logger log = Logger.getRootLogger();
 	
 	private GITConnection() throws IOException {
-		EnvironmentUserVO gitUserInfo = SalesforcePMOConnection.getInstance().getGITUser();
+		gitUserInfo = SalesforcePMOConnection.getInstance().getGITUser();
 		if (gitUserInfo != null && StringUtils.isNonEmpty(gitUserInfo.getName()) && StringUtils.isNonEmpty(gitUserInfo.getPassword__c())) {
 			gitUserPass = new UsernamePasswordCredentialsProvider(gitUserInfo.getName(), gitUserInfo.getPassword__c());
 			localURL = gitUserInfo.getLocalWorkspacePath__c();
@@ -149,6 +150,10 @@ public class GITConnection {
 		PullResult pullList = pullcmd.call();
 		log.info("=====Completed===" + pullList);
     	return true;
+	}
+	
+	public EnvironmentUserVO getGitUserInfo() {
+		return gitUserInfo;
 	}
 	
 	public static void main(String str[]) throws InvalidRemoteException, TransportException, IOException, GitAPIException {

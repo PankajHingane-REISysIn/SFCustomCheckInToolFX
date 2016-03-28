@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import com.customcheckin.home.HomePage;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
-import com.customcheckin.service.filecomparison.CompareFiles;
+import com.customcheckin.service.compare.CompareFiles;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;

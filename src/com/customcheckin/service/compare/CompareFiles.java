@@ -1,4 +1,4 @@
-package com.customcheckin.service.filecomparison;
+package com.customcheckin.service.compare;
 
 import java.io.BufferedReader;
 import java.io.File;

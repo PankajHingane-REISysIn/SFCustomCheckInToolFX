@@ -10,7 +10,7 @@ public class SalesforceConnection {
 	protected void init(String username, String password) {
 		Double apiVersion = PropertyManager.getInstance().getDouble("salesforce.api.version");
 		if (apiVersion == null) {
-			apiVersion = 32.0;
+			apiVersion = 25.0;
 		}
 		this.gate = ForceDelegate.login(username, password, false, apiVersion);
 		this.rawGate = ForceDelegateRaw.login(username, password, false, apiVersion);
