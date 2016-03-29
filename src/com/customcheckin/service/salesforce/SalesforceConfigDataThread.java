@@ -18,7 +18,6 @@ public class SalesforceConfigDataThread{
 	private static Logger log = Logger.getRootLogger();
 	private String objName;
 	private String lastModifiedDate;
-	private List<SObject> records;
 	private ForceDelegateRaw gate;
 	
 	public SalesforceConfigDataThread(String objName, String lastModifiedDate, ForceDelegateRaw gate) {
@@ -35,18 +34,14 @@ public class SalesforceConfigDataThread{
 	public SObject[] getRecords() {
 		
 		// todo - cache of objects
-		List<String> fieldsListToQuery = new ArrayList<>();
-		fieldsListToQuery.add("Name");
-		fieldsListToQuery.add("GGDemo2__InternalUniqueID__c");
-		//instead of describle we should store it into SF PMO org
 		DescribeSObjectResult desc = gate.describeSObject(objName);
 		Field[] fields = desc.getFields();
+		String query = "select Id,Name";
 		for(Field field : fields) {
+			if(field.getName().endsWith("__c")) {
+				query += ", " + field.getName();
+			}
 			log.info(field.getName() );
-		}
-		String query = "select Id";
-		for(String fieldAPIName : fieldsListToQuery) {
-			query += ", " + fieldAPIName;
 		}
 		query +=" from " + objName + " where LastModifiedDate > "+lastModifiedDate;
 		SObject[] records = gate.queryMultiple(query, null);

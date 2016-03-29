@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import com.customcheckin.home.HomePage;
+import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.compare.CompareFiles;
@@ -69,6 +70,18 @@ public class HomeScreenController implements Initializable {
 	//Config Data
 	@FXML
 	private ComboBox<String> configObjList;
+	@FXML
+	private TableView<ConfigRecord> configDataList;
+	@FXML
+	private TableColumn<ConfigRecord, String> configNameColumn;
+	@FXML
+	private TableColumn<ConfigRecord, String> configInternalIdColumn;
+	@FXML
+	private TableColumn<ConfigRecord, String> configCol1Column;
+	@FXML
+	private TableColumn<ConfigRecord, String> configCol2Column;
+	@FXML
+	private TableColumn<ConfigRecord, Boolean> configChekBoxColumn;
 	
 	@FXML
     DatePicker metadataDatePicker;
@@ -94,6 +107,7 @@ public class HomeScreenController implements Initializable {
 		// todo - load components using multi-threading
 		initilizeMetadataTable();
 		initilizeJiraTable();
+		initilizeConfigTable();
 		ConnectionManager.getAllConnections();
 	}
 
@@ -111,6 +125,15 @@ public class HomeScreenController implements Initializable {
 
 		metaDataChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected()); 
 		metaDataChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<MetadataFile, Boolean>());
+	}
+	
+	private void initilizeConfigTable() {
+		configNameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
+		configInternalIdColumn.setCellValueFactory(cellData -> cellData.getValue().getInternalUniqueId());
+		//configCol1Column.setCellValueFactory(cellData -> cellData.getValue().getCol1());
+		//configCol2Column.setCellValueFactory(cellData -> cellData.getValue().getCol2());
+		configChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected());
+		configChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<ConfigRecord, Boolean>());
 	}
 
 	@FXML
@@ -179,12 +202,21 @@ public class HomeScreenController implements Initializable {
 		homePage.getMetadataFileList().addAll(metadataFileList);
 		System.out.println("=========Completed");
 	}
+	
+	@FXML
+	private void handleConfiListOnChange() throws URISyntaxException, Exception {
+		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList("GGDemo2__DataTableConfig__c");
+		System.out.println("=========configRecordList" + configRecordList.size() + configRecordList.get(0).getInternalUniqueId());
+		homePage.getConfigRecordList().clear();
+		homePage.getConfigRecordList().addAll(configRecordList);
+	}
 
 	public void setHomePage(HomePage homePage) {
 		this.homePage = homePage;
 		metadataFileList.setItems(homePage.getMetadataFileList());
 		jiraList.setItems(homePage.getJiraTicketComboList());
 		configObjList.setItems(homePage.getConfigObjComboList());
+		configDataList.setItems(homePage.getConfigRecordList());
 	}
 
 }

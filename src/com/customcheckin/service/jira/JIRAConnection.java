@@ -74,13 +74,13 @@ public class JIRAConnection {
 		jqlStr = jqlStr.substring(0, jqlStr.length() - 4);
 		//return first 50 records
 		SearchResult searchResult = jiraRestClient.getSearchClient().searchJql(jqlStr).claim();
+		
 		for (BasicIssue issue : searchResult.getIssues()) {
 			JiraTicket j = new JiraTicket();
 			System.out.println(issue.getKey());
 			j.setId(new SimpleStringProperty(issue.getKey()));
 			j.setName(new SimpleStringProperty(issue.getKey()));
 			j.setIsSelected(new SimpleBooleanProperty(false));
-			
 			jiraTicketList.add(j);
 		}
 		return jiraTicketList;
