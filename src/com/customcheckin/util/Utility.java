@@ -23,7 +23,7 @@ public class Utility {
 	}
 	
 	public static String getDeployBaseURL() {
-		return "D:\\tempFolder\\";
+		return "D:\\tempFolder\\src";
 	}
 	
 	public static void main(String str[]) throws IOException {

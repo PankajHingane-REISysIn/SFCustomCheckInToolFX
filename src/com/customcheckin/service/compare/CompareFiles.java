@@ -18,7 +18,7 @@ import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforceMetadaProperties;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
-import com.customcheckin.util.UnzipUtility;
+import com.customcheckin.util.ZipUtility;
 import com.sforce.soap.metadata.FileProperties;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -43,7 +43,7 @@ public class CompareFiles {
 		List<MetadataFile> returnMetadata = new ArrayList<>();
 		gitWorkspaceURL = SalesforcePMOConnection.getInstance().getGITUser().getLocalWorkspacePath__c()
 				+ "\\src\\";
-		sfWorkspaceURL = UnzipUtility.DEST_DIR+"\\unpackaged";
+		sfWorkspaceURL = ZipUtility.DEST_DIR+"\\unpackaged";
 		traverseToFolders(new File(sfWorkspaceURL), "src", returnMetadata);
 		// todo - show newly created files.
 		return returnMetadata;

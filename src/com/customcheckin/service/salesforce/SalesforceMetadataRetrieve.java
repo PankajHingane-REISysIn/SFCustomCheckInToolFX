@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.customcheckin.util.UnzipUtility;
+import com.customcheckin.util.ZipUtility;
 import com.sforce.soap.enterprise.EnterpriseConnection;
 import com.sforce.soap.enterprise.LoginResult;
 import com.sforce.soap.metadata.AsyncResult;
@@ -88,7 +88,7 @@ public class SalesforceMetadataRetrieve {
 		//todo - replace Date
 		SalesforceMetadaProperties.getSFMetadataProperty(metadataConnection, cal);
 		retrieveZip();
-		new UnzipUtility().unZipIt(ZIP_FILE, UnzipUtility.DEST_DIR);
+		new ZipUtility().unZip(ZIP_FILE, ZipUtility.DEST_DIR);
 		List<Thread> threadLst = SalesforceMetadaProperties.threadListToWait;
 		for(Thread thread : threadLst) {
 			thread.join();

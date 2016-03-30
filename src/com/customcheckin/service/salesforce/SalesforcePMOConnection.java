@@ -16,6 +16,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	private String username;
 	private UserVO pmoUser;
 	private EnvironmentUserVO devUser;
+	private EnvironmentUserVO intUser;
 	private EnvironmentUserVO gitUser;
 	private EnvironmentUserVO jiraUser;
 	private List<ProjectVO> activeProjects;
@@ -67,6 +68,15 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 					new Object[]{"Salesforce DEV", getCurrentProject().getId(), getCurrentPMOUser().getId()});
 		}
 		return devUser;
+	}
+	
+	public EnvironmentUserVO getSalesforceIntUser() {
+		if (intUser == null) {
+			intUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+					+ "Environment__r.Project__c=? and PMOUser__c=? and Environment__r.Active__c=true", 
+					new Object[]{"Salesforce INT", getCurrentProject().getId(), getCurrentPMOUser().getId()});
+		}
+		return intUser;
 	}
 	
 	public void storeSalesforceDevUser(String username, String password) {

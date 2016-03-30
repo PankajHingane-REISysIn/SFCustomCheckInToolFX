@@ -26,7 +26,7 @@ import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
 import com.customcheckin.service.salesforce.SalesforceMetadataRetrieve;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
-import com.customcheckin.util.UnzipUtility;
+import com.customcheckin.util.ZipUtility;
 import com.customcheckin.util.Utility;
 
 import javafx.beans.property.BooleanProperty;
