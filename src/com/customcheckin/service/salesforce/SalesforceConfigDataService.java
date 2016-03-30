@@ -72,7 +72,9 @@ public class SalesforceConfigDataService {
 	    for (Future<Map<String, SObject[]>> future : futures) {
 	    	sobjNameToRecordsMap.putAll(future.get());
 	    }
-	    log.info("sobjNameToRecordsMap.keySet().size()====" + sobjNameToRecordsMap.keySet().size());
+	    /*for(String obj : sobjNameToRecordsMap.keySet()) {
+	    	log.info("obj=="+obj + "=== size===" + sobjNameToRecordsMap.get(obj).length);
+	    }*/
 	    return sobjNameToRecordsMap;
 	}
 	
@@ -103,6 +105,9 @@ public class SalesforceConfigDataService {
 			}
 			internalIdByRecords.put(uniqueIdVal, dataArray.toArray(new String[dataArray.size()]));
 		}
+		/*for(String str : internalIdByRecords.keySet()) {
+			log.info(objAPIName+"Records by internal id :"+str+"== size:"+ internalIdByRecords.get(str).length);
+		}*/
 		return internalIdByRecords;
 	}
 	
@@ -144,7 +149,7 @@ public class SalesforceConfigDataService {
 				}
 				for(String[] obj : sobjNameToRecordsMap.get(objName).values()) {
 					// todo read config index
-					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty("test") , new SimpleStringProperty("test1"),
+					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[3]) , new SimpleStringProperty(obj[4]),
 							new SimpleStringProperty(obj[2]), new SimpleStringProperty(obj[3]));
 					sobjToRecordConfigList.get(objName).add(configRec);
 				}
@@ -171,9 +176,9 @@ public class SalesforceConfigDataService {
 		//objList.add("GGDemo2__DataTableConfig__c");
 		/*objList.add("GGDemo2__FlexGridConfig__c");
 		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
+		objList.add("GGDemo2__PageAttachmentConfig__c");*/
+		objList.add("GGDemo2__TabConfig__c");
+		/*objList.add("GGDemo2__PhaseConfig__c");
 		objList.add("GGDemo2__SObjectLayoutConfig__c");
 		objList.add("GGDemo2__DataTableConfig__c");
 		objList.add("GGDemo2__AccordionContent__c");
@@ -279,7 +284,7 @@ public class SalesforceConfigDataService {
 	
 	public static void main(String str[]) throws InterruptedException, ExecutionException, IOException {
 		Calendar calendar = Calendar.getInstance(); // this would default to now
-		calendar.add(Calendar.DAY_OF_MONTH, -10);
+		calendar.add(Calendar.DAY_OF_MONTH, -3);
 		SalesforceConfigDataService.getConfigDataList(calendar);
 	}
 	

@@ -205,7 +205,8 @@ public class HomeScreenController implements Initializable {
 	
 	@FXML
 	private void handleConfiListOnChange() throws URISyntaxException, Exception {
-		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList("GGDemo2__DataTableConfig__c");
+		String selectedItem = configObjList.getSelectionModel().getSelectedItem();
+		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList(selectedItem);
 		System.out.println("=========configRecordList" + configRecordList.size() + configRecordList.get(0).getInternalUniqueId());
 		homePage.getConfigRecordList().clear();
 		homePage.getConfigRecordList().addAll(configRecordList);

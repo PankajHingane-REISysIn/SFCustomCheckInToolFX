@@ -32,7 +32,6 @@ public class SalesforceConfigDataThread{
 	}
 	
 	public SObject[] getRecords() {
-		
 		// todo - cache of objects
 		DescribeSObjectResult desc = gate.describeSObject(objName);
 		Field[] fields = desc.getFields();
@@ -41,13 +40,9 @@ public class SalesforceConfigDataThread{
 			if(field.getName().endsWith("__c")) {
 				query += ", " + field.getName();
 			}
-			log.info(field.getName() );
 		}
 		query +=" from " + objName + " where LastModifiedDate > "+lastModifiedDate;
 		SObject[] records = gate.queryMultiple(query, null);
-		//List records1 = SalesforceDevConnection.getInstance().getForceDelegate().queryMultiple(query);
-		log.info("records1======" + records);
-		//records = Arrays.asList(records1);
 		return records;
 	}
 	

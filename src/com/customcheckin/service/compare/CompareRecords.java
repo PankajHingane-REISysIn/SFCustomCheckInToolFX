@@ -16,6 +16,7 @@ public class CompareRecords {
 	private String[] fileHeaders;
 	public CompareRecords(String objName) throws IOException {
 		filePath = GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+objName+".csv";
+		log.info("Obj Name: " + objName);
 	}
 	
 	public String[] getFileHeaders() throws IOException {
@@ -29,13 +30,7 @@ public class CompareRecords {
 		Map<String, List<String[]>> data = CSVUtils.readFileByGrouping(filePath, true, getInternalIdIndex(fileHeaders), recodByInternalId.keySet());
 		Map<String, String[]> differentRecords = new HashMap<>();
 		for(String internalId : data.keySet()) {
-			for(String str : data.get(internalId).get(0)) {
-				log.info("data from file:" + str);
-			}
-			for(String str : recodByInternalId.get(internalId)) {
-				log.info("data from database:" + str);
-			}
-			log.info("data from database with internal:" + recodByInternalId.get(internalId));
+			log.info("Comparing====internalId:"+ internalId);
 			if(CSVUtils.CompareRecord(fileHeaders, data.get(internalId).get(0), header, recodByInternalId.get(internalId))) {
 				log.info("Found difference==");
 				differentRecords.put(internalId,  data.get(internalId).get(0));
