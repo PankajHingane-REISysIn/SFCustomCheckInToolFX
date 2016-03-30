@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.customcheckin.service.git.GITConnection;
-import com.customcheckin.service.salesforce.SalesforceFileBasedRetrieve;
+import com.customcheckin.service.salesforce.SalesforceMetadataRetrieve;
 
 public class GetMetadataThreads  extends Thread{
 	private String type;
@@ -28,7 +28,7 @@ public class GetMetadataThreads  extends Thread{
 			}
 		} else if(type.equalsIgnoreCase("fetchMetadata")) {
 			try {
-				SalesforceFileBasedRetrieve.getInstance().run(cal);
+				SalesforceMetadataRetrieve.getInstance().run(cal);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

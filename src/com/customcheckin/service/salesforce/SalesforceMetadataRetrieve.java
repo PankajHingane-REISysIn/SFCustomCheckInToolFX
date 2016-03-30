@@ -37,8 +37,8 @@ import com.sforce.ws.ConnectorConfig;
 /**
  * Sample that logs in and shows a menu of retrieve and deploy metadata options.
  */
-public class SalesforceFileBasedRetrieve {
-	private static SalesforceFileBasedRetrieve instance;
+public class SalesforceMetadataRetrieve {
+	private static SalesforceMetadataRetrieve instance;
 	private MetadataConnection metadataConnection;
 
 	private static String ZIP_FILE = "src.zip";
@@ -56,13 +56,13 @@ public class SalesforceFileBasedRetrieve {
 
 	private static Logger log = Logger.getRootLogger();
 
-	private SalesforceFileBasedRetrieve() throws ConnectionException {
+	private SalesforceMetadataRetrieve() throws ConnectionException {
 		getSFConnection();
 	}
 
-	public static SalesforceFileBasedRetrieve getInstance() throws ConnectionException {
+	public static SalesforceMetadataRetrieve getInstance() throws ConnectionException {
 		if (instance == null) {
-			instance = new SalesforceFileBasedRetrieve();
+			instance = new SalesforceMetadataRetrieve();
 		}
 		return instance;
 	}
@@ -230,7 +230,7 @@ public class SalesforceFileBasedRetrieve {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		SalesforceFileBasedRetrieve sample = SalesforceFileBasedRetrieve.getInstance();
+		SalesforceMetadataRetrieve sample = SalesforceMetadataRetrieve.getInstance();
 		sample.listMetadataWithFilter(Calendar.getInstance());
 	}
 

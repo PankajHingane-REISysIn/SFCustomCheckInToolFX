@@ -22,6 +22,10 @@ public class Utility {
 		Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 	}
 	
+	public static String getDeployBaseURL() {
+		return "D:\\tempFolder\\";
+	}
+	
 	public static void main(String str[]) throws IOException {
 		replaceFile("D:\\logs\\sample.txt", "D:\\logs\\log34\\log34\\log34\\log34\\sample8.txt");
 	}

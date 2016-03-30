@@ -24,7 +24,7 @@ import com.customcheckin.service.compare.CompareFiles;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
-import com.customcheckin.service.salesforce.SalesforceFileBasedRetrieve;
+import com.customcheckin.service.salesforce.SalesforceMetadataRetrieve;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.util.UnzipUtility;
 import com.customcheckin.util.Utility;
