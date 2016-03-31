@@ -219,7 +219,6 @@ public class GITConnection {
 					ldr.copyTo(out);
 				}
 			}
-			
 		}
 	}
 	

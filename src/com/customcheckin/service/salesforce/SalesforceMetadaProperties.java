@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.sforce.soap.enterprise.EnterpriseConnection;
 import com.sforce.soap.enterprise.LoginResult;
 import com.sforce.soap.metadata.FileProperties;
@@ -20,7 +22,9 @@ public class SalesforceMetadaProperties extends Thread{
 	private Calendar lastCheckIndate;
 	private Map<String, FileProperties> fileURLToProperty = new HashMap<>();
 	public static Map<String, FileProperties> fileURLToPropertyForCompare;
+	private static Map<String, List<FileProperties>> filTypeToPropertyList;
 	public static List<Thread> threadListToWait;
+	private static Logger log = Logger.getRootLogger();
 	
 	public SalesforceMetadaProperties(MetadataConnection metadataConnection, ListMetadataQuery[] lstMetadataQuery, Calendar lastCheckIndate) {
 		this.metadataConnection = metadataConnection;
@@ -43,12 +47,15 @@ public class SalesforceMetadaProperties extends Thread{
 			FileProperties[] lmr = metadataConnection.listMetadata(lstMetadataQuery, asOfVersion);
 			if (lmr != null) {
 				for (FileProperties fileProperty : lmr) {
-					System.out.println("Component fullName: " + fileProperty.getFileName());
-					System.out.println("Component type: " + fileProperty.getType());
-					if( lastCheckIndate.compareTo(fileProperty.getLastModifiedDate()) < 0 ) {
-						System.out.println("Component type: " + fileProperty.getLastModifiedDate());
-						// relative file path to FileProperty.
+					if( lastCheckIndate.compareTo(fileProperty.getLastModifiedDate()) <= 0 ) {
+						// relative file path to FileProperty.\
+						log.info("fileProperty.getFileName():" + fileProperty.getFileName());
+						log.info("fileProperty.getType():" + fileProperty.getType());
 						fileURLToPropertyForCompare.put("src/"+fileProperty.getFileName(), fileProperty);
+						if(!filTypeToPropertyList.containsKey(fileProperty.getType())) {
+							filTypeToPropertyList.put(fileProperty.getType(), new ArrayList<>());
+						}
+						filTypeToPropertyList.get(fileProperty.getType()).add(fileProperty);
 					}
 				}
 			}
@@ -60,15 +67,48 @@ public class SalesforceMetadaProperties extends Thread{
 	public static void getSFMetadataProperty(MetadataConnection metadataConnection, Calendar cal) {
 		fileURLToPropertyForCompare = new HashMap<>();
 		threadListToWait = new ArrayList<>();
-		ListMetadataQuery query = new ListMetadataQuery();
-		query.setType("CustomObject");
-		ListMetadataQuery query1 = new ListMetadataQuery();
-		query1.setType("ApexClass");
-		ListMetadataQuery[] lstmetadata = new ListMetadataQuery[] { query, query1 };
-		Thread thread1 = new SalesforceMetadaProperties(metadataConnection, lstmetadata, cal);
-		thread1.start();
-		threadListToWait.add(thread1);
+		filTypeToPropertyList = new HashMap<>();
+		List<String> metadataTypes = new ArrayList<>();
+		metadataTypes.add("CustomObject");
+		metadataTypes.add("ApexClass");
+		metadataTypes.add("ApexComponent");
+		metadataTypes.add("ApexPage");
+		metadataTypes.add("ApexTrigger");
+		metadataTypes.add("CustomLabels");
+		metadataTypes.add("CustomField");
+		List<ListMetadataQuery[]> metadaQrList = getMetadataConnections(metadataTypes);
+		for(ListMetadataQuery[] metadataQueryArr : metadaQrList) {
+			Thread thread1 = new SalesforceMetadaProperties(metadataConnection, metadataQueryArr, cal);
+			thread1.start();
+			threadListToWait.add(thread1);
+		}
 		
+	}
+	
+	public static Map<String, List<FileProperties>> getFileProperties() {
+		return filTypeToPropertyList;
+	}
+	
+	private static List<ListMetadataQuery[]> getMetadataConnections(List<String> types) {
+		List<ListMetadataQuery[]> metadataListToReturn = new ArrayList<>();
+		int count=0;
+		List<ListMetadataQuery> metadataList = null;
+		for(String metadataType : types) {
+			if(count == 0) {
+				metadataList = new ArrayList<>();
+			}
+			ListMetadataQuery metadataquery = new ListMetadataQuery();
+			metadataquery.setType(metadataType);
+			metadataList.add(metadataquery);
+			count++;
+			if(count == 2) {
+				count = 0;
+				ListMetadataQuery[] metaArr = new ListMetadataQuery[metadataList.size()];
+				metaArr = metadataList.toArray(metaArr);
+				metadataListToReturn.add(metaArr);
+			}
+		}
+		return metadataListToReturn;
 	}
 	
 	public static void main(String str[]) throws ConnectionException, InterruptedException {
@@ -87,21 +127,9 @@ public class SalesforceMetadaProperties extends Thread{
 		configWithSession.setSessionId(loginRes.getSessionId());
 
 		MetadataConnection metadataConnection = new MetadataConnection(configWithSession);
-		
-		
 		////////////////////////////////////////////
-		ListMetadataQuery query = new ListMetadataQuery();
-		query.setType("CustomObject");
-		ListMetadataQuery query1 = new ListMetadataQuery();
-		query1.setType("ApexClass");
-		ListMetadataQuery[] lstmetadata = new ListMetadataQuery[] { query, query1 };
-		//SalesforceMetadaProperties sfProperty = new SalesforceMetadaProperties(metadataConnection, lstmetadata, null);
-		//sfProperty.listMetadataWithFilter();
-		Thread fetchMetada = new SalesforceMetadaProperties(metadataConnection, lstmetadata, null);
-		fetchMetada.start();
-		fetchMetada.join();
-		SalesforceMetadaProperties sfM = (SalesforceMetadaProperties)fetchMetada;
-		System.out.println(sfM.getFileURLToProperty().keySet().size());
+		Calendar cal = Calendar.getInstance();
+		SalesforceMetadaProperties.getSFMetadataProperty(metadataConnection, cal);
 	}
 
 	/**

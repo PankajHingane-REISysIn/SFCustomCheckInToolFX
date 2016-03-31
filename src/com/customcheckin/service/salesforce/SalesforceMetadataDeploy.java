@@ -1,6 +1,10 @@
 package com.customcheckin.service.salesforce;
 
 import java.io.File;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -108,7 +112,7 @@ public class SalesforceMetadataDeploy {
 		if (apiVersion == null) {
 			apiVersion = 25.0;
 		}
-		FileBasedDeployAndRetrieve fileBasedDeploy = new FileBasedDeployAndRetrieve(gate.getSessionId(), "https://login.salesforce.com", apiVersion);
+		FileBasedDeployAndRetrieve fileBasedDeploy = new FileBasedDeployAndRetrieve(gate.getSessionId(), "https://login.salesforce.com/services/Soap/c/25.0", apiVersion);
 		fileBasedDeploy.deployZip(new File(Utility.getDeployBaseURL()+"\\deploy.zip"));
 	}
 	

@@ -8,17 +8,27 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.customcheckin.util.Utility;
 import com.customcheckin.util.ZipUtility;
 import com.sforce.soap.enterprise.EnterpriseConnection;
 import com.sforce.soap.enterprise.LoginResult;
@@ -83,19 +93,62 @@ public class SalesforceMetadataRetrieve {
 
 		metadataConnection = new MetadataConnection(configWithSession);
 	}
+	
+	private void generatePackageXML() throws ParserConfigurationException, TransformerException {
+		Map<String, List<FileProperties>> filTypeToPropertyList = SalesforceMetadaProperties.getFileProperties();
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		
+		// root elements
+		Document doc = docBuilder.newDocument();
+		Element rootElement = doc.createElement("Package");
+		Attr attr = doc.createAttribute("xmlns");
+		attr.setValue("http://soap.sforce.com/2006/04/metadata");
+		rootElement.setAttributeNode(attr);
+		doc.appendChild(rootElement);
+		
+		//classses
+		for(String type : filTypeToPropertyList.keySet()) {
+			Element classEle = doc.createElement("types");
+			rootElement.appendChild(classEle);
+			
+			for(FileProperties fileProperties : filTypeToPropertyList.get(type)) {
+				Element classEle1 = doc.createElement("members");
+				classEle1.setTextContent(fileProperties.getFullName());
+				classEle.appendChild(classEle1);
+				
+			}
+			
+			Element nameclassEle = doc.createElement("name");
+			nameclassEle.setTextContent(type);
+			classEle.appendChild(nameclassEle);
+			
+		}
+		
+		Element verEle1 = doc.createElement("version");
+		verEle1.setTextContent("33.0");
+		rootElement.appendChild(verEle1);
+		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		StreamResult result = new StreamResult(MANIFEST_FILE);
+		transformer.transform(source, result);
+	}
 
 	public void run(Calendar cal) throws Exception {
 		//todo - replace Date
 		SalesforceMetadaProperties.getSFMetadataProperty(metadataConnection, cal);
-		retrieveZip();
-		new ZipUtility().unZip(ZIP_FILE, ZipUtility.DEST_DIR);
 		List<Thread> threadLst = SalesforceMetadaProperties.threadListToWait;
 		for(Thread thread : threadLst) {
 			thread.join();
 		}
+		retrieveZip();
+		new ZipUtility().unZip(ZIP_FILE, ZipUtility.DEST_DIR);
 	}
 
 	private void retrieveZip() throws Exception {
+		generatePackageXML();
 		RetrieveRequest retrieveRequest = new RetrieveRequest();
 		// The version in package.xml overrides the version in RetrieveRequest
 		retrieveRequest.setApiVersion(API_VERSION);
@@ -203,35 +256,11 @@ public class SalesforceMetadataRetrieve {
 		return packageManifest;
 	}
 
-	public List<String> listMetadataWithFilter(Calendar date) {
-		if(date==null) {
-			date =  Calendar.getInstance();
-		}
-		try {
-			ListMetadataQuery query = new ListMetadataQuery();
-			query.setType("CustomObject");
-			// query.setFolder(null);
-			double asOfVersion = 36.0;
-			// Assuming that the SOAP binding has already been established.
-			FileProperties[] lmr = metadataConnection.listMetadata(new ListMetadataQuery[] { query }, asOfVersion);
-			if (lmr != null) {
-				for (FileProperties n : lmr) {
-					System.out.println("Component fullName: " + n.getFullName());
-					System.out.println("Component type: " + n.getType());
-					if( date.compareTo(n.getLastModifiedDate()) < 0 ) {
-						System.out.println("Component type: " + n.getLastModifiedDate());
-					}
-				}
-			}
-		} catch (ConnectionException ce) {
-			ce.printStackTrace();
-		}
-		return null;
-	}
-	
 	public static void main(String[] args) throws Exception {
 		SalesforceMetadataRetrieve sample = SalesforceMetadataRetrieve.getInstance();
-		sample.listMetadataWithFilter(Calendar.getInstance());
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -3);
+		sample.run(cal);;
 	}
 
 }

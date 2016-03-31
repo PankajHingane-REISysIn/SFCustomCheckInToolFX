@@ -28,13 +28,13 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="3.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
@@ -59,7 +59,7 @@
                         </Label>
                      </children>
                   </GridPane>
-                  <TableView fx:id="metadataFileList" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="746.0" prefWidth="280.0" GridPane.rowIndex="1">
+                  <TableView fx:id="metadataFileList" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="690.0" prefWidth="241.0" GridPane.rowIndex="1">
                     <columns>
                       <TableColumn fx:id="metaDataChekBoxColumn" maxWidth="30.0" prefWidth="30.0" text="Select">
                       </TableColumn>
@@ -68,7 +68,7 @@
                         <TableColumn fx:id="metadataModifiedDateColumn" minWidth="30.0" prefWidth="100.0" text="Last Modified" />
                     </columns>
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" top="10.0" />
                      </GridPane.margin>
                   </TableView>
                </children>
@@ -98,15 +98,16 @@
                               <TableColumn fx:id="configInternalIdColumn" maxWidth="500.0" prefWidth="150.0" text="Internal Id" />
                           </columns>
                            <GridPane.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets left="10.0" right="10.0" top="10.0" />
                            </GridPane.margin>
                         </TableView>
                         <GridPane>
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -117,12 +118,12 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </DatePicker>
-                              <ComboBox fx:id="configObjList" onAction="#handleConfiListOnChange" prefWidth="150.0" GridPane.columnIndex="3">
+                              <ComboBox fx:id="configObjList" onAction="#handleConfiListOnChange" prefWidth="150.0" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </ComboBox>
-                              <Button mnemonicParsing="false" onAction="#handleGetConfigDataOnClick" text="Fetch" GridPane.columnIndex="2">
+                              <Button mnemonicParsing="false" onAction="#handleGetConfigDataOnClick" text="Fetch" GridPane.columnIndex="3">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
@@ -177,12 +178,13 @@
                            <children>
                               <TableView fx:id="jiraList" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                 <columns>
-                                  <TableColumn fx:id="jiraChekBoxColumn" prefWidth="75.0" text="Select">
+                                  <TableColumn fx:id="jiraChekBoxColumn" prefWidth="27.0" text="Select">
                                   </TableColumn>
-                                  <TableColumn fx:id="jiraNameColumn" prefWidth="75.0" text="Key" />
-                                    <TableColumn prefWidth="75.0" text="Description" />
-                                    <TableColumn prefWidth="75.0" text="Reporter" />
-                                    <TableColumn prefWidth="75.0" text="Created Date" />
+                                  <TableColumn fx:id="jiraNameColumn" prefWidth="35.0" text="Key" />
+                                    <TableColumn prefWidth="110.0" text="Description" />
+                                    <TableColumn prefWidth="203.0" text="Reporter" />
+                                    <TableColumn minWidth="0.0" prefWidth="0.0" text="Created Date" />
+                                    <TableColumn prefWidth="203.0" text="Created Date" />
                                 </columns>
                               </TableView>
                               <Label text="Jira open tickets" />
