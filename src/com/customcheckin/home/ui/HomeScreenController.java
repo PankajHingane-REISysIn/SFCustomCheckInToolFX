@@ -226,7 +226,7 @@ public class HomeScreenController implements Initializable {
 	private void handleConfiListOnChange() throws URISyntaxException, Exception {
 		String selectedItem = configObjList.getSelectionModel().getSelectedItem();
 		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList(selectedItem);
-		System.out.println("=========configRecordList" + configRecordList.size() + configRecordList.get(0).getInternalUniqueId());
+		//System.out.println("=========configRecordList" + configRecordList.size() + configRecordList.get(0).getInternalUniqueId());
 		homePage.getConfigRecordList().clear();
 		homePage.getConfigRecordList().addAll(configRecordList);
 	}
