@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.service.compare.CompareRecords;
 import com.force.service.raw.ForceDelegateRaw;
+import com.lib.util.CSVUtils;
 import com.sforce.soap.partner.sobject.SObject;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -29,18 +30,34 @@ public class SalesforceConfigDataService {
 	private static Logger log = Logger.getRootLogger();
 	private final ForceDelegateRaw gateRaw = SalesforceDevConnection.getInstance().getForceDelegateRaw();
 	//i think we can query again.
-	private static Map<String, String[]> sobjToHeadeMap;
-	private static Map<String, Map<String, String[]>> sobjNameToRecordsMap;
+	private static Map<String, String[]> sobjToHeadeMapFromFile;
+	private static Map<String, String[]> sobjToHeadeMapFromOrg;
+	private static Map<String, Map<String, String[]>> sobjNameToRecordsMapFromFile;
+	private static Map<String, Map<String, String[]>> sobjNameToRecordsMapFromOrg;
 	private static Map<String, List<ConfigRecord>> sobjToRecordConfigList;
 	
 	public SalesforceConfigDataService(Calendar lastModifiedDate) {
 		this.objNameLst = getConfigObjListFromPMO();
-		sobjNameToRecordsMap = new HashMap<>();
+		sobjNameToRecordsMapFromFile = new HashMap<>();
+		sobjNameToRecordsMapFromOrg = new HashMap<>();
 		sobjToRecordConfigList = new HashMap<>();
-		sobjToHeadeMap = new HashMap<>();
+		sobjToHeadeMapFromFile = new HashMap<>();
+		sobjToHeadeMapFromOrg = new HashMap<>();
 		lastModifiedDate.add(Calendar.DATE, 1);
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		lastModifiedDateString = format1.format(lastModifiedDate.getTime())+"T00:00:00.000Z";
+	}
+	
+	public static Map<String, List<ConfigRecord>> getSobjToRecordConfigList() {
+		return sobjToRecordConfigList;
+	}
+	
+	public static String[] getRecordsMap(String objName, String uniqueId) {
+		return sobjNameToRecordsMapFromOrg.get(objName).get(uniqueId);
+	}
+	
+	public static String[] getSObjHeader(String sobjName) {
+		return sobjToHeadeMapFromOrg.get(sobjName);
 	}
 	
 	public Map<String, SObject[]> getRecordsWithModifiedDate()
@@ -78,7 +95,7 @@ public class SalesforceConfigDataService {
 	    return sobjNameToRecordsMap;
 	}
 	
-	public String[] getColumns(SObject[] sobjList) {
+	public String[] getColumns(String objName, SObject[] sobjList) {
 		List<String> apiArray = new ArrayList<>();
 		if(sobjList != null)
 		for(MessageElement msgEle : sobjList[0].get_any()) {
@@ -86,6 +103,7 @@ public class SalesforceConfigDataService {
 				apiArray.add(msgEle.getName());
 		}
 		String[] colArr = apiArray.toArray(new String[apiArray.size()]);
+		sobjToHeadeMapFromOrg.put(objName, colArr);
 		return colArr;
 	}
 	
@@ -105,6 +123,7 @@ public class SalesforceConfigDataService {
 			}
 			internalIdByRecords.put(uniqueIdVal, dataArray.toArray(new String[dataArray.size()]));
 		}
+		sobjNameToRecordsMapFromOrg.put(objAPIName, internalIdByRecords);
 		/*for(String str : internalIdByRecords.keySet()) {
 			log.info(objAPIName+"Records by internal id :"+str+"== size:"+ internalIdByRecords.get(str).length);
 		}*/
@@ -120,10 +139,10 @@ public class SalesforceConfigDataService {
 		Map<String, Map<String, String[]>> sobjNameToUniqueIdToData = new HashMap<>();
 		for(String objName : recordByObjName.keySet()) {
 			CompareRecords compareRecord = new CompareRecords(objName);
-			sobjToHeadeMap.put(objName, compareRecord.getFileHeaders());
+			sobjToHeadeMapFromFile.put(objName, compareRecord.getFileHeaders());
 			sobjNameToUniqueIdToData.put(objName,
 					compareRecord.readRecordsFromLocalGITRepoAndCompare(getRecordsByInternalId(objName, recordByObjName.get(objName)), 
-												getColumns(recordByObjName.get(objName))));
+												getColumns(objName, recordByObjName.get(objName))));
 		}
 		return sobjNameToUniqueIdToData;
 	}
@@ -132,25 +151,27 @@ public class SalesforceConfigDataService {
 		SalesforceConfigDataService sfConfigService = new SalesforceConfigDataService(cal);
 		//sfConfigService.processInputs();
 		try {
-			sobjNameToRecordsMap = sfConfigService.getRecordsWithDifference();
+			sobjNameToRecordsMapFromFile = sfConfigService.getRecordsWithDifference();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//log.info("sobjNameToRecordsMap======" + sobjNameToRecordsMap.size());
 		List<String> objLstToReturn = new ArrayList<>();
-		for(String objName : sobjNameToRecordsMap.keySet()) {
-			log.info("obj Name:" + sobjNameToRecordsMap.get(objName));
-			if(sobjNameToRecordsMap.get(objName) != null && sobjNameToRecordsMap.get(objName).keySet().size() > 0) {
-				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMap.get(objName).keySet().size());
+		for(String objName : sobjNameToRecordsMapFromFile.keySet()) {
+			log.info("obj Name:" + sobjNameToRecordsMapFromFile.get(objName));
+			Integer nameIndex = CSVUtils.getIndex(sobjToHeadeMapFromFile.get(objName), "Name");
+			Integer uniqueValIndex = CSVUtils.getIndex(sobjToHeadeMapFromFile.get(objName), "GGDemo2__InternalUniqueID__c");
+			if(sobjNameToRecordsMapFromFile.get(objName) != null && sobjNameToRecordsMapFromFile.get(objName).keySet().size() > 0) {
+				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMapFromFile.get(objName).keySet().size());
 				objLstToReturn.add(objName);
 				if(!sobjToRecordConfigList.containsKey(objName)) {
 					sobjToRecordConfigList.put(objName, new ArrayList<>());
 				}
-				for(String[] obj : sobjNameToRecordsMap.get(objName).values()) {
+				for(String[] obj : sobjNameToRecordsMapFromFile.get(objName).values()) {
 					// todo read config index
-					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[3]) , new SimpleStringProperty(obj[4]),
-							new SimpleStringProperty(obj[2]), new SimpleStringProperty(obj[3]));
+					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[nameIndex]) , new SimpleStringProperty(obj[uniqueValIndex]),
+							new SimpleStringProperty(obj[nameIndex]), new SimpleStringProperty(obj[uniqueValIndex]));
 					sobjToRecordConfigList.get(objName).add(configRec);
 				}
 			}

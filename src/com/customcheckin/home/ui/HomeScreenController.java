@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
@@ -27,6 +28,7 @@ import com.customcheckin.service.salesforce.SalesforceConfigDataService;
 import com.customcheckin.service.salesforce.SalesforceMetadataRetrieve;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.util.ZipUtility;
+import com.lib.util.CSVUtils;
 import com.customcheckin.util.Utility;
 
 import javafx.beans.property.BooleanProperty;
@@ -165,13 +167,13 @@ public class HomeScreenController implements Initializable {
 	    		selectedJiraTicket = jiraTicket.getId().get();
 	    	}
 	    }
-	    if(selectedJiraTicket.isEmpty()) {
+	    /*if(selectedJiraTicket.isEmpty()) {
 	    	Alert alert = new Alert(AlertType.INFORMATION);
 	        alert.setTitle("Select Jira Ticket");
 	        alert.setHeaderText("");
 	        alert.setContentText("Please select Jira Ticket.");
 	        alert.showAndWait();
-	    } else {
+	    } else {*/
 	    	List<MetadataFile> metadaFiles = homePage.getMetadataFileList();
 	    	List<String> fileNames = new ArrayList<>();
 	    	for(MetadataFile metadataFile : metadaFiles) {
@@ -182,8 +184,25 @@ public class HomeScreenController implements Initializable {
 	    			log.info("srcpath+metadataFile.getName().get()==>>" + metadataFile.getSfPath());
 	    		}
 	    	}
+	    	Map<String, List<ConfigRecord>> configRecords = SalesforceConfigDataService.getSobjToRecordConfigList();
+	    	for(String objAPIName : configRecords.keySet()) {
+	    		List<String[]> selectedConfigRecords = new ArrayList<>();
+	    		for(ConfigRecord configRecord : configRecords.get(objAPIName)) {
+	    			if(configRecord.getIsSelected().get()) {
+	    				selectedConfigRecords.add(SalesforceConfigDataService.getRecordsMap(objAPIName, configRecord.getInternalUniqueId().get()));
+	    			}
+	    		}
+	    		if(selectedConfigRecords.size() > 0) {
+	    			//todo - read internalId from Org
+	    			CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+objAPIName+".csv", 
+	    					"GGDemo2__InternalUniqueID__c", 
+	    					SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
+	    			fileNames.add("Config/"+objAPIName+".csv");
+	    			
+	    		}
+	    	}
 	    	GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
-	    }
+	    //}
 	}
 
 	@FXML

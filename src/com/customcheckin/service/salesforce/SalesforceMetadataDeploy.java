@@ -43,17 +43,6 @@ public class SalesforceMetadataDeploy {
 		rootElement.setAttributeNode(attr);
 		doc.appendChild(rootElement);
 		
-		// objects
-		Element typeEle = doc.createElement("types");
-		rootElement.appendChild(typeEle);
-		
-		/*List<Element> childElemets = getChildObjectElements(doc);
-		for(Element ele : childElemets) {
-			typeEle.appendChild(ele);
-		}
-		Element nameEle = doc.createElement("name");
-		nameEle.setTextContent("CustomObject");
-		typeEle.appendChild(nameEle);*/
 		//pages
 		Element pageEle = doc.createElement("types");
 		rootElement.appendChild(pageEle);
@@ -90,7 +79,7 @@ public class SalesforceMetadataDeploy {
 		profileEle.appendChild(nameProfileEle);
 		
 		Element verEle1 = doc.createElement("version");
-		verEle1.setTextContent("33.0");
+		verEle1.setTextContent("29.0");
 		rootElement.appendChild(verEle1);
 		
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -107,13 +96,18 @@ public class SalesforceMetadataDeploy {
 	public void deployFilesToTargetOrg() throws Exception {
 		generatePackageXML();
 		getMetadataXMLFiles();
+		File file = new File(Utility.getDeployBaseURL(), "deploy.zip");
+		if(file.exists()) {
+			file.delete();
+		}
 		new ZipUtility().zip(Utility.getDeployBaseURL(), "deploy.zip");
 		Double apiVersion = PropertyManager.getInstance().getDouble("salesforce.api.version");
 		if (apiVersion == null) {
 			apiVersion = 25.0;
 		}
-		FileBasedDeployAndRetrieve fileBasedDeploy = new FileBasedDeployAndRetrieve(gate.getSessionId(), "https://login.salesforce.com/services/Soap/c/25.0", apiVersion);
-		fileBasedDeploy.deployZip(new File(Utility.getDeployBaseURL()+"\\deploy.zip"));
+		
+		//gate.deployZip(new File(Utility.getDeployBaseURL()+"\\deploy.zip"));
+		gate.deployZip(new File("D:\\CM Proceess\\Framework org -Metadata Deployment\\deploy2.zip"));
 	}
 	
 	public static void deployToINTOrg() throws Exception {
