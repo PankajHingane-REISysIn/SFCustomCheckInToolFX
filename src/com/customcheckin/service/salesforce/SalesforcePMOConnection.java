@@ -1,5 +1,7 @@
 package com.customcheckin.service.salesforce;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
@@ -59,6 +61,11 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	public void storeCurrentProject(String projectId) {
 		getCurrentPMOUser().setCurrentProjectId__c(projectId);
 		gate.updateSingle("CurrentProjectId__c", pmoUser);
+	}
+	
+	public void storeLastChecInDate() {
+		getSalesforceDevUser().setLastCheckInDate__c(new Date());
+		gate.updateSingle("LastCheckInDate__c", devUser);
 	}
 	
 	public EnvironmentUserVO getSalesforceDevUser() {

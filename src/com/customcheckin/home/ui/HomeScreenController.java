@@ -1,5 +1,6 @@
 package com.customcheckin.home.ui;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -16,6 +17,11 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jgit.api.errors.CheckoutConflictException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.api.errors.RefNotFoundException;
 
 import com.customcheckin.home.HomePage;
 import com.customcheckin.model.ConfigRecord;
@@ -111,6 +117,9 @@ public class HomeScreenController implements Initializable {
 		initilizeJiraTable();
 		initilizeConfigTable();
 		ConnectionManager.getAllConnections();
+		//todo read date from SF
+		metadataDatePicker.setValue(LocalDate.now());
+		configDatePicker.setValue(LocalDate.now());
 	}
 
 	private void initilizeJiraTable() {
@@ -157,52 +166,84 @@ public class HomeScreenController implements Initializable {
 	}
 	
 	@FXML
-	private void handleCommitAndPush() throws URISyntaxException, Exception {
-		ObservableList<JiraTicket> data = jiraList.getItems();
-		String selectedJiraTicket = "";
-	    for (JiraTicket jiraTicket : data){
-	        //check the boolean value of each item to determine checkbox state
-	    	log.info("====" + jiraTicket.getIsSelected().get());
-	    	if(jiraTicket.getIsSelected().get()) {
-	    		selectedJiraTicket = jiraTicket.getId().get();
-	    	}
-	    }
-	    /*if(selectedJiraTicket.isEmpty()) {
-	    	Alert alert = new Alert(AlertType.INFORMATION);
-	        alert.setTitle("Select Jira Ticket");
-	        alert.setHeaderText("");
-	        alert.setContentText("Please select Jira Ticket.");
-	        alert.showAndWait();
-	    } else {*/
-	    	List<MetadataFile> metadaFiles = homePage.getMetadataFileList();
-	    	List<String> fileNames = new ArrayList<>();
-	    	for(MetadataFile metadataFile : metadaFiles) {
-	    		if(metadataFile.getIsSelected().get()) {
-	    			log.info("Adding file==>>" + metadataFile.getName().get());
-	    			fileNames.add(metadataFile.getRelativeFilePath());
-	    			Utility.replaceFile(metadataFile.getSfPath(), metadataFile.getGitPath());
-	    			log.info("srcpath+metadataFile.getName().get()==>>" + metadataFile.getSfPath());
-	    		}
-	    	}
-	    	Map<String, List<ConfigRecord>> configRecords = SalesforceConfigDataService.getSobjToRecordConfigList();
-	    	for(String objAPIName : configRecords.keySet()) {
-	    		List<String[]> selectedConfigRecords = new ArrayList<>();
-	    		for(ConfigRecord configRecord : configRecords.get(objAPIName)) {
-	    			if(configRecord.getIsSelected().get()) {
-	    				selectedConfigRecords.add(SalesforceConfigDataService.getRecordsMap(objAPIName, configRecord.getInternalUniqueId().get()));
-	    			}
-	    		}
-	    		if(selectedConfigRecords.size() > 0) {
-	    			//todo - read internalId from Org
-	    			CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+objAPIName+".csv", 
-	    					"GGDemo2__InternalUniqueID__c", 
-	    					SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
-	    			fileNames.add("Config/"+objAPIName+".csv");
-	    			
-	    		}
-	    	}
-	    	GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
-	    //}
+	private void handleCommitAndPush() {
+		List<String> fileNames = new ArrayList<>();
+		try {
+			ObservableList<JiraTicket> data = jiraList.getItems();
+			String selectedJiraTicket = "";
+			for (JiraTicket jiraTicket : data){
+				//check the boolean value of each item to determine checkbox state
+				//todo - single selection
+				log.info("====" + jiraTicket.getIsSelected().get());
+				if(jiraTicket.getIsSelected().get()) {
+					selectedJiraTicket = jiraTicket.getId().get();
+				}
+			}
+			if(selectedJiraTicket.isEmpty()) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Select Jira Ticket");
+				alert.setHeaderText("");
+				alert.setContentText("Please select Jira Ticket.");
+				alert.showAndWait();
+			} else {
+				List<MetadataFile> metadaFiles = homePage.getMetadataFileList();
+				for(MetadataFile metadataFile : metadaFiles) {
+					if(metadataFile.getIsSelected().get()) {
+						log.info("Adding file==>>" + metadataFile.getName().get());
+						fileNames.add(metadataFile.getRelativeFilePath());
+						Utility.replaceFile(metadataFile.getSfPath(), metadataFile.getGitPath());
+						log.info("srcpath+metadataFile.getName().get()==>>" + metadataFile.getSfPath());
+					}
+				}
+				Map<String, List<ConfigRecord>> configRecords = SalesforceConfigDataService.getSobjToRecordConfigList();
+				for(String objAPIName : configRecords.keySet()) {
+					List<String[]> selectedConfigRecords = new ArrayList<>();
+					for(ConfigRecord configRecord : configRecords.get(objAPIName)) {
+						if(configRecord.getIsSelected().get()) {
+							selectedConfigRecords.add(SalesforceConfigDataService.getRecordsMap(objAPIName, configRecord.getInternalUniqueId().get()));
+						}
+					}
+					if(selectedConfigRecords.size() > 0) {
+						//todo - read internalId from Org
+						CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+objAPIName+".csv", 
+								"GGDemo2__InternalUniqueID__c", 
+								SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
+						fileNames.add("Config/"+objAPIName+".csv");
+						
+					}
+				}
+				GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
+				SalesforcePMOConnection.getInstance().storeLastChecInDate();
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("CheckIn Successfully.");
+				alert.setHeaderText("");
+				alert.setContentText("Data is checked-In to GIT.");
+				alert.showAndWait();
+			}
+			
+		} catch(IOException | GitAPIException ex) {
+			try {
+				GITConnection.getInstance().revertFile(fileNames);
+				//todo handle excetpions
+			} catch (RefAlreadyExistsException e) {
+				e.printStackTrace();
+			} catch (RefNotFoundException e) {
+				e.printStackTrace();
+			} catch (InvalidRefNameException e) {
+				e.printStackTrace();
+			} catch (CheckoutConflictException e) {
+				e.printStackTrace();
+			} catch (GitAPIException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Error in Check-In.");
+			alert.setHeaderText("");
+			alert.setContentText("Error:"+ex.getMessage());
+			alert.showAndWait();
+		}
 	}
 
 	@FXML
@@ -215,8 +256,6 @@ public class HomeScreenController implements Initializable {
 		List<MetadataFile> metadataFileList = new ArrayList<>();
 		GetMetadataThreads.getAllData(cal);
 		metadataFileList = new CompareFiles().getMetadataFilesWithDifference();
-		/*ObservableList<MetadataFile> metadataFileList1 = homePage.getMetadataFileList();
-		metadataFileList1 = FXCollections.observableArrayList();*/
 		homePage.getMetadataFileList().clear();
 		homePage.getMetadataFileList().addAll(metadataFileList);
 		System.out.println("=========Completed");
@@ -226,7 +265,6 @@ public class HomeScreenController implements Initializable {
 	private void handleConfiListOnChange() throws URISyntaxException, Exception {
 		String selectedItem = configObjList.getSelectionModel().getSelectedItem();
 		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList(selectedItem);
-		//System.out.println("=========configRecordList" + configRecordList.size() + configRecordList.get(0).getInternalUniqueId());
 		homePage.getConfigRecordList().clear();
 		homePage.getConfigRecordList().addAll(configRecordList);
 	}

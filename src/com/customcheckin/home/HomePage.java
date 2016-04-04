@@ -33,7 +33,6 @@ public class HomePage extends Application {
     private ObservableList<String> configObjComboList = FXCollections.observableArrayList();
 
     public HomePage() {
-    	//jiraTicketList.add(new JiraTicket(new SimpleStringProperty("Sample")));
     }
 	@Override
 	public void start(Stage primaryStage) throws IOException {
