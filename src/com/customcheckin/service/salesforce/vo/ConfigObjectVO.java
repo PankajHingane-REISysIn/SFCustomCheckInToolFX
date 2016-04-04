@@ -6,6 +6,7 @@ public class ConfigObjectVO extends CustomVO {
 	private String Name;
 	private String ObjectType__c;
 	private String CustomSettingType__c;
+	private String InternalUniqueIdFieldName__c;
 	
 	public String getName() {
 		return Name;
@@ -24,6 +25,12 @@ public class ConfigObjectVO extends CustomVO {
 	}
 	public void setCustomSettingType__c(String customSettingType__c) {
 		CustomSettingType__c = customSettingType__c;
+	}
+	public String getInternalUniqueIdFieldName__c() {
+		return InternalUniqueIdFieldName__c;
+	}
+	public void setInternalUniqueIdFieldName__c(String internalUniqueIdFieldName__c) {
+		InternalUniqueIdFieldName__c = internalUniqueIdFieldName__c;
 	}
 	
 	
