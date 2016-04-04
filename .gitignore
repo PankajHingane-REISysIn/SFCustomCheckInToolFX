@@ -1,5 +1,5 @@
 /bin/
-/logs/*.log
+/logs/
 .classpath
 .project
 /src/application/
