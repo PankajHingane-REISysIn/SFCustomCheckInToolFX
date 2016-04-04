@@ -5,8 +5,5 @@
 		<map sfObject="Environment__c" class="com.customcheckin.service.salesforce.vo.EnvironmentVO" />
 		<map sfObject="User" class="com.customcheckin.service.salesforce.vo.UserVO" />
 		<map sfObject="Project__c" class="com.customcheckin.service.salesforce.vo.ProjectVO" />
-		<map sfObject="GGDemo2__DataTableConfig__c" class="com.customcheckin.service.salesforce.vo.ConfigObject" />
-		
-		
 	</mapper>
 </service>   
