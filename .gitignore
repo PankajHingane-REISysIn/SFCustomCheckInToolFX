@@ -1,2 +1,4 @@
 /bin/
-logs/*.log
+/logs/*.log
+.classpath
+.project
