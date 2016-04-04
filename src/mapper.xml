@@ -5,5 +5,6 @@
 		<map sfObject="Environment__c" class="com.customcheckin.service.salesforce.vo.EnvironmentVO" />
 		<map sfObject="User" class="com.customcheckin.service.salesforce.vo.UserVO" />
 		<map sfObject="Project__c" class="com.customcheckin.service.salesforce.vo.ProjectVO" />
+		<map sfObject="ConfigObject__c" class="com.customcheckin.service.salesforce.vo.ConfigObjectVO" />
 	</mapper>
 </service>   

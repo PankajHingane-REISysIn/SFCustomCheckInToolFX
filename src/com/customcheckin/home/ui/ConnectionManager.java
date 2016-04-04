@@ -24,7 +24,7 @@ public class ConnectionManager  extends Thread{
 				JIRAConnection.getInstance();
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		log.info("type========Completed:" + type);
