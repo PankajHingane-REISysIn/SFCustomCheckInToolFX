@@ -3,8 +3,6 @@ package com.customcheckin.home.ui;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -24,6 +22,7 @@ import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 
 import com.customcheckin.home.HomePage;
+import com.customcheckin.model.ConfigObject;
 import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
@@ -31,34 +30,25 @@ import com.customcheckin.service.compare.CompareFiles;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
-import com.customcheckin.service.salesforce.SalesforceMetadataRetrieve;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
-import com.customcheckin.util.ZipUtility;
-import com.lib.util.CSVUtils;
 import com.customcheckin.util.Utility;
+import com.lib.util.CSVUtils;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class HomeScreenController implements Initializable {
 	private HomePage homePage;
@@ -77,7 +67,7 @@ public class HomeScreenController implements Initializable {
 	
 	//Config Data
 	@FXML
-	private ComboBox<String> configObjList;
+	private ComboBox<ConfigObject> configObjList;
 	@FXML
 	private TableView<ConfigRecord> configDataList;
 	@FXML
@@ -160,7 +150,7 @@ public class HomeScreenController implements Initializable {
 		DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
 		format.format(convertToDate);
 		Calendar cal=format.getCalendar();
-		List<String> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
+		List<ConfigObject> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
 		homePage.getConfigObjComboList().clear();
 		homePage.getConfigObjComboList().addAll(sobjList);
 	}
@@ -174,12 +164,12 @@ public class HomeScreenController implements Initializable {
 			for (JiraTicket jiraTicket : data){
 				//check the boolean value of each item to determine checkbox state
 				//todo - single selection
-				log.info("====" + jiraTicket.getIsSelected().get());
 				if(jiraTicket.getIsSelected().get()) {
 					selectedJiraTicket = jiraTicket.getId().get();
 				}
 			}
-			if(selectedJiraTicket.isEmpty()) {
+			// todo - 
+			if(!selectedJiraTicket.isEmpty()) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Select Jira Ticket");
 				alert.setHeaderText("");
@@ -204,16 +194,15 @@ public class HomeScreenController implements Initializable {
 						}
 					}
 					if(selectedConfigRecords.size() > 0) {
-						//todo - read internalId from Org
-						CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+objAPIName+".csv", 
-								"GGDemo2__InternalUniqueID__c", 
+						CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+ SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName() +".csv", 
+								SalesforceConfigDataService.getConfigObjectVO(objAPIName).getInternalUniqueIdFieldAPIName(), 
 								SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
-						fileNames.add("Config/"+objAPIName+".csv");
+						fileNames.add("Config/"+SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName()+".csv");
 						
 					}
 				}
 				GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
-				SalesforcePMOConnection.getInstance().storeLastChecInDate();
+				SalesforcePMOConnection.getInstance().storeLastCheckInDate();
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("CheckIn Successfully.");
 				alert.setHeaderText("");
@@ -226,17 +215,22 @@ public class HomeScreenController implements Initializable {
 				GITConnection.getInstance().revertFile(fileNames);
 				//todo handle excetpions
 			} catch (RefAlreadyExistsException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				log.error(e);
 			} catch (RefNotFoundException e) {
-				e.printStackTrace();
+				log.error(e);
+				//e.printStackTrace();
 			} catch (InvalidRefNameException e) {
-				e.printStackTrace();
+				log.error(e);
+				//e.printStackTrace();
 			} catch (CheckoutConflictException e) {
 				e.printStackTrace();
 			} catch (GitAPIException e) {
-				e.printStackTrace();
+				log.error(e);
+				//e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(e);
+				//e.printStackTrace();
 			}
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Error in Check-In.");
@@ -263,10 +257,30 @@ public class HomeScreenController implements Initializable {
 	
 	@FXML
 	private void handleConfiListOnChange() throws URISyntaxException, Exception {
-		String selectedItem = configObjList.getSelectionModel().getSelectedItem();
+		String selectedItem = configObjList.getSelectionModel().getSelectedItem().getObjectAPIName();
 		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList(selectedItem);
 		homePage.getConfigRecordList().clear();
 		homePage.getConfigRecordList().addAll(configRecordList);
+	}
+	
+	//handle menu bar options
+	@FXML
+	private void editGITCredentials() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HomePage.class.getResource("ui/GITLogin.fxml"));
+        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("GIT Login");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        //dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(pmoLoginPane);
+        dialogStage.setScene(scene);
+
+        GITLoginController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
 	}
 
 	public void setHomePage(HomePage homePage) {

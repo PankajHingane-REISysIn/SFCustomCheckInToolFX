@@ -63,8 +63,8 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 		gate.updateSingle("CurrentProjectId__c", pmoUser);
 	}
 	
-	public void storeLastChecInDate() {
-		getSalesforceDevUser().setLastCheckInDate__c(new Date());
+	public void storeLastCheckInDate() {
+		getSalesforceDevUser().setLastCheckInDate__c(Calendar.getInstance().getTime());
 		gate.updateSingle("LastCheckInDate__c", devUser);
 	}
 	

@@ -7,6 +7,7 @@ import com.customcheckin.home.ui.HomeScreenController;
 import com.customcheckin.home.ui.JIRALoginController;
 import com.customcheckin.home.ui.PMOLoginController;
 import com.customcheckin.home.ui.SFDEVLoginController;
+import com.customcheckin.model.ConfigObject;
 import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
@@ -30,7 +31,7 @@ public class HomePage extends Application {
       
     private ObservableList<JiraTicket> jiraTicketComboList = FXCollections.observableArrayList();
     
-    private ObservableList<String> configObjComboList = FXCollections.observableArrayList();
+    private ObservableList<ConfigObject> configObjComboList = FXCollections.observableArrayList();
 
     public HomePage() {
     }
@@ -191,7 +192,7 @@ public class HomePage extends Application {
 		return jiraTicketComboList;
 	}
 	
-	public ObservableList<String> getConfigObjComboList() {
+	public ObservableList<ConfigObject> getConfigObjComboList() {
 		return configObjComboList;
 	}
 }

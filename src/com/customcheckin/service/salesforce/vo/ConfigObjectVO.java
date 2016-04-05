@@ -7,6 +7,8 @@ public class ConfigObjectVO extends CustomVO {
 	private String ObjectType__c;
 	private String CustomSettingType__c;
 	private String InternalUniqueIdFieldName__c;
+	private String Namespace__c;
+	private String objectLabel;
 	
 	public String getName() {
 		return Name;
@@ -31,6 +33,26 @@ public class ConfigObjectVO extends CustomVO {
 	}
 	public void setInternalUniqueIdFieldName__c(String internalUniqueIdFieldName__c) {
 		InternalUniqueIdFieldName__c = internalUniqueIdFieldName__c;
+	}
+	public String getNamespace__c() {
+		return Namespace__c;
+	}
+	public void setNamespace__c(String namespace__c) {
+		Namespace__c = namespace__c;
+	}
+	
+	public String getObjectAPIName() {
+		return (Namespace__c!=null ? Namespace__c : "" ) + Name;
+	}
+	
+	public String getInternalUniqueIdFieldAPIName() {
+		return (Namespace__c!=null ? Namespace__c : "" ) + InternalUniqueIdFieldName__c;
+	}
+	public String getObjectLabel() {
+		return objectLabel;
+	}
+	public void setObjectLabel(String objectLabel) {
+		this.objectLabel = objectLabel;
 	}
 	
 	

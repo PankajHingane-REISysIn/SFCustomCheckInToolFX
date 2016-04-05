@@ -5,7 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.customcheckin.home.ui.MenuController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -18,9 +18,9 @@
             <items>
               <MenuItem mnemonicParsing="false" text="Edit PMO login details" />
                   <MenuItem mnemonicParsing="false" text="Change Project" />
-                  <MenuItem mnemonicParsing="false" text="Edit DEV Login details" />
-                  <MenuItem mnemonicParsing="false" text="Edit Jira Login details" />
-                  <MenuItem mnemonicParsing="false" text="Edit GIT Login details" />
+                  <MenuItem fx:id="editDEVORGDetails" mnemonicParsing="false" onAction="#handleEditDevOrgCredentials" text="Edit DEV Login details" />
+                  <MenuItem fx:id="editJIRADetails" mnemonicParsing="false" text="Edit Jira Login details" />
+                  <MenuItem fx:id="editGITDetails" mnemonicParsing="false" text="Edit GIT Login details" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

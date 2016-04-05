@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,8 +18,10 @@ import java.util.concurrent.Future;
 import org.apache.axis.message.MessageElement;
 import org.apache.log4j.Logger;
 
+import com.customcheckin.model.ConfigObject;
 import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.service.compare.CompareRecords;
+import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.force.service.raw.ForceDelegateRaw;
 import com.lib.util.CSVUtils;
 import com.sforce.soap.partner.sobject.SObject;
@@ -25,27 +29,35 @@ import com.sforce.soap.partner.sobject.SObject;
 import javafx.beans.property.SimpleStringProperty;
 
 public class SalesforceConfigDataService {
-	private List<String> objNameLst;
+	private List<ConfigObjectVO> configObjList;
 	private final String lastModifiedDateString;
 	private static Logger log = Logger.getRootLogger();
 	private final ForceDelegateRaw gateRaw = SalesforceDevConnection.getInstance().getForceDelegateRaw();
 	//i think we can query again.
-	private static Map<String, String[]> sobjToHeadeMapFromFile;
+//	private static Map<String, String[]> sobjToHeadeMapFromFile;
 	private static Map<String, String[]> sobjToHeadeMapFromOrg;
-	private static Map<String, Map<String, String[]>> sobjNameToRecordsMapFromFile;
 	private static Map<String, Map<String, String[]>> sobjNameToRecordsMapFromOrg;
+	private static Map<String, Map<String, String[]>> sobjNameToRecordsMapFromOrgWithDiff;
 	private static Map<String, List<ConfigRecord>> sobjToRecordConfigList;
+	private static Map<String, ConfigObjectVO> configobjAPIToInstance;
+	
+	private static final Integer THREAD_SIZE = 10;
+	private static final Set<String> standardFieldToInclude = new HashSet<String>();;
 	
 	public SalesforceConfigDataService(Calendar lastModifiedDate) {
-		this.objNameLst = getConfigObjListFromPMO();
-		sobjNameToRecordsMapFromFile = new HashMap<>();
+		this.configObjList = ConfigObjects.getInstance().getCustomObjects();
+		//this.configObjList.addAll(ConfigObjects.getInstance().getCustomSettings());
+		sobjNameToRecordsMapFromOrgWithDiff = new HashMap<>();
 		sobjNameToRecordsMapFromOrg = new HashMap<>();
+		configobjAPIToInstance = new HashMap<String, ConfigObjectVO>();
 		sobjToRecordConfigList = new HashMap<>();
-		sobjToHeadeMapFromFile = new HashMap<>();
+		sobjNameToRecordsMapFromOrgWithDiff = new HashMap<>();
 		sobjToHeadeMapFromOrg = new HashMap<>();
+		standardFieldToInclude.add("Name");
 		lastModifiedDate.add(Calendar.DATE, 1);
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		lastModifiedDateString = format1.format(lastModifiedDate.getTime())+"T00:00:00.000Z";
+		getConfigObjMap();
 	}
 	
 	public static Map<String, List<ConfigRecord>> getSobjToRecordConfigList() {
@@ -60,46 +72,50 @@ public class SalesforceConfigDataService {
 		return sobjToHeadeMapFromOrg.get(sobjName);
 	}
 	
-	public Map<String, SObject[]> getRecordsWithModifiedDate()
+	public static ConfigObjectVO getConfigObjectVO(String objAPIName) {
+		return configobjAPIToInstance.get(objAPIName);
+	}
+	
+	private void getConfigObjMap() {
+		for(ConfigObjectVO configObj : configObjList) {
+			configobjAPIToInstance.put(configObj.getObjectAPIName(), configObj);
+		}
+	}
+	
+	private Map<String, SObject[]> getRecordsWithModifiedDate()
 	        throws InterruptedException, ExecutionException {
-
 	    //int threads = Runtime.getRuntime().availableProcessors();
-	    //todo - hardcode to 10
-	    ExecutorService service = Executors.newFixedThreadPool(10);
+	    ExecutorService service = Executors.newFixedThreadPool(THREAD_SIZE);
 
 	    List<Future<Map<String, SObject[]>>> futures = new ArrayList<Future<Map<String, SObject[]>>>();
-	    for (final String objName : objNameLst) {
+	    for (final ConfigObjectVO configObject : configObjList) {
 	        Callable<Map<String, SObject[]>> callable = new Callable<Map<String, SObject[] >>() {
 	            public Map<String, SObject[]> call() throws Exception {
 	                // process your input here and compute the output
-	                SalesforceConfigDataThread t = new SalesforceConfigDataThread(objName, lastModifiedDateString, gateRaw);
-	        		log.info("objName==" + objName);
+	                SalesforceConfigDataThread t = new SalesforceConfigDataThread(configObject, lastModifiedDateString, gateRaw);
+	        		log.info("objName==" + configObject);
 	                SObject[] records = t.getRecords();
 	        		Map<String, SObject[]> sobjNameToRecordsMap = new HashMap<>();
-	        		sobjNameToRecordsMap.put(objName, records);
+	        		sobjNameToRecordsMap.put(configObject.getObjectAPIName(), records);
 	                return sobjNameToRecordsMap;
 	            }
 	        };
 	        futures.add(service.submit(callable));
 	    }
-
 	    service.shutdown();
 
 	    Map<String, SObject[]> sobjNameToRecordsMap = new HashMap<>();
 	    for (Future<Map<String, SObject[]>> future : futures) {
 	    	sobjNameToRecordsMap.putAll(future.get());
 	    }
-	    /*for(String obj : sobjNameToRecordsMap.keySet()) {
-	    	log.info("obj=="+obj + "=== size===" + sobjNameToRecordsMap.get(obj).length);
-	    }*/
 	    return sobjNameToRecordsMap;
 	}
 	
-	public String[] getColumns(String objName, SObject[] sobjList) {
+	private String[] getColumns(String objName, SObject[] sobjList) {
 		List<String> apiArray = new ArrayList<>();
 		if(sobjList != null)
 		for(MessageElement msgEle : sobjList[0].get_any()) {
-			if(msgEle.getName().endsWith("__c") || msgEle.getName().equalsIgnoreCase("Name"))
+			if(msgEle.getName().endsWith("__c") || standardFieldToInclude.contains(msgEle.getName()))
 				apiArray.add(msgEle.getName());
 		}
 		String[] colArr = apiArray.toArray(new String[apiArray.size()]);
@@ -107,15 +123,17 @@ public class SalesforceConfigDataService {
 		return colArr;
 	}
 	
-	public Map<String, String[]> getRecordsByInternalId(String objAPIName, SObject[] sobjList) {
+	private Map<String, String[]> getRecordsByInternalId(String objAPIName, SObject[] sobjList) {
 		Map<String, String[]> internalIdByRecords = new HashMap<>();
 		if(sobjList != null)
 		for(SObject sobj : sobjList) {
 			String uniqueIdVal = "";
 			List<String> dataArray = new ArrayList<>();
 			for(MessageElement msgEle : sobj.get_any()) {
-				if(msgEle.getName().endsWith("__c") || msgEle.getName().equalsIgnoreCase("Name")) {
-					if(msgEle.getName().equalsIgnoreCase("GGDemo2__InternalUniqueID__c")) {
+				if(msgEle.getName().endsWith("__c") || standardFieldToInclude.contains(msgEle.getName())) {
+					log.info("sobj===" + sobj);
+					log.info("configobjAPIToInstance.get(sobj)===" + configobjAPIToInstance.get(sobj));
+					if(msgEle.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
 						uniqueIdVal = msgEle.getValue();
 					}
 					dataArray.add(msgEle.getValue() == null ? "" : msgEle.getValue());
@@ -124,9 +142,6 @@ public class SalesforceConfigDataService {
 			internalIdByRecords.put(uniqueIdVal, dataArray.toArray(new String[dataArray.size()]));
 		}
 		sobjNameToRecordsMapFromOrg.put(objAPIName, internalIdByRecords);
-		/*for(String str : internalIdByRecords.keySet()) {
-			log.info(objAPIName+"Records by internal id :"+str+"== size:"+ internalIdByRecords.get(str).length);
-		}*/
 		return internalIdByRecords;
 	}
 	
@@ -134,12 +149,12 @@ public class SalesforceConfigDataService {
 		return sobjToRecordConfigList.get(objName);
 	}
 	
-	public Map<String, Map<String, String[]>> getRecordsWithDifference() throws InterruptedException, ExecutionException, IOException {
+	private Map<String, Map<String, String[]>> getRecordsWithDifference() throws InterruptedException, ExecutionException, IOException {
 		Map<String, SObject[]> recordByObjName = getRecordsWithModifiedDate();
 		Map<String, Map<String, String[]>> sobjNameToUniqueIdToData = new HashMap<>();
 		for(String objName : recordByObjName.keySet()) {
-			CompareRecords compareRecord = new CompareRecords(objName);
-			sobjToHeadeMapFromFile.put(objName, compareRecord.getFileHeaders());
+			CompareRecords compareRecord = new CompareRecords(configobjAPIToInstance.get(objName));
+//			sobjToHeadeMapFromFile.put(objName, compareRecord.getFileHeaders());
 			sobjNameToUniqueIdToData.put(objName,
 					compareRecord.readRecordsFromLocalGITRepoAndCompare(getRecordsByInternalId(objName, recordByObjName.get(objName)), 
 												getColumns(objName, recordByObjName.get(objName))));
@@ -147,28 +162,31 @@ public class SalesforceConfigDataService {
 		return sobjNameToUniqueIdToData;
 	}
 	
-	public static List<String> getConfigDataList(Calendar cal) throws InterruptedException, ExecutionException, IOException {
+	public static List<ConfigObject> getConfigDataList(Calendar cal) throws InterruptedException, ExecutionException, IOException {
 		SalesforceConfigDataService sfConfigService = new SalesforceConfigDataService(cal);
 		//sfConfigService.processInputs();
 		try {
-			sobjNameToRecordsMapFromFile = sfConfigService.getRecordsWithDifference();
+			sobjNameToRecordsMapFromOrgWithDiff = sfConfigService.getRecordsWithDifference();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//log.info("sobjNameToRecordsMap======" + sobjNameToRecordsMap.size());
-		List<String> objLstToReturn = new ArrayList<>();
-		for(String objName : sobjNameToRecordsMapFromFile.keySet()) {
-			log.info("obj Name:" + sobjNameToRecordsMapFromFile.get(objName));
-			Integer nameIndex = CSVUtils.getIndex(sobjToHeadeMapFromFile.get(objName), "Name");
-			Integer uniqueValIndex = CSVUtils.getIndex(sobjToHeadeMapFromFile.get(objName), "GGDemo2__InternalUniqueID__c");
-			if(sobjNameToRecordsMapFromFile.get(objName) != null && sobjNameToRecordsMapFromFile.get(objName).keySet().size() > 0) {
-				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMapFromFile.get(objName).keySet().size());
-				objLstToReturn.add(objName);
+		List<ConfigObject> objLstToReturn = new ArrayList<>();
+		for(String objName : sobjNameToRecordsMapFromOrgWithDiff.keySet()) {
+			log.info("obj Name:" +objName);
+			Integer nameIndex = CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), "Name");
+			Integer uniqueValIndex = CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configobjAPIToInstance.get(objName).getInternalUniqueIdFieldAPIName());
+			if(uniqueValIndex == -1) {
+				uniqueValIndex = 0;
+			}
+			if(sobjNameToRecordsMapFromOrgWithDiff.get(objName) != null && sobjNameToRecordsMapFromOrgWithDiff.get(objName).keySet().size() > 0) {
+				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMapFromOrgWithDiff.get(objName).keySet().size());
+				objLstToReturn.add(new ConfigObject(configobjAPIToInstance.get(objName).getObjectLabel(), objName));
 				if(!sobjToRecordConfigList.containsKey(objName)) {
 					sobjToRecordConfigList.put(objName, new ArrayList<>());
 				}
-				for(String[] obj : sobjNameToRecordsMapFromFile.get(objName).values()) {
+				for(String[] obj : sobjNameToRecordsMapFromOrgWithDiff.get(objName).values()) {
 					// todo read config index
 					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[nameIndex]) , new SimpleStringProperty(obj[uniqueValIndex]),
 							new SimpleStringProperty(obj[nameIndex]), new SimpleStringProperty(obj[uniqueValIndex]));
@@ -177,130 +195,6 @@ public class SalesforceConfigDataService {
 			}
 		}
 		return objLstToReturn;
-	}
-	
-	/*public static List<SObject> getRecords(String objName) {
-		return Arrays.asList(sobjNameToRecordsMap.get(objName));
-	}*/
-	
-	public static void readConfigFile(String fileURL) {
-		
-	}
-	
-	private List<String> getConfigObjListFromPMO() {
-		//todo - read from SF
-		List<String> objList = new ArrayList<>();
-		objList.add("GGDemo2__DataTableConfig__c");
-		//objList.add("GGDemo2__AccordionContent__c");
-		//objList.add("GGDemo2__CustomApp__c");
-		//objList.add("GGDemo2__ChartConfig__c");
-		//objList.add("GGDemo2__DataTableConfig__c");
-		/*objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");*/
-		objList.add("GGDemo2__TabConfig__c");
-		/*objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");
-		objList.add("GGDemo2__ChartConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__FlexGridConfig__c");
-		objList.add("GGDemo2__ErrorMessageConfig__c");
-		objList.add("GGDemo2__PageAttachmentConfig__c");
-		objList.add("GGDemo2__PageBlockConfig__c");
-		objList.add("GGDemo2__PhaseConfig__c");
-		objList.add("GGDemo2__SObjectLayoutConfig__c");
-		objList.add("GGDemo2__DataTableConfig__c");
-		objList.add("GGDemo2__AccordionContent__c");
-		objList.add("GGDemo2__CustomApp__c");*/
-		return objList;
 	}
 	
 	public static void main(String str[]) throws InterruptedException, ExecutionException, IOException {
