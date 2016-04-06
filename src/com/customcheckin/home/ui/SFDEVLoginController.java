@@ -7,7 +7,9 @@ import javax.xml.bind.JAXBException;
 import com.customcheckin.home.HomePage;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
 import com.customcheckin.service.salesforce.vo.ProjectVO;
+import com.customcheckin.service.salesforce.vo.UserVO;
 import com.customcheckin.util.PropertyManager;
 
 import javafx.collections.FXCollections;
@@ -37,6 +39,17 @@ public class SFDEVLoginController {
 		List<ProjectVO> prjctList = SalesforcePMOConnection.getInstance().getActiveProjects();
 		obj.addAll(prjctList);
 		projectListCombo.setItems(obj);
+		EnvironmentUserVO devLoginUser = SalesforcePMOConnection.getInstance().getSalesforceDevUser();
+		if(devLoginUser != null) {
+			UserVO pmoUser = SalesforcePMOConnection.getInstance().getCurrentPMOUser();
+			for(ProjectVO project : prjctList) {
+				if(project.getId().equalsIgnoreCase(pmoUser.getCurrentProjectId__c())) {
+					projectListCombo.setValue(project);
+				}
+			}
+			userField.setText(devLoginUser.getName());
+			passField.setText(devLoginUser.getPassword__c());
+		}
     }
 	
 	
@@ -45,7 +58,6 @@ public class SFDEVLoginController {
 		try {
 			//todo - first login to sf then write to file
 			SalesforcePMOConnection pmo = SalesforcePMOConnection.getInstance();
-			//todo - tostring override issue
 			ProjectVO project = projectListCombo.getValue();
 			//todo validation
 			pmo.storeCurrentProject(project.getId());

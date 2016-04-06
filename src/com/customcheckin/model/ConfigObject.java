@@ -11,7 +11,7 @@ public class ConfigObject{
 	
 	@Override
 	public String toString() {
-		return label+"("+ objectAPIName + ")";
+		return label+" ("+ objectAPIName + ")";
 	}
 	
 	public String getObjectAPIName() {

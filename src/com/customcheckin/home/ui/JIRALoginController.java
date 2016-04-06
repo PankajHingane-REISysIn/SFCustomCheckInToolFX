@@ -8,7 +8,9 @@ import com.customcheckin.home.HomePage;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
 import com.customcheckin.service.salesforce.vo.ProjectVO;
+import com.customcheckin.service.salesforce.vo.UserVO;
 import com.customcheckin.util.PropertyManager;
 
 import javafx.collections.FXCollections;
@@ -31,6 +33,11 @@ public class JIRALoginController {
 	
 	@FXML
     private void initialize() {
+		EnvironmentUserVO jiraLoginUser = SalesforcePMOConnection.getInstance().getJiraUser();
+		if(jiraLoginUser != null) {
+			userField.setText(jiraLoginUser.getName());
+			passField.setText(jiraLoginUser.getPassword__c());
+		}
     }
 	
 	

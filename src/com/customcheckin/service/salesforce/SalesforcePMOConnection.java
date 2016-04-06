@@ -23,6 +23,8 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	private EnvironmentUserVO jiraUser;
 	private List<ProjectVO> activeProjects;
 	private ProjectVO currentProject;
+	private EnvironmentVO gitEnvirnment;
+	private EnvironmentVO jiraEnvirnment;
 	
 	private SalesforcePMOConnection() {
 		username = PropertyManager.getInstance().getString("pmo.username");
@@ -42,6 +44,22 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 			pmoUser = (UserVO) gate.querySingle("Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username=?", new Object[]{username});
 		}
 		return pmoUser;
+	}
+	
+	public EnvironmentVO getJiraEnvirnment() {
+		if (jiraEnvirnment == null) {
+			jiraEnvirnment = (EnvironmentVO) gate.querySingle("select Id, URL__c, ExternalId1__c from Environment__c where Project__c=? and Type__c=?", 
+					new Object[]{getCurrentPMOUser().getCurrentProjectId__c(), "JIRA"});
+		}
+		return jiraEnvirnment;
+	}
+	
+	public EnvironmentVO getGitEnvirnment() {
+		if (gitEnvirnment == null) {
+			gitEnvirnment = (EnvironmentVO) gate.querySingle("select Id, URL__c, ExternalId1__c from Environment__c where Project__c=? and Type__c=?", 
+					new Object[]{getCurrentPMOUser().getCurrentProjectId__c(), "GitHub"});
+		}
+		return gitEnvirnment;
 	}
 	
 	public List<ProjectVO> getActiveProjects() {
@@ -156,6 +174,10 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 			gitUser.setPassword__c(password);
 			gate.updateSingle("update.environment.user", gitUser);
 		}
+	}
+	
+	public EnvironmentUserVO getDevUser() {
+		return devUser;
 	}
 	
 	public static void main(String[] args) {

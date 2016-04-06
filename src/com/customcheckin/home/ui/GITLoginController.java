@@ -1,21 +1,14 @@
 package com.customcheckin.home.ui;
 
-import java.util.List;
-
 import javax.xml.bind.JAXBException;
 
 import com.customcheckin.home.HomePage;
-import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
-import com.customcheckin.service.salesforce.vo.ProjectVO;
-import com.customcheckin.util.PropertyManager;
+import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -30,6 +23,11 @@ public class GITLoginController {
 	
 	@FXML
     private void initialize() {
+		EnvironmentUserVO gitLoginUser = SalesforcePMOConnection.getInstance().getGITUser();
+		if(gitLoginUser != null) {
+			userField.setText(gitLoginUser.getName());
+			passField.setText(gitLoginUser.getPassword__c());
+		}
     }
 	
 	

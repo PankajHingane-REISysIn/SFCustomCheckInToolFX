@@ -48,7 +48,6 @@ public class HomePage extends Application {
         	showHomePage();
         }
         showHomePage();
-        //todo add condition for other logins
 	}
 	
 	public void initRootLayout() throws IOException {
@@ -90,18 +89,13 @@ public class HomePage extends Application {
         Scene scene = new Scene(pmoLoginPane);
         dialogStage.setScene(scene);
 
-        // Set the person into the controller.
         PMOLoginController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-        //controller.setPerson(person);
 
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
         
         showDEVLoginPage();
-        /*rootLayout.setCenter(pmoLoginPane);
-        PMOLoginController controller = loader.getController();
-        controller.setHomePage(this);*/
 	}
 	
 	public void showDEVLoginPage() throws IOException {
@@ -119,7 +113,6 @@ public class HomePage extends Application {
         // Set the person into the controller.
         SFDEVLoginController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-        //controller.setPerson(person);
 
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
@@ -141,7 +134,6 @@ public class HomePage extends Application {
         // Set the person into the controller.
         JIRALoginController controller = loader.getController();
         controller.setDialogStage(dialogStage);
-        //controller.setPerson(person);
 
         // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();

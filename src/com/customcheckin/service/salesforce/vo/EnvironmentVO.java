@@ -10,7 +10,8 @@ public class EnvironmentVO extends CustomVO {
 	private Integer Sequence__c;
 	private String Type__c;
 	private String URL__c;
-	
+	private String ExternalId1__c;
+	private String ExternalId2__c;
 	public String getName() {
 		return Name;
 	}
@@ -52,6 +53,18 @@ public class EnvironmentVO extends CustomVO {
 	}
 	public void setURL__c(String uRL__c) {
 		URL__c = uRL__c;
+	}
+	public String getExternalId1__c() {
+		return ExternalId1__c;
+	}
+	public void setExternalId1__c(String externalId1__c) {
+		ExternalId1__c = externalId1__c;
+	}
+	public String getExternalId2__c() {
+		return ExternalId2__c;
+	}
+	public void setExternalId2__c(String externalId2__c) {
+		ExternalId2__c = externalId2__c;
 	}
 	
 	

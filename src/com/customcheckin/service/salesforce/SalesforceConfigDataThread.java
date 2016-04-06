@@ -17,34 +17,44 @@ import com.sforce.soap.partner.sobject.SObject;
 
 public class SalesforceConfigDataThread{
 	private static Logger log = Logger.getRootLogger();
-	private ConfigObjectVO objName;
+	private ConfigObjectVO custObj;
 	private String lastModifiedDate;
 	private ForceDelegateRaw gate;
 	
 	public SalesforceConfigDataThread(ConfigObjectVO objName, String lastModifiedDate, ForceDelegateRaw gate) {
-		this.objName = objName;
+		this.custObj = objName;
 		this.lastModifiedDate = lastModifiedDate;
 		this.gate = gate;
 	}
 	
 	public void run() {
-		log.info("objName========" + objName);
+		log.info("objName========" + custObj);
 		getRecords();
 	}
 	
 	public SObject[] getRecords() {
-		// todo - cache of objects
 		try {
-			DescribeSObjectResult desc = gate.describeSObject(objName.getObjectAPIName());
-			objName.setObjectLabel(desc.getLabel());
+			DescribeSObjectResult desc = gate.describeSObject(custObj.getObjectAPIName());
+			custObj.setObjectLabel(desc.getLabel());
 			Field[] fields = desc.getFields();
 			String query = "select Id,Name";
 			for(Field field : fields) {
 				if(field.getName().endsWith("__c")) {
 					query += ", " + field.getName();
+					if(custObj.getFieldAPIToLabelList().containsKey(field.getName())) {
+						custObj.setFieldlabel(field.getName(), field.getLabel());
+					}
+					field.getLabel();
 				}
 			}
-			query +=" from " + objName.getObjectAPIName() + " where LastModifiedDate > "+lastModifiedDate;
+			if(custObj.getObjectType__c().equalsIgnoreCase("Custom Setting") && custObj.getCustomSettingType__c().equalsIgnoreCase("Hierarchy")) {
+				query +=" ,SetupOwnerId";
+			}
+			query +=" from " + custObj.getObjectAPIName() + " where LastModifiedDate > "+lastModifiedDate;
+			// filter records for Hierarchy custom setting. Retrieve only OWD and Profile level records
+			if(custObj.getObjectType__c().equalsIgnoreCase("Custom Setting") && custObj.getCustomSettingType__c().equalsIgnoreCase("Hierarchy")) {
+				query +=" and SetupOwner.type not in('User')";
+			}
 			SObject[] records = gate.queryMultiple(query, null);
 			return records;
 			

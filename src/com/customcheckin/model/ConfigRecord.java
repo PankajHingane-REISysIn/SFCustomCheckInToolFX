@@ -9,13 +9,18 @@ public class ConfigRecord {
 	private StringProperty internalUniqueId;
 	private StringProperty col1;
 	private StringProperty col2;
+	private StringProperty col3;
+	private StringProperty col4;
 	private BooleanProperty isSelected;
 	
-	public ConfigRecord(StringProperty name, StringProperty internalUniqueId, StringProperty col1, StringProperty col2) {
+	public ConfigRecord(StringProperty name, StringProperty internalUniqueId, StringProperty col1, StringProperty col2, StringProperty col3,
+			StringProperty col4) {
 		this.setName(name);
 		this.setInternalUniqueId(internalUniqueId);
-		this.setCol1(col1);
-		this.setCol2(col2);
+		this.col1=col1;
+		this.col2=col2;
+		this.col3=col3;
+		this.setCol4(col4);
 		this.isSelected = new SimpleBooleanProperty(false);
 	}
 
@@ -87,5 +92,21 @@ public class ConfigRecord {
 	 */
 	public void setIsSelected(BooleanProperty isSelected) {
 		this.isSelected = isSelected;
+	}
+
+	public StringProperty getCol3() {
+		return col3;
+	}
+
+	public void setCol3(StringProperty col3) {
+		this.col3 = col3;
+	}
+
+	public StringProperty getCol4() {
+		return col4;
+	}
+
+	public void setCol4(StringProperty col4) {
+		this.col4 = col4;
 	}
 }

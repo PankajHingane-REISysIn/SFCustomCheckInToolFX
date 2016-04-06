@@ -131,8 +131,6 @@ public class SalesforceConfigDataService {
 			List<String> dataArray = new ArrayList<>();
 			for(MessageElement msgEle : sobj.get_any()) {
 				if(msgEle.getName().endsWith("__c") || standardFieldToInclude.contains(msgEle.getName())) {
-					log.info("sobj===" + sobj);
-					log.info("configobjAPIToInstance.get(sobj)===" + configobjAPIToInstance.get(sobj));
 					if(msgEle.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
 						uniqueIdVal = msgEle.getValue();
 					}
@@ -175,21 +173,28 @@ public class SalesforceConfigDataService {
 		List<ConfigObject> objLstToReturn = new ArrayList<>();
 		for(String objName : sobjNameToRecordsMapFromOrgWithDiff.keySet()) {
 			log.info("obj Name:" +objName);
+			ConfigObjectVO configObj = configobjAPIToInstance.get(objName);
 			Integer nameIndex = CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), "Name");
-			Integer uniqueValIndex = CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configobjAPIToInstance.get(objName).getInternalUniqueIdFieldAPIName());
-			if(uniqueValIndex == -1) {
-				uniqueValIndex = 0;
-			}
+			Integer uniqueValIndex = CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configObj.getInternalUniqueIdFieldAPIName());
+			Integer col1ValIndex = configObj.getConfigFieldList().size() < 1 ? -1 : 
+							CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configObj.getConfigFieldList().get(0));
+			Integer col2ValIndex = configObj.getConfigFieldList().size() < 2 ? -1 : 
+				CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configObj.getConfigFieldList().get(1));
+			Integer col3ValIndex = configObj.getConfigFieldList().size() < 3 ? -1 : 
+				CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configObj.getConfigFieldList().get(2));
+			Integer col4ValIndex = configObj.getConfigFieldList().size() < 4 ? -1 : 
+				CSVUtils.getIndex(sobjToHeadeMapFromOrg.get(objName), configObj.getConfigFieldList().get(3));
 			if(sobjNameToRecordsMapFromOrgWithDiff.get(objName) != null && sobjNameToRecordsMapFromOrgWithDiff.get(objName).keySet().size() > 0) {
 				log.info("sobjNameToRecordsMap.get(str).size()===" + sobjNameToRecordsMapFromOrgWithDiff.get(objName).keySet().size());
-				objLstToReturn.add(new ConfigObject(configobjAPIToInstance.get(objName).getObjectLabel(), objName));
+				objLstToReturn.add(new ConfigObject(configObj.getObjectLabel(), objName));
 				if(!sobjToRecordConfigList.containsKey(objName)) {
 					sobjToRecordConfigList.put(objName, new ArrayList<>());
 				}
 				for(String[] obj : sobjNameToRecordsMapFromOrgWithDiff.get(objName).values()) {
 					// todo read config index
 					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[nameIndex]) , new SimpleStringProperty(obj[uniqueValIndex]),
-							new SimpleStringProperty(obj[nameIndex]), new SimpleStringProperty(obj[uniqueValIndex]));
+							new SimpleStringProperty(col1ValIndex==-1? "":obj[col1ValIndex]), new SimpleStringProperty(col2ValIndex==-1? "":obj[col2ValIndex]),
+							new SimpleStringProperty(col3ValIndex==-1? "":obj[col3ValIndex]), new SimpleStringProperty(col4ValIndex==-1? "":obj[col4ValIndex]));
 					sobjToRecordConfigList.get(objName).add(configRec);
 				}
 			}

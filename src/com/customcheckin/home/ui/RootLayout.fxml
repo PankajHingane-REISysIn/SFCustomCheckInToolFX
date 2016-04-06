@@ -19,8 +19,8 @@
               <MenuItem mnemonicParsing="false" text="Edit PMO login details" />
                   <MenuItem mnemonicParsing="false" text="Change Project" />
                   <MenuItem fx:id="editDEVORGDetails" mnemonicParsing="false" onAction="#handleEditDevOrgCredentials" text="Edit DEV Login details" />
-                  <MenuItem fx:id="editJIRADetails" mnemonicParsing="false" text="Edit Jira Login details" />
-                  <MenuItem fx:id="editGITDetails" mnemonicParsing="false" text="Edit GIT Login details" />
+                  <MenuItem fx:id="editJIRADetails" mnemonicParsing="false" onAction="#editJIRALoginPage" text="Edit Jira Login details" />
+                  <MenuItem fx:id="editGITDetails" mnemonicParsing="false" onAction="#editGITCredentials" text="Edit GIT Login details" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

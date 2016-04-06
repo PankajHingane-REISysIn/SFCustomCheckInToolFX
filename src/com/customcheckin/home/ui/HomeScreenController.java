@@ -31,24 +31,37 @@ import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.customcheckin.util.Utility;
 import com.lib.util.CSVUtils;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 public class HomeScreenController implements Initializable {
 	private HomePage homePage;
@@ -73,11 +86,13 @@ public class HomeScreenController implements Initializable {
 	@FXML
 	private TableColumn<ConfigRecord, String> configNameColumn;
 	@FXML
-	private TableColumn<ConfigRecord, String> configInternalIdColumn;
-	@FXML
 	private TableColumn<ConfigRecord, String> configCol1Column;
 	@FXML
 	private TableColumn<ConfigRecord, String> configCol2Column;
+	@FXML
+	private TableColumn<ConfigRecord, String> configCol3Column;
+	@FXML
+	private TableColumn<ConfigRecord, String> configCol4Column;
 	@FXML
 	private TableColumn<ConfigRecord, Boolean> configChekBoxColumn;
 	
@@ -130,13 +145,14 @@ public class HomeScreenController implements Initializable {
 	
 	private void initilizeConfigTable() {
 		configNameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
-		configInternalIdColumn.setCellValueFactory(cellData -> cellData.getValue().getInternalUniqueId());
-		//configCol1Column.setCellValueFactory(cellData -> cellData.getValue().getCol1());
-		//configCol2Column.setCellValueFactory(cellData -> cellData.getValue().getCol2());
+		configCol1Column.setCellValueFactory(cellData -> cellData.getValue().getCol1());
+		configCol2Column.setCellValueFactory(cellData -> cellData.getValue().getCol2());
+		configCol3Column.setCellValueFactory(cellData -> cellData.getValue().getCol3());
+		configCol4Column.setCellValueFactory(cellData -> cellData.getValue().getCol4());
 		configChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected());
 		configChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<ConfigRecord, Boolean>());
 	}
-
+	
 	@FXML
 	private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
 		List<JiraTicket> rickets = JIRAConnection.getInstance().getOpenTickets("GGP");
@@ -168,8 +184,7 @@ public class HomeScreenController implements Initializable {
 					selectedJiraTicket = jiraTicket.getId().get();
 				}
 			}
-			// todo - 
-			if(!selectedJiraTicket.isEmpty()) {
+			if(selectedJiraTicket.isEmpty()) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Select Jira Ticket");
 				alert.setHeaderText("");
@@ -259,30 +274,23 @@ public class HomeScreenController implements Initializable {
 	private void handleConfiListOnChange() throws URISyntaxException, Exception {
 		String selectedItem = configObjList.getSelectionModel().getSelectedItem().getObjectAPIName();
 		List<ConfigRecord> configRecordList = SalesforceConfigDataService.getConfigRecordList(selectedItem);
+		updateConfigTableHeader(selectedItem);
 		homePage.getConfigRecordList().clear();
 		homePage.getConfigRecordList().addAll(configRecordList);
 	}
 	
-	//handle menu bar options
-	@FXML
-	private void editGITCredentials() throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(HomePage.class.getResource("ui/GITLogin.fxml"));
-        AnchorPane pmoLoginPane = (AnchorPane) loader.load();
-
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("GIT Login");
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        //dialogStage.initOwner(primaryStage);
-        Scene scene = new Scene(pmoLoginPane);
-        dialogStage.setScene(scene);
-
-        GITLoginController controller = loader.getController();
-        controller.setDialogStage(dialogStage);
-        // Show the dialog and wait until the user closes it
-        dialogStage.showAndWait();
+	private void updateConfigTableHeader(String objectAPIName) {
+		ConfigObjectVO configObject = SalesforceConfigDataService.getConfigObjectVO(objectAPIName);
+		configCol1Column.setText(configObject.getConfigFieldList().size() > 0 ? 
+				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(0)) : "");
+		configCol2Column.setText(configObject.getConfigFieldList().size() > 1 ? 
+				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(1)) : "");
+		configCol3Column.setText(configObject.getConfigFieldList().size() > 2 ? 
+				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(2)) : "");
+		configCol4Column.setText(configObject.getConfigFieldList().size() > 3 ? 
+				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(3)) : "");
 	}
-
+	
 	public void setHomePage(HomePage homePage) {
 		this.homePage = homePage;
 		metadataFileList.setItems(homePage.getMetadataFileList());
@@ -290,5 +298,43 @@ public class HomeScreenController implements Initializable {
 		configObjList.setItems(homePage.getConfigObjComboList());
 		configDataList.setItems(homePage.getConfigRecordList());
 	}
+	
+	public static class ProgressForm {
+        private final Stage dialogStage;
+        private final ProgressBar pb = new ProgressBar();
+        private final ProgressIndicator pin = new ProgressIndicator();
+
+        public ProgressForm() {
+            dialogStage = new Stage();
+            dialogStage.initStyle(StageStyle.UTILITY);
+            dialogStage.setResizable(false);
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+
+            // PROGRESS BAR
+            final Label label = new Label();
+            label.setText("Loading... Please wait");
+
+            pb.setProgress(0);
+            pin.setProgress(0);
+
+            final HBox hb = new HBox();
+            hb.setSpacing(5);
+            hb.setAlignment(Pos.CENTER);
+            hb.getChildren().addAll(pb, pin);
+
+            Scene scene = new Scene(hb);
+            dialogStage.setScene(scene);
+        }
+
+        public void activateProgressBar(final Task<?> task)  {
+            pb.progressProperty().bind(task.progressProperty());
+            pin.progressProperty().bind(task.progressProperty());
+            dialogStage.show();
+        }
+
+        public Stage getDialogStage() {
+            return dialogStage;
+        }
+    }
 
 }
