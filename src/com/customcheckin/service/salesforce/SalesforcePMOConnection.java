@@ -41,7 +41,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public UserVO getCurrentPMOUser() {
 		if (pmoUser == null) {
-			pmoUser = (UserVO) gate.querySingle("Select Id, Firstname, Lastname, Username, CurrentProjectId__c from User where Username=?", new Object[]{username});
+			pmoUser = (UserVO) gate.querySingle("Select Id, Firstname, Lastname, Username, UserType__c, CurrentProjectId__c from User where Username=?", new Object[]{username});
 		}
 		return pmoUser;
 	}
@@ -60,6 +60,10 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 					new Object[]{getCurrentPMOUser().getCurrentProjectId__c(), "GitHub"});
 		}
 		return gitEnvirnment;
+	}
+	
+	public boolean isCurrentUserCMAdmin() {
+		return "CM Admin".equals(getCurrentPMOUser().getUserType__c());
 	}
 	
 	public List<ProjectVO> getActiveProjects() {
