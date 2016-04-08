@@ -10,6 +10,8 @@ public class JiraTicket implements Serializable {
 	private StringProperty id;
 	private StringProperty name;
 	private StringProperty description;
+	private StringProperty reporter;
+	private StringProperty createdDate;
 	private BooleanProperty isSelected = new SimpleBooleanProperty(false);
 	
 	public JiraTicket() {
@@ -18,10 +20,14 @@ public class JiraTicket implements Serializable {
 	public JiraTicket(StringProperty Id){
 		this.id = Id;
 	}
-	public JiraTicket(StringProperty id, StringProperty name, BooleanProperty isSelected){
+	public JiraTicket(StringProperty id, StringProperty name, BooleanProperty isSelected, 
+			StringProperty description, StringProperty reporter, StringProperty createdDate){
 		this.id = id;
 		this.name = name;
 		this.isSelected = isSelected;
+		this.description = description;
+		this.reporter = reporter;
+		this.createdDate = createdDate;
 	}
 	/**
 	 * @return the id
@@ -70,6 +76,18 @@ public class JiraTicket implements Serializable {
 	 */
 	public void setDescription(StringProperty description) {
 		this.description = description;
+	}
+	public StringProperty getReporter() {
+		return reporter;
+	}
+	public void setReporter(StringProperty reporter) {
+		this.reporter = reporter;
+	}
+	public StringProperty getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(StringProperty createdDate) {
+		this.createdDate = createdDate;
 	}
 
 }

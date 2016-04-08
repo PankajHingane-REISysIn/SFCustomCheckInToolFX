@@ -58,7 +58,7 @@ import com.lib.util.StringUtils;
 
 public class GITConnection {
 	//todo - read from SF PMO
-	private String remoteURL = "https://github.com/PankajHingane-REISysIn/TestSFRepo";
+	private String remoteURL = SalesforcePMOConnection.getInstance().getGitEnvirnment().getURL__c();
 	private String localURL;
 	private UsernamePasswordCredentialsProvider gitUserPass;
 	private Git git;
@@ -71,10 +71,7 @@ public class GITConnection {
 		if (gitUserInfo != null && StringUtils.isNonEmpty(gitUserInfo.getName()) && StringUtils.isNonEmpty(gitUserInfo.getPassword__c())) {
 			gitUserPass = new UsernamePasswordCredentialsProvider(gitUserInfo.getName(), gitUserInfo.getPassword__c());
 			localURL = gitUserInfo.getLocalWorkspacePath__c();
-			// todo - read from PMO
-			//remoteURL = gitUserInfo.get
 			init();
-			log.info("Jira==" + gitUserInfo.getPassword__c());
 		}
 	}
 	
@@ -128,24 +125,24 @@ public class GITConnection {
 		
 		//git.add().addFilepattern(".").call();
 		AddCommand ac = git.add();
-		//File myfile = new File(repo.getDirectory().getParent(), "testfile1");
-		//log.info("repo.getDirectory().getParent()=======" + repo.getDirectory().getParent());
-        //myfile.createNewFile();
-        //ac.addFilepattern("src/layouts/ApprovalDecisionActionConfig__c-Approval Decision Action Config Layout.layout");
 		for (String file : filesToAdd) {
 			log.info("Adding File TO repo:" + file);
 			ac.addFilepattern(file);
 		}
 		ac.call();
 		git.commit()
-        .setMessage("CheckIn By FX Tool- Jira Ticket No :" + jiraTicketNo)
+        .setMessage("CheckIn By Tool- Jira Ticket No :" + jiraTicketNo)
         .call();
 		
 		PushCommand pushcmd = git.push();
 		pushcmd.setCredentialsProvider(gitUserPass);
 		RefSpec spec = new RefSpec("refs/heads/master");
 		Iterable<PushResult> pushList = pushcmd.setRemote(remoteURL).setRefSpecs(spec).call();
-		log.info("=====Completed===" + pushList);
+		for(PushResult pushResult : pushList) {
+			log.info("pushResult.getMessages====" + pushResult.getMessages());
+			log.info("pushResult.remoteUpdateSize====" + pushResult.getRemoteUpdates().size());
+		}
+		log.info("=====Completed===");
     	return true;
 	}
 	
@@ -263,12 +260,14 @@ public class GITConnection {
 	}
 	
 	public static void main(String str[]) throws InvalidRemoteException, TransportException, IOException, GitAPIException {
-		//GITConnection.getInstance().pushRepo("fdd", new ArrayList<String>());
-		List<String> coomitLst = new ArrayList<String>();
+		List<String> filePath = new ArrayList<String>();
+		filePath.add("src/classes/TestHelper.cls");
+		GITConnection.getInstance().pushRepo("fdd", filePath);
+		/*List<String> coomitLst = new ArrayList<String>();
 		coomitLst.add("e676f82c0f1df2172e37ac50f851af1faa00e0cb");
 		coomitLst.add("5654ae8c5f79a060b20c39991694812eb32ce1b5");
 		
-		GITConnection.getInstance().getFiles("src", coomitLst);
+		GITConnection.getInstance().getFiles("src", coomitLst);*/
 	}
 	
 }

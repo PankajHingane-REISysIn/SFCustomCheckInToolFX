@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.customcheckin.model.ConfigObject;
 import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.force.service.ForceDelegate;
 import com.force.service.raw.ForceDelegateRaw;
@@ -44,6 +45,13 @@ public class SalesforceConfigDataThread{
 					if(custObj.getFieldAPIToLabelList().containsKey(field.getName())) {
 						custObj.setFieldlabel(field.getName(), field.getLabel());
 					}
+					log.info(field.getType().getValue());
+					if(field.getType().getValue().equalsIgnoreCase("reference")) {
+						if(SalesforceConfigDataService.getConfigObjectVO(field.getReferenceTo()[0]) != null) {
+							ConfigObjectVO custObj = SalesforceConfigDataService.getConfigObjectVO(field.getReferenceTo()[0]);
+							query +=", "+field.getName().replace("__c", "__r.") + custObj.getInternalUniqueIdFieldAPIName();
+						}
+					}
 					field.getLabel();
 				}
 			}
@@ -70,7 +78,8 @@ public class SalesforceConfigDataThread{
 		lastModifiedDate.add(Calendar.DATE, 1);
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(lastModifiedDate.getTime());
-		SalesforceConfigDataThread t = new SalesforceConfigDataThread(ConfigObjects.getInstance().getCustomObjects().get(0) , formatted, 
+		SalesforceConfigDataService configDataService = new SalesforceConfigDataService(lastModifiedDate);
+		SalesforceConfigDataThread t = new SalesforceConfigDataThread(ConfigObjects.getInstance().getCustomObjects().get(10) , formatted, 
 					SalesforceDevConnection.getInstance().getForceDelegateRaw());
 		t.getRecords();
 	}

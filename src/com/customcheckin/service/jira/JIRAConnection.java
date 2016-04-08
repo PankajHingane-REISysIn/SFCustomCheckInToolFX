@@ -14,18 +14,15 @@ import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.customcheckin.model.JiraSearchCriteriaBean;
 import com.customcheckin.model.JiraTicket;
-import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
-import com.customcheckin.util.PropertyManager;
-import com.force.service.ForceDelegate;
 import com.lib.util.StringUtils;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class JIRAConnection {
-	private static final String REI_JIRA_URL = "https://tracker.reisys.com/";
+	private static final String REI_JIRA_URL = SalesforcePMOConnection.getInstance().getJiraEnvirnment().getURL__c();
 	private static JIRAConnection instance;
 	private JiraRestClient jiraRestClient;
 	private List<JiraTicket> jiraTicketList;
@@ -81,13 +78,48 @@ public class JIRAConnection {
 			j.setId(new SimpleStringProperty(issue.getKey()));
 			j.setName(new SimpleStringProperty(issue.getKey()));
 			j.setIsSelected(new SimpleBooleanProperty(false));
+			final com.atlassian.jira.rest.client.domain.Issue issueDetail = jiraRestClient.getIssueClient().getIssue(issue.getKey()).claim();
+			j.setDescription(new SimpleStringProperty(issueDetail.getSummary()));
+			j.setCreatedDate(new SimpleStringProperty(issueDetail.getCreationDate().toString()));
+			j.setReporter(new SimpleStringProperty(issueDetail.getReporter().getDisplayName()));
+			//j.set
 			jiraTicketList.add(j);
 		}
+		
+		/*final JqlQueryBuilder builder = JqlQueryBuilder.newBuilder();
+        builder.where().project("JRA").and().reporterIsCurrentUser().and().customField(10490L).eq("xss");
+        Query query = builder.buildQuery();
+        /*try
+        {
+            final SearchResults results = searchService.search(authenticationContext.getUser(),
+                    query, PagerFilter.getUnlimitedFilter());
+            final List<Issue> issues = results.
+
+        }
+        catch (SearchException e)
+        {
+            log.error("Error running search", e);
+        }
+		Issue iss;
+		iss.ge*/
 		return jiraTicketList;
+	}
+	
+	public void updateStatusToCompleted(String jiraTicketNo) {
+		com.atlassian.jira.rest.client.domain.Issue issue = jiraRestClient.getIssueClient().getIssue(jiraTicketNo).claim();
+		//jiraRestClient.getIssueClient().
+		log.info("issue.getStatus()=======" + issue.getStatus().getName());
+		for(com.atlassian.jira.rest.client.domain.Field field : issue.getFields()) {
+			log.info("field=======" + field.getId() );
+			log.info("field=======" + field.getType() );
+			log.info("field=======" + field.getValue() );
+		}
+		com.atlassian.jira.rest.client.domain.Field customField = issue.getFieldByName("Status");
 	}
 	
 	public static void main(String str[]) throws URISyntaxException, Exception {
 		log.info(JIRAConnection.getInstance().getOpenTickets("GGP").size());
+		JIRAConnection.getInstance().updateStatusToCompleted("GGP-3");
 	}
 
 }

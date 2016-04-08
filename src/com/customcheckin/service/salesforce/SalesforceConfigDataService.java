@@ -68,6 +68,10 @@ public class SalesforceConfigDataService {
 		return sobjNameToRecordsMapFromOrg.get(objName).get(uniqueId);
 	}
 	
+	public static String[] getRecordsMapWithDiff(String objName, String uniqueId) {
+		return sobjNameToRecordsMapFromOrgWithDiff.get(objName).get(uniqueId);
+	}
+	
 	public static String[] getSObjHeader(String sobjName) {
 		return sobjToHeadeMapFromOrg.get(sobjName);
 	}
@@ -130,12 +134,21 @@ public class SalesforceConfigDataService {
 			String uniqueIdVal = "";
 			List<String> dataArray = new ArrayList<>();
 			for(MessageElement msgEle : sobj.get_any()) {
-				if(msgEle.getName().endsWith("__c") || standardFieldToInclude.contains(msgEle.getName())) {
-					if(msgEle.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
-						uniqueIdVal = msgEle.getValue();
+				if(msgEle.getName().endsWith("__c") || msgEle.getName().endsWith("__r") || standardFieldToInclude.contains(msgEle.getName())) {
+					//relationship field unique id is always fetch after relationship field Id.
+					if(msgEle.getName().endsWith("__r")) {
+						//SObject relationObj = msgEle.getType().getNamespaceURI();
+						//todo - discuss with Shah
+						dataArray.set(dataArray.size()-1, "Reference field");
+					} else {
+						if(msgEle.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
+							uniqueIdVal = msgEle.getValue();
+						}
+						dataArray.add(msgEle.getValue() == null ? "" : msgEle.getValue());
 					}
-					dataArray.add(msgEle.getValue() == null ? "" : msgEle.getValue());
 				}
+				log.info("msgEle.getName()======" + msgEle.getName());
+				log.info("msgEle.getValue()======" + msgEle.getValue());
 			}
 			internalIdByRecords.put(uniqueIdVal, dataArray.toArray(new String[dataArray.size()]));
 		}
@@ -191,7 +204,7 @@ public class SalesforceConfigDataService {
 					sobjToRecordConfigList.put(objName, new ArrayList<>());
 				}
 				for(String[] obj : sobjNameToRecordsMapFromOrgWithDiff.get(objName).values()) {
-					// todo read config index
+					log.info("obj[uniqueValIndex]======" + obj[uniqueValIndex]);
 					ConfigRecord configRec = new ConfigRecord( new SimpleStringProperty(obj[nameIndex]) , new SimpleStringProperty(obj[uniqueValIndex]),
 							new SimpleStringProperty(col1ValIndex==-1? "":obj[col1ValIndex]), new SimpleStringProperty(col2ValIndex==-1? "":obj[col2ValIndex]),
 							new SimpleStringProperty(col3ValIndex==-1? "":obj[col3ValIndex]), new SimpleStringProperty(col4ValIndex==-1? "":obj[col4ValIndex]));
@@ -204,7 +217,7 @@ public class SalesforceConfigDataService {
 	
 	public static void main(String str[]) throws InterruptedException, ExecutionException, IOException {
 		Calendar calendar = Calendar.getInstance(); // this would default to now
-		calendar.add(Calendar.DAY_OF_MONTH, -3);
+		calendar.add(Calendar.DAY_OF_MONTH, -7);
 		SalesforceConfigDataService.getConfigDataList(calendar);
 	}
 	

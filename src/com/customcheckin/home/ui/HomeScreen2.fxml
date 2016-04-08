@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -150,14 +151,15 @@
                   </GridPane>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <GridPane GridPane.columnIndex="1">
+                        <GridPane GridPane.columnIndex="2">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
@@ -166,12 +168,12 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button mnemonicParsing="false" onAction="#handleGetJiraTicketOnClick" text="Fetch JIRA tickets">
+                              <Button mnemonicParsing="false" onAction="#handleCommitAndPush" text="GIT Commit" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </Button>
-                              <Button mnemonicParsing="false" onAction="#handleCommitAndPush" text="GIT Commit" GridPane.rowIndex="1">
+                              <Button mnemonicParsing="false" onAction="#handleGetJiraTicketOnClick" text="Fetch JIRA tickets">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
@@ -191,11 +193,11 @@
                                 <columns>
                                   <TableColumn fx:id="jiraChekBoxColumn" prefWidth="27.0" text="Select">
                                   </TableColumn>
-                                  <TableColumn fx:id="jiraNameColumn" prefWidth="35.0" text="Key" />
-                                    <TableColumn prefWidth="110.0" text="Description" />
-                                    <TableColumn prefWidth="203.0" text="Reporter" />
+                                  <TableColumn fx:id="jiraNameColumn" prefWidth="24.0" text="Key" />
+                                    <TableColumn fx:id="jiraDescColumn" prefWidth="97.0" text="Description" />
                                     <TableColumn minWidth="0.0" prefWidth="0.0" text="Created Date" />
-                                    <TableColumn prefWidth="203.0" text="Created Date" />
+                                    <TableColumn fx:id="jiraCreatedDateColumn" prefWidth="203.0" text="Created Date" />
+                                    <TableColumn fx:id="jiraReporterColumn" prefWidth="156.0" text="Reporter" />
                                 </columns>
                               </TableView>
                               <Label text="Jira open tickets">
@@ -206,6 +208,20 @@
                            <GridPane.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </GridPane.margin>
+                        </GridPane>
+                        <GridPane GridPane.columnIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Mark JIRA defect as fixed?" GridPane.rowIndex="2" />
+                              <CheckBox mnemonicParsing="false" text="Deploy to INT org?" GridPane.rowIndex="1" />
+                           </children>
                         </GridPane>
                      </children>
                   </GridPane>

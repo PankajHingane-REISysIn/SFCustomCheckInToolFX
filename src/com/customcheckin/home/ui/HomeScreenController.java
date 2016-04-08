@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
 import com.customcheckin.service.compare.CompareFiles;
+import com.customcheckin.service.compare.ConfigObjectComparator;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
@@ -108,6 +111,12 @@ public class HomeScreenController implements Initializable {
 	@FXML
 	private TableColumn<JiraTicket, String> jiraNameColumn;
 	@FXML
+	private TableColumn<JiraTicket, String> jiraDescColumn;
+	@FXML
+	private TableColumn<JiraTicket, String> jiraReporterColumn;
+	@FXML
+	private TableColumn<JiraTicket, String> jiraCreatedDateColumn;
+	@FXML
 	private TableColumn<JiraTicket, Boolean> jiraChekBoxColumn;
 	
 
@@ -129,6 +138,9 @@ public class HomeScreenController implements Initializable {
 
 	private void initilizeJiraTable() {
 		jiraNameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
+		jiraDescColumn.setCellValueFactory(cellData -> cellData.getValue().getDescription());
+		jiraCreatedDateColumn.setCellValueFactory(cellData -> cellData.getValue().getCreatedDate());
+		jiraReporterColumn.setCellValueFactory(cellData -> cellData.getValue().getReporter());
 
 		jiraChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected()); 
 		jiraChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<JiraTicket, Boolean>());
@@ -155,7 +167,7 @@ public class HomeScreenController implements Initializable {
 	
 	@FXML
 	private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
-		List<JiraTicket> rickets = JIRAConnection.getInstance().getOpenTickets("GGP");
+		List<JiraTicket> rickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
 		homePage.getJiraTicketComboList().addAll(rickets);
 	}
 	
@@ -167,6 +179,7 @@ public class HomeScreenController implements Initializable {
 		format.format(convertToDate);
 		Calendar cal=format.getCalendar();
 		List<ConfigObject> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
+		Collections.sort(sobjList);
 		homePage.getConfigObjComboList().clear();
 		homePage.getConfigObjComboList().addAll(sobjList);
 	}
@@ -201,23 +214,27 @@ public class HomeScreenController implements Initializable {
 					}
 				}
 				Map<String, List<ConfigRecord>> configRecords = SalesforceConfigDataService.getSobjToRecordConfigList();
-				for(String objAPIName : configRecords.keySet()) {
-					List<String[]> selectedConfigRecords = new ArrayList<>();
-					for(ConfigRecord configRecord : configRecords.get(objAPIName)) {
-						if(configRecord.getIsSelected().get()) {
-							selectedConfigRecords.add(SalesforceConfigDataService.getRecordsMap(objAPIName, configRecord.getInternalUniqueId().get()));
+				if(configRecords != null)
+					for(String objAPIName : configRecords.keySet()) {
+						List<String[]> selectedConfigRecords = new ArrayList<>();
+						for(ConfigRecord configRecord : configRecords.get(objAPIName)) {
+							if(configRecord.getIsSelected().get()) {
+								log.info("Internal unique Id:"+configRecord.getInternalUniqueId().get());
+								selectedConfigRecords.add(SalesforceConfigDataService.getRecordsMapWithDiff(objAPIName, configRecord.getInternalUniqueId().get()));
+							}
+						}
+						if(selectedConfigRecords.size() > 0) {
+							CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+ SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName() +".csv", 
+									SalesforceConfigDataService.getConfigObjectVO(objAPIName).getInternalUniqueIdFieldAPIName(), 
+									SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
+							fileNames.add("Config/"+SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName()+".csv");
+							
 						}
 					}
-					if(selectedConfigRecords.size() > 0) {
-						CSVUtils.updateCSVFile(GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+ SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName() +".csv", 
-								SalesforceConfigDataService.getConfigObjectVO(objAPIName).getInternalUniqueIdFieldAPIName(), 
-								SalesforceConfigDataService.getSObjHeader(objAPIName), selectedConfigRecords);
-						fileNames.add("Config/"+SalesforceConfigDataService.getConfigObjectVO(objAPIName).getName()+".csv");
-						
-					}
-				}
 				GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
-				SalesforcePMOConnection.getInstance().storeLastCheckInDate();
+				// todo -
+				//SalesforcePMOConnection.getInstance().storeLastCheckInDate();
+				clearTables();
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("CheckIn Successfully.");
 				alert.setHeaderText("");
@@ -289,6 +306,11 @@ public class HomeScreenController implements Initializable {
 				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(2)) : "");
 		configCol4Column.setText(configObject.getConfigFieldList().size() > 3 ? 
 				configObject.getFieldAPIToLabelList().get(configObject.getConfigFieldList().get(3)) : "");
+	}
+	
+	private void clearTables() {
+		homePage.getMetadataFileList().clear();
+		homePage.getConfigRecordList().clear();
 	}
 	
 	public void setHomePage(HomePage homePage) {
