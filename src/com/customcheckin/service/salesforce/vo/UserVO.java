@@ -8,7 +8,14 @@ public class UserVO extends CustomVO {
 	private String email;
 	private String username;
 	private String CurrentProjectId__c;
+	private String UserType__c;
 	
+	public String getUserType__c() {
+		return UserType__c;
+	}
+	public void setUserType__c(String userType__c) {
+		UserType__c = userType__c;
+	}
 	public String getCurrentProjectId__c() {
 		return CurrentProjectId__c;
 	}
