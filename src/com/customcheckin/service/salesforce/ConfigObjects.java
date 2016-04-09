@@ -42,7 +42,7 @@ public class ConfigObjects {
 		List<ConfigObjectVO> records = SalesforcePMOConnection.getInstance().getForceDelegate()
 				.queryMultiple("Select Name, ObjectType__c, CustomSettingType__c, Namespace__c, "
 						+ "InternalUniqueIdFieldName__c,Fields__c from ConfigObject__c where "
-						+ "Project__c=? and ObjectType__c='Custom Object' limit 10", new Object[]{project.getId()});
+						+ "Project__c=?", new Object[]{project.getId()});
 		for (ConfigObjectVO obj : records) {
 			if ("Custom Object".equals(obj.getObjectType__c())) {
 				customObjects.add(obj);

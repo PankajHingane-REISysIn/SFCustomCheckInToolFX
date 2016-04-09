@@ -24,6 +24,7 @@ import com.customcheckin.service.compare.CompareRecords;
 import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.force.service.raw.ForceDelegateRaw;
 import com.lib.util.CSVUtils;
+import com.sforce.soap.partner.QueryResult;
 import com.sforce.soap.partner.sobject.SObject;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -127,28 +128,42 @@ public class SalesforceConfigDataService {
 		return colArr;
 	}
 	
-	private Map<String, String[]> getRecordsByInternalId(String objAPIName, SObject[] sobjList) {
+	private Map<String, String[]> getRecordsByInternalId(String objAPIName, SObject[] sobjList) throws Exception {
 		Map<String, String[]> internalIdByRecords = new HashMap<>();
 		if(sobjList != null)
 		for(SObject sobj : sobjList) {
 			String uniqueIdVal = "";
 			List<String> dataArray = new ArrayList<>();
-			for(MessageElement msgEle : sobj.get_any()) {
-				if(msgEle.getName().endsWith("__c") || msgEle.getName().endsWith("__r") || standardFieldToInclude.contains(msgEle.getName())) {
+			for(MessageElement field : sobj.get_any()) {
+				if(field.getName().endsWith("__c") || field.getName().endsWith("__r") || standardFieldToInclude.contains(field.getName())) {
 					//relationship field unique id is always fetch after relationship field Id.
-					if(msgEle.getName().endsWith("__r")) {
+					if(field.getName().endsWith("__r")) {
 						//SObject relationObj = msgEle.getType().getNamespaceURI();
-						//todo - discuss with Shah
-						dataArray.set(dataArray.size()-1, "Reference field");
-					} else {
-						if(msgEle.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
-							uniqueIdVal = msgEle.getValue();
+						log.info("field.getType()==========" + field.getType());
+						if(field.getType() != null) {
+							Object subResult = field.getValueAsType(field.getType());
+							if (subResult instanceof QueryResult) { //found subresult with multiple records
+								QueryResult qr = (QueryResult) subResult;
+								SObject[] records = qr.getRecords();
+							} else if (subResult instanceof SObject) { //found subresult with just only one record
+								log.info("got single object");
+								for(MessageElement parentField : ((SObject)subResult).get_any()) {
+									dataArray.set(dataArray.size()-1, parentField.getValue());
+									log.info("parentField.getValue()========" + parentField.getValue());
+								}
+							}
+							
 						}
-						dataArray.add(msgEle.getValue() == null ? "" : msgEle.getValue());
+					} else {
+						if(field.getName().equalsIgnoreCase(configobjAPIToInstance.get(objAPIName).getInternalUniqueIdFieldAPIName())) {
+							uniqueIdVal = field.getValue();
+						}
+						dataArray.add(field.getValue() == null ? "" : field.getValue());
 					}
 				}
-				log.info("msgEle.getName()======" + msgEle.getName());
-				log.info("msgEle.getValue()======" + msgEle.getValue());
+				log.info("msgEle.getName()======" + field.getType());
+				log.info("msgEle.getName()======" + field.getName());
+				log.info("msgEle.getValue()======" + field.getValue());
 			}
 			internalIdByRecords.put(uniqueIdVal, dataArray.toArray(new String[dataArray.size()]));
 		}
@@ -160,7 +175,7 @@ public class SalesforceConfigDataService {
 		return sobjToRecordConfigList.get(objName);
 	}
 	
-	private Map<String, Map<String, String[]>> getRecordsWithDifference() throws InterruptedException, ExecutionException, IOException {
+	private Map<String, Map<String, String[]>> getRecordsWithDifference() throws Exception {
 		Map<String, SObject[]> recordByObjName = getRecordsWithModifiedDate();
 		Map<String, Map<String, String[]>> sobjNameToUniqueIdToData = new HashMap<>();
 		for(String objName : recordByObjName.keySet()) {
