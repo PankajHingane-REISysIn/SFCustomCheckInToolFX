@@ -12,6 +12,7 @@ public class EnvironmentUserVO extends CustomVO {
 	private Date LastCheckInDate__c;
 	private String Password__c;
 	private String PMOUser__c;
+	private String GITBranchName__c;
 	private UserVO PMOUser__r = new UserVO();
 	
 	public UserVO getPMOUser__r() {
@@ -61,6 +62,12 @@ public class EnvironmentUserVO extends CustomVO {
 	}
 	public void setPMOUser__c(String pMOUser__c) {
 		PMOUser__c = pMOUser__c;
+	}
+	public String getGITBranchName__c() {
+		return GITBranchName__c;
+	}
+	public void setGITBranchName__c(String gITBranchName__c) {
+		GITBranchName__c = gITBranchName__c;
 	}
 	
 	

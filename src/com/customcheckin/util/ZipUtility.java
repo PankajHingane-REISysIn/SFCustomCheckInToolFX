@@ -10,6 +10,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
+
 /**
  *  * This utility extracts files and directories of a standard zip file to  * a
  * destination directory.  * @author www.codejava.net  *  
@@ -20,8 +22,10 @@ public class ZipUtility {
 	 *  * Size of the buffer to read/write data  
 	 */
 	private static final int BUFFER_SIZE = 4096;
-
+	private static Logger log = Logger.getRootLogger();
+	
 	List<String> fileList;
+	private String baseURL = System.getProperty("user.dir");
 
 	public ZipUtility() {
 		fileList = new ArrayList<String>();
@@ -102,7 +106,7 @@ public class ZipUtility {
 				ZipEntry ze = new ZipEntry(file);
 				zos.putNextEntry(ze);
 
-				FileInputStream in = new FileInputStream(srcFolder + File.separator + file);
+				FileInputStream in = new FileInputStream(baseURL+"\\"+srcFolder + File.separator + file);
 
 				int len;
 				while ((len = in.read(buffer)) > 0) {
@@ -129,7 +133,8 @@ public class ZipUtility {
 	 *            file or directory
 	 */
 	private void generateFileList(String srcFolder, File node) {
-
+		log.info("srcFolder====" + srcFolder);
+		log.info("node====" + node.getAbsolutePath());
 		// add file only
 		if (node.isFile()) {
 			fileList.add(generateZipEntry(srcFolder, node.getAbsoluteFile().toString()));
@@ -152,7 +157,7 @@ public class ZipUtility {
 	 * @return Formatted file path
 	 */
 	private String generateZipEntry(String srcFolder, String file) {
-		return file.substring(srcFolder.length() + 1, file.length());
+		return file.substring((baseURL+srcFolder).length()+2, file.length());
 	}
 
 	public static void main(String str[]) throws IOException {

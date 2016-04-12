@@ -31,6 +31,8 @@ import com.customcheckin.service.compare.CompareFiles;
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceConfigDataService;
+import com.customcheckin.service.salesforce.SalesforceINTConnection;
+import com.customcheckin.service.salesforce.SalesforceMetadataDeploy;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.customcheckin.util.Utility;
@@ -181,7 +183,7 @@ public class HomeScreenController implements Initializable {
 		try {
 			ObservableList<JiraTicket> data = jiraList.getItems();
 			String selectedJiraTicket = "";
-			for (JiraTicket jiraTicket : data){
+			for (JiraTicket jiraTicket : data) {
 				//check the boolean value of each item to determine checkbox state
 				//todo - single selection
 				if(jiraTicket.getIsSelected().get()) {
@@ -225,6 +227,12 @@ public class HomeScreenController implements Initializable {
 				GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
 				// todo -
 				//SalesforcePMOConnection.getInstance().storeLastCheckInDate();
+				Boolean deployToINT = true;
+				if(deployToINT) {
+					SalesforceMetadataDeploy sfDeploy = new SalesforceMetadataDeploy(SalesforceINTConnection.getInstance().getForceDelegate());
+					sfDeploy.deployFilesToTargetOrg();
+					JIRAConnection.getInstance().updateField(selectedJiraTicket, "TEST Deployed On", "2016-04-10");
+				}
 				clearTables();
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("CheckIn Successfully.");
@@ -233,7 +241,7 @@ public class HomeScreenController implements Initializable {
 				alert.showAndWait();
 			}
 			
-		} catch(IOException | GitAPIException ex) {
+		} catch(Exception ex) {
 			try {
 				GITConnection.getInstance().revertFile(fileNames);
 				//todo handle excetpions

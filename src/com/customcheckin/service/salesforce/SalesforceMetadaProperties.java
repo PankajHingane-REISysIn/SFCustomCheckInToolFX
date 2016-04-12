@@ -52,6 +52,10 @@ public class SalesforceMetadaProperties extends Thread{
 						log.info("fileProperty.getFileName():" + fileProperty.getFileName());
 						log.info("fileProperty.getType():" + fileProperty.getType());
 						fileURLToPropertyForCompare.put("src/"+fileProperty.getFileName(), fileProperty);
+						if(fileProperty.getFileName().endsWith(".cls") || fileProperty.getFileName().endsWith(".component") ||
+								fileProperty.getFileName().endsWith(".page")) {
+							fileURLToPropertyForCompare.put("src/"+fileProperty.getFileName()+"-meta.xml", fileProperty);
+						}
 						if(!filTypeToPropertyList.containsKey(fileProperty.getType())) {
 							filTypeToPropertyList.put(fileProperty.getType(), new ArrayList<>());
 						}

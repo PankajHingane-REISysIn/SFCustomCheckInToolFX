@@ -26,6 +26,8 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="Help" />
+                  <MenuItem fx:id="gitURL" mnemonicParsing="false" onAction="#gotoGIT" text="GitHub" />
+                  <MenuItem fx:id="jiraURL" mnemonicParsing="false" onAction="#gotoJIRA" text="Jira" />
             </items>
           </Menu>
         </menus>

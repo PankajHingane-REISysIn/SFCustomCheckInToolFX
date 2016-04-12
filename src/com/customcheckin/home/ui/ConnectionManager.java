@@ -1,9 +1,13 @@
 package com.customcheckin.home.ui;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 
+import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforceDevConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
@@ -25,6 +29,19 @@ public class ConnectionManager  extends Thread{
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				log.error(e);
+			}
+		} else if(type.equalsIgnoreCase("GIT")) {
+			try {
+				GITConnection.getInstance();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidRemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (GitAPIException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		log.info("type========Completed:" + type);

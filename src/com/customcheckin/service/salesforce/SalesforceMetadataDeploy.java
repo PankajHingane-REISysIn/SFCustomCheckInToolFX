@@ -1,8 +1,10 @@
 package com.customcheckin.service.salesforce;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -15,10 +17,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.customcheckin.service.git.GITConnection;
+import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.util.PropertyManager;
 import com.customcheckin.util.Utility;
 import com.customcheckin.util.ZipUtility;
@@ -27,11 +33,13 @@ import com.force.service.ForceDelegate;
 
 public class SalesforceMetadataDeploy {
 	private ForceDelegate gate;
+	private static Logger log = Logger.getRootLogger();
+	
 	public SalesforceMetadataDeploy(ForceDelegate gate) {
 		this.gate = gate;
 	}
 	
-	private void generatePackageXML() throws ParserConfigurationException, TransformerException {
+	private void generatePackageXML() throws ParserConfigurationException, TransformerException, IOException {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
@@ -79,44 +87,62 @@ public class SalesforceMetadataDeploy {
 		profileEle.appendChild(nameProfileEle);
 		
 		Element verEle1 = doc.createElement("version");
-		verEle1.setTextContent("29.0");
+		verEle1.setTextContent("33.0");
 		rootElement.appendChild(verEle1);
 		
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(Utility.getDeployBaseURL()+"\\Package.xml");
+		File packageXML = new File(Utility.getMetadataDeployBaseURL()+"\\src\\package.xml");
+		log.info("packageXML Path:" + packageXML.getAbsolutePath());
+		if(!packageXML.exists()) {
+			if(!packageXML.getParentFile().exists()) {
+				packageXML.getParentFile().mkdirs();
+				log.info("parent folder Path:"+packageXML.getParentFile().getAbsolutePath());
+			}
+			packageXML.createNewFile();
+			log.info("Created Package.xml:");
+		}
+		StreamResult result = new StreamResult(packageXML);
 		transformer.transform(source, result);
-	}
-	
-	private void getMetadataXMLFiles() {
-		
+		log.info("Package XML operation completed.");
 	}
 	
 	public void deployFilesToTargetOrg() throws Exception {
 		generatePackageXML();
-		getMetadataXMLFiles();
-		File file = new File(Utility.getDeployBaseURL(), "deploy.zip");
+		File file = new File(Utility.getMetadataDeployBaseURL()+"\\src", "deploy.zip");
 		if(file.exists()) {
 			file.delete();
+			file.createNewFile();
 		}
-		new ZipUtility().zip(Utility.getDeployBaseURL(), "deploy.zip");
+		new ZipUtility().zip(Utility.getMetadataDeployBaseURL()+"\\src", "deploy.zip");
 		Double apiVersion = PropertyManager.getInstance().getDouble("salesforce.api.version");
 		if (apiVersion == null) {
 			apiVersion = 25.0;
 		}
 		
-		//gate.deployZip(new File(Utility.getDeployBaseURL()+"\\deploy.zip"));
-		gate.deployZip(new File("D:\\CM Proceess\\Framework org -Metadata Deployment\\deploy2.zip"));
+		gate.deployZip(new File(Utility.getMetadataDeployBaseURL()+"\\src"+"\\deploy.zip"));
+		//gate.deployZip(new File("D:\\CM Proceess\\Framework org -Metadata Deployment\\deploy2.zip"));
 	}
 	
-	public static void deployToINTOrg() throws Exception {
-		SalesforceMetadataDeploy salesforceMetadataDeploy = new SalesforceMetadataDeploy(SalesforceINTConnection.getInstance().getForceDelegate());
-		salesforceMetadataDeploy.deployFilesToTargetOrg();
+	public void deploy(List<String> jiraDefects) throws Exception {
+		//delete existing file
+		File file = new File(Utility.getMetadataDeployBaseURL()+"\\src");
+		if(file.exists()) {
+			FileUtils.deleteDirectory(file);
+			log.info("Deleting folder:"+file.getAbsolutePath());
+			file.delete();
+		}
+		List<String> commits = JIRAConnection.getInstance().getCommits(jiraDefects);
+		//commits.add("e676f82c0f1df2172e37ac50f851af1faa00e0cb");
+		commits.add("41070fa1389a4805960e7c67263a58dc6952fa46");
+		GITConnection.getInstance().getFiles("", commits);
+		deployFilesToTargetOrg();
 	}
 	
 	public static void main(String str[]) throws Exception {
-		SalesforceMetadataDeploy.deployToINTOrg();
+		SalesforceMetadataDeploy sfMetadaDeploy = new SalesforceMetadataDeploy(SalesforceINTConnection.getInstance().getForceDelegate());
+		sfMetadaDeploy.deploy(null);
 	}
 
 }

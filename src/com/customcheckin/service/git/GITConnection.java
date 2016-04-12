@@ -12,20 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.errors.CannotDeleteCurrentBranchException;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.NotMergedException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -34,12 +35,11 @@ import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.TransportException;
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.MutableObjectId;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -53,37 +53,78 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
+import com.customcheckin.service.salesforce.vo.EnvironmentVO;
 import com.customcheckin.util.Utility;
 import com.lib.util.StringUtils;
 
 public class GITConnection {
-	//todo - read from SF PMO
 	private String remoteURL = SalesforcePMOConnection.getInstance().getGitEnvirnment().getURL__c();
-	private String localURL;
 	private UsernamePasswordCredentialsProvider gitUserPass;
 	private Git git;
 	private EnvironmentUserVO gitUserInfo;
 	private static GITConnection instance;
 	private static Logger log = Logger.getRootLogger();
 	
-	private GITConnection() throws IOException {
+	private GITConnection() throws IOException, InvalidRemoteException, GitAPIException {
 		gitUserInfo = SalesforcePMOConnection.getInstance().getGITUser();
-		if (gitUserInfo != null && StringUtils.isNonEmpty(gitUserInfo.getName()) && StringUtils.isNonEmpty(gitUserInfo.getPassword__c())) {
+		if (gitUserInfo != null && StringUtils.isNonEmpty(gitUserInfo.getName())
+									&& StringUtils.isNonEmpty(gitUserInfo.getPassword__c())) {
 			gitUserPass = new UsernamePasswordCredentialsProvider(gitUserInfo.getName(), gitUserInfo.getPassword__c());
-			localURL = gitUserInfo.getLocalWorkspacePath__c();
 			init();
 		}
 	}
 	
-	private void init() throws IOException{
-		//todo - verify user name
+	private void init() throws IOException, InvalidRemoteException, GitAPIException {
+		createLocalRepo();
+		
 		Repository existingRepo = new FileRepositoryBuilder()
-				.setGitDir(new File(localURL+"\\.git"))
+				.setGitDir(new File(gitUserInfo.getLocalWorkspacePath__c()+"\\.git"))
 				.build();
 		git = new Git(existingRepo);
+		
+		createUserBranch();
 	}
 	
-	public static GITConnection getInstance() throws IOException{
+	private void createLocalRepo() throws InvalidRemoteException, TransportException, IOException, GitAPIException {
+		EnvironmentVO gitEnv = SalesforcePMOConnection.getInstance().getGitEnvirnment();
+		String remoteRepoURL = gitEnv.getURL__c();
+		log.info("remoteRepoURL======:"+remoteRepoURL);
+		if(gitUserInfo.getLocalWorkspacePath__c() ==null ||  gitUserInfo.getLocalWorkspacePath__c().isEmpty()) {
+			String localRepoPath = remoteRepoURL.substring(remoteRepoURL.lastIndexOf("/") + 1)+"/LocalRepository";
+			log.info("localRepoPath======:"+localRepoPath);
+			SalesforcePMOConnection.getInstance().storeCurrentProjectLocalGITPath(localRepoPath);
+		}
+		File localRepo = new File(gitUserInfo.getLocalWorkspacePath__c());
+		log.info("localRepo.absoulate path======:"+localRepo.getAbsolutePath());
+		// todo - add validation for .git - Not sure if required.
+		if(!localRepo.exists()) {
+			log.info("repo does not exist");
+			if(!localRepo.getParentFile().exists()) {
+				localRepo.getParentFile().mkdirs();
+			}
+			localRepo.mkdir();
+			cloneRepo();
+		}
+	}
+	
+	private void createUserBranch() throws IOException, RefAlreadyExistsException, RefNotFoundException, 
+										InvalidRefNameException, CheckoutConflictException, GitAPIException {
+		if( gitUserInfo.getGITBranchName__c() == null || gitUserInfo.getGITBranchName__c().isEmpty() ) {
+			SalesforcePMOConnection.getInstance().storeGITBranch(gitUserInfo.getName());
+			log.info("Branch Name is empty on PMO");
+		}
+		// Check if PMO git user branch and local branch is same. If not then set
+		// Check if branch is present if yes then set to pointer to that branch.
+		log.info("git.getRepository().getBranch()========" + git.getRepository().getBranch());
+		if(gitUserInfo.getGITBranchName__c() != null && !gitUserInfo.getGITBranchName__c().isEmpty() && 
+				!git.getRepository().getBranch().equalsIgnoreCase(gitUserInfo.getGITBranchName__c())) {
+			git.checkout().setCreateBranch(true).setName(gitUserInfo.getGITBranchName__c())
+	        .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
+	        .setStartPoint("refs/heads/master").call();
+		}
+	}
+	
+	public static GITConnection getInstance() throws IOException, InvalidRemoteException, GitAPIException {
 		if (instance == null) {
 			instance = new GITConnection();
 		}
@@ -91,18 +132,19 @@ public class GITConnection {
 	}
 	
 	public Boolean cloneRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		log.info("Clone begin.");
 		CloneCommand cloneCommand = Git.cloneRepository();
 		cloneCommand.setURI(remoteURL);
-		File localPath = new File(localURL);
-		//localPath.delete();
+		File localPath = new File(gitUserInfo.getLocalWorkspacePath__c());
     	cloneCommand.setDirectory(localPath);
     	cloneCommand.setCredentialsProvider(gitUserPass);
     	cloneCommand.call();
-    	log.info("Lib cloned");
+    	log.info("Clone End.");
     	return true;
 	}
 	
-	public Boolean pushRepo(String jiraTicketNo, List<String> filesToAdd) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public Boolean pushRepo(String jiraTicketNo, List<String> filesToAdd) 
+				throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		Repository repo = git.getRepository();
 		String branch = repo.getBranch();
 		log.info("Branch=="+branch);
@@ -136,18 +178,14 @@ public class GITConnection {
 		
 		PushCommand pushcmd = git.push();
 		pushcmd.setCredentialsProvider(gitUserPass);
-		RefSpec spec = new RefSpec("refs/heads/master");
+		RefSpec spec = new RefSpec("refs/heads/"+gitUserInfo.getGITBranchName__c());
 		Iterable<PushResult> pushList = pushcmd.setRemote(remoteURL).setRefSpecs(spec).call();
-		for(PushResult pushResult : pushList) {
-			log.info("pushResult.getMessages====" + pushResult.getMessages());
-			log.info("pushResult.remoteUpdateSize====" + pushResult.getRemoteUpdates().size());
-		}
 		log.info("=====Completed===");
     	return true;
 	}
 	
 	private Set<String> getFileWithRevisions(RevCommit commit) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		Set<String> filePath = new HashSet<String>();
+		Set<String> filesPath = new HashSet<String>();
 		RevWalk revWalk = new RevWalk( git.getRepository() );
 		RevCommit realParant = commit.getParentCount() > 0 ? commit.getParent( 0 ) : commit;
 		RevCommit parent = revWalk.parseCommit( realParant.getId() );
@@ -157,12 +195,28 @@ public class GITConnection {
 		df.setDetectRenames( true );
 		 List<DiffEntry> diffs = df.scan( parent.getTree(), commit.getTree() );
 		 for ( DiffEntry diff : diffs ) {
-			 filePath.add(diff.getNewPath());
+			 filesPath.add(diff.getNewPath());
 		 }
 		 revWalk.dispose();
 		log.info( commit.getFullMessage() );
-		return filePath;
+		return addMetadataFiles(filesPath);
 		//revWalk.dispose();
+	}
+	
+	private Set<String> addMetadataFiles(Set<String> filesPath) {
+		Set<String> filePathToReturn = new HashSet<String>();
+		//todo - 
+		for(String filePath : filesPath) {
+			filePathToReturn.add(filePath);
+			if(filePath.endsWith(".cls") || filePath.endsWith(".component") ||
+					filePath.endsWith(".page")) {
+				filePathToReturn.add(filePath+"-meta.xml");
+			}
+			if(filePath.endsWith("-meta.xml")) {
+				filePathToReturn.add(filePath.replace("-meta.xml", ""));
+			}
+		}
+		return filePathToReturn;
 	}
 	
 	private List<RevCommit> getRevCommits(List<String> commitNos) throws MissingObjectException, IncorrectObjectTypeException, IOException {
@@ -192,8 +246,12 @@ public class GITConnection {
 	
 	public void getFiles(String basePath, List<String> commitNos) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		List<RevCommit> revCommits = getRevCommits(commitNos);
+		// use http://download.eclipse.org/jgit/docs/jgit-2.3.1.201302201838-r/apidocs/org/eclipse/jgit/api/CheckoutCommand.html link to download metadata files.
 		for(RevCommit commit : revCommits) {
 			Set<String> filesForRevision = getFileWithRevisions(commit);
+			for(String file : filesForRevision) {
+				log.info("file path:" + file);
+			}
 			RevWalk revWalk = new RevWalk( git.getRepository() );
 			if (commit == null) {
 				continue;
@@ -209,16 +267,17 @@ public class GITConnection {
 			MutableObjectId id = new MutableObjectId();
 			while (tw.next()) {
 				FileMode mode = tw.getFileMode(0);
+				log.info("tw.getPathString()=======" + tw.getPathString());
 				if (mode == FileMode.GITLINK || mode == FileMode.TREE) {
 					continue;
 				}
 				if(filesForRevision.contains(tw.getPathString())) {
-					
+					log.info("Got a file:" + tw.getPathString());
 					tw.getObjectId(id, 0);
 					
 					ObjectLoader ldr = git.getRepository().open(id);
 					log.info(ldr);
-					File targetFile = new File(Utility.getDeployBaseURL()+tw.getPathString());
+					File targetFile = new File(Utility.getMetadataDeployBaseURL()+"\\"+( tw.getPathString()));
 					if(!targetFile.exists()) {
 						if(!targetFile.getParentFile().exists()) {
 							targetFile.getParentFile().mkdirs();
@@ -232,8 +291,43 @@ public class GITConnection {
 		}
 	}
 	
+	public void getFiles(String basePath, RevCommit commit, Set<String> filesForRevision) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		RevWalk revWalk = new RevWalk( git.getRepository() );
+		TreeWalk tw = new TreeWalk(git.getRepository());
+		tw.reset();
+		tw.addTree(commit.getTree());
+		if (!StringUtils.isEmpty(basePath)) {
+			PathFilter f = PathFilter.create(basePath);
+			tw.setFilter(f);
+		}
+		tw.setRecursive(true);
+		MutableObjectId id = new MutableObjectId();
+		while (tw.next()) {
+			FileMode mode = tw.getFileMode(0);
+			if (mode == FileMode.GITLINK || mode == FileMode.TREE) {
+				continue;
+			}
+			if(filesForRevision.contains(tw.getPathString())) {
+				
+				tw.getObjectId(id, 0);
+				
+				ObjectLoader ldr = git.getRepository().open(id);
+				log.info(ldr);
+				File targetFile = new File(Utility.getMetadataDeployBaseURL()+tw.getPathString());
+				if(!targetFile.exists()) {
+					if(!targetFile.getParentFile().exists()) {
+						targetFile.getParentFile().mkdirs();
+					}
+					targetFile.createNewFile();
+				}
+				OutputStream out = new FileOutputStream(targetFile);
+				ldr.copyTo(out);
+			}
+		}
+	}
+	
 	protected File getRelativeFile(String path) { 
-        return new File(localURL, trimLeadingSlash(path)); 
+        return new File(gitUserInfo.getLocalWorkspacePath__c(), trimLeadingSlash(path)); 
     }
 	
 	public static String trimLeadingSlash(String name) { 
@@ -260,9 +354,12 @@ public class GITConnection {
 	}
 	
 	public static void main(String str[]) throws InvalidRemoteException, TransportException, IOException, GitAPIException {
-		List<String> filePath = new ArrayList<String>();
+		//GITConnection.getInstance().createNewRepo();
+		/*List<String> filePath = new ArrayList<String>();
 		filePath.add("src/classes/TestHelper.cls");
-		GITConnection.getInstance().pushRepo("fdd", filePath);
+		//GITConnection.getInstance().pushRepo("fdd", filePath);*/
+		
+		
 		/*List<String> coomitLst = new ArrayList<String>();
 		coomitLst.add("e676f82c0f1df2172e37ac50f851af1faa00e0cb");
 		coomitLst.add("5654ae8c5f79a060b20c39991694812eb32ce1b5");

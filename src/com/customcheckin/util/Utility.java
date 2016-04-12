@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import com.customcheckin.service.salesforce.SalesforcePMOConnection;
+import com.customcheckin.service.salesforce.vo.EnvironmentVO;
+
 public class Utility {
 	
 	public static void replaceFile(String src, String target) throws IOException {
@@ -22,8 +25,16 @@ public class Utility {
 		Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
 	}
 	
-	public static String getDeployBaseURL() {
-		return "D:\\tempFolder\\src";
+	public static String getMetadataDeployBaseURL() {
+		EnvironmentVO gitEnv = SalesforcePMOConnection.getInstance().getGitEnvirnment();
+		String remoteRepoURL = gitEnv.getURL__c();
+		return remoteRepoURL.substring(remoteRepoURL.lastIndexOf("/") + 1)+"/MetadaDataDeployment";
+	}
+	
+	public static String getConfigDeployBaseURL() {
+		EnvironmentVO gitEnv = SalesforcePMOConnection.getInstance().getGitEnvirnment();
+		String remoteRepoURL = gitEnv.getURL__c();
+		return remoteRepoURL.substring(remoteRepoURL.lastIndexOf("/") + 1)+"/ConfigDataDeployment";
 	}
 	
 	public static void main(String str[]) throws IOException {

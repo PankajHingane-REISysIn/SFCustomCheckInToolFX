@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 
 import com.customcheckin.service.git.GITConnection;
 import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
@@ -17,7 +19,7 @@ public class CompareRecords {
 	private String[] fileHeaders;
 	private Boolean fileFound = true;
 	private ConfigObjectVO custObj;
-	public CompareRecords(ConfigObjectVO custObj) throws IOException {
+	public CompareRecords(ConfigObjectVO custObj) throws IOException, InvalidRemoteException, GitAPIException {
 		this.custObj = custObj;
 		filePath = GITConnection.getInstance().getGitUserInfo().getLocalWorkspacePath__c()+"\\Config\\"+custObj.getName()+".csv";
 		log.info("Obj Name: " + custObj);

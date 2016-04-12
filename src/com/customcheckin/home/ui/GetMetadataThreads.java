@@ -45,8 +45,8 @@ public class GetMetadataThreads  extends Thread{
 		Thread fetchMetada = new GetMetadataThreads("fetchMetadata", cal);
 		fetchMetada.start();
 		
-		Thread sfRecords = new GetMetadataThreads("getSFRecords", cal);
-		sfRecords.start();
+		/*Thread sfRecords = new GetMetadataThreads("getSFRecords", cal);
+		sfRecords.start();*/
 		
 		/*try {
 			pullRepo.join();
@@ -60,13 +60,13 @@ public class GetMetadataThreads  extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
+		/*try {
 			sfRecords.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		log.info("All connection available");
 	}
 	

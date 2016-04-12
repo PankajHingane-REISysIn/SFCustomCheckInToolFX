@@ -1,5 +1,6 @@
 package com.customcheckin.service.salesforce;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +83,18 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public void storeCurrentProject(String projectId) {
 		getCurrentPMOUser().setCurrentProjectId__c(projectId);
-		gate.updateSingle("CurrentProjectId__c", pmoUser);
+		List<UserVO> userVOToUpdate = new ArrayList<UserVO>();
+		userVOToUpdate.add(getCurrentPMOUser());
+		gate.updateMultiple("update.current.project.to.user", userVOToUpdate);
+		//gate.updateSingle("CurrentProjectId__c", pmoUser);
+	}
+	
+	public void storeCurrentProjectLocalGITPath(String localWorkspacePath) {
+		getGITUser().setLocalWorkspacePath__c(localWorkspacePath);
+		List<EnvironmentUserVO> userList = new ArrayList<EnvironmentUserVO>();
+		userList.add(getGITUser());
+		gate.updateMultiple("update.environment.git.user.localWorkspace", userList);
+		//gate.updateSingle("LocalWorkspacePath__c", gitUser);
 	}
 	
 	public void storeLastCheckInDate() {
@@ -122,7 +134,9 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 		else {
 			devUser.setName(username);
 			devUser.setPassword__c(password);
-			gate.updateSingle("Name, Password__c", devUser);
+			List<EnvironmentUserVO> userList = new ArrayList<EnvironmentUserVO>();
+			userList.add(devUser);
+			gate.updateMultiple("update.git.credentials", userList);
 		}
 	}
 	
@@ -155,11 +169,19 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 	
 	public EnvironmentUserVO getGITUser() {
 		if (gitUser == null) {
-			gitUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c,LocalWorkspacePath__c from EnvironmentUser__c where Environment__r.Type__c=? and "
+			gitUser = (EnvironmentUserVO) gate.querySingle("Select Id, Name, Password__c, LocalWorkspacePath__c, GITBranchName__c from EnvironmentUser__c where Environment__r.Type__c=? and "
 					+ "PMOUser__c=? and Environment__r.Active__c=true", 
 					new Object[]{"GitHub", getCurrentPMOUser().getId()});
 		}
 		return gitUser;
+	}
+	
+	public void storeGITBranch(String gitBranch) {
+		getGITUser().setGITBranchName__c(gitBranch);
+		List<EnvironmentUserVO> userList = new ArrayList<EnvironmentUserVO>();
+		userList.add(getGITUser());
+		gate.updateMultiple("update.environment.git.user.branch", userList);
+		//gate.updateSingle("GITBranchName__c", gitUser);
 	}
 	
 	public void storeGITUser(String username, String password) {
@@ -176,7 +198,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 		else {
 			gitUser.setName(username);
 			gitUser.setPassword__c(password);
-			gate.updateSingle("update.environment.user", gitUser);
+			gate.updateSingle("update.environment.git.user", gitUser);
 		}
 	}
 	
@@ -188,7 +210,7 @@ public class SalesforcePMOConnection extends SalesforceConnection {
 		SalesforcePMOConnection pmo = SalesforcePMOConnection.getInstance();
 		pmo.getActiveProjects();
 		pmo.storeCurrentProject("a0AG000000gxW1P");
-		pmo.storeSalesforceDevUser("manasi.gangal@ggframework.dev", "test1234");
+		pmo.storeSalesforceDevUser("pankaj.hingane@salesforce.com", "test1234");
 
 	}
 

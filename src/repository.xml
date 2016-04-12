@@ -1,7 +1,19 @@
 <?xml version="1.0"?>
 <service>
    <repository>
-
+		<sql alias="update.current.project.to.user" table="User" >
+			<field name="CurrentProjectId__c"/>
+		</sql>
+		<sql alias="update.environment.git.user" table="EnvironmentUser__c" >
+			<field name="Name"/>
+			<field name="Password__c"/>
+		</sql>
+		<sql alias="update.environment.git.user.localWorkspace" table="EnvironmentUser__c" >
+			<field name="LocalWorkspacePath__c"/>
+		</sql>
+		<sql alias="update.environment.git.user.branch" table="EnvironmentUser__c" >
+			<field name="GITBranchName__c"/>
+		</sql>
    </repository>
 </service>
 

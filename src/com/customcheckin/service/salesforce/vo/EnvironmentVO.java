@@ -12,6 +12,7 @@ public class EnvironmentVO extends CustomVO {
 	private String URL__c;
 	private String ExternalId1__c;
 	private String ExternalId2__c;
+	private String GITBranchName__c;
 	public String getName() {
 		return Name;
 	}
@@ -65,6 +66,12 @@ public class EnvironmentVO extends CustomVO {
 	}
 	public void setExternalId2__c(String externalId2__c) {
 		ExternalId2__c = externalId2__c;
+	}
+	public String getGITBranchName__c() {
+		return GITBranchName__c;
+	}
+	public void setGITBranchName__c(String gITBranchName__c) {
+		GITBranchName__c = gITBranchName__c;
 	}
 	
 	
