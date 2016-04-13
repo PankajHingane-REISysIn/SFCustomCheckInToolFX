@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +18,19 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
+import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
+import com.atlassian.util.concurrent.Promise;
 import com.customcheckin.model.JiraSearchCriteriaBean;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
@@ -104,7 +109,10 @@ public class JIRAConnection {
 		return jiraTicketList;
 	}
 
-	public void updateField(String jiraTicketNo, String ticketName, Object value) throws JSONException {
+	public void updateField(String jiraTicketNo, String fieldName, Object value) throws JSONException {
+		updateField(jiraTicketNo, fieldName, value, true);
+	}
+	public void updateField(String jiraTicketNo, String fieldName, Object value, Boolean IsOverwrite) throws JSONException {
 		com.atlassian.jira.rest.client.domain.Issue issue = jiraRestClient.getIssueClient().getIssue(jiraTicketNo)
 				.claim();
 		for(com.atlassian.jira.rest.client.domain.Field field : issue.getFields()){
@@ -112,8 +120,11 @@ public class JIRAConnection {
 			log.info("field===" + field.getType());
 			log.info("field===" + field.getValue());
 		}
-		com.atlassian.jira.rest.client.domain.Field customField = issue.getFieldByName(ticketName);
+		com.atlassian.jira.rest.client.domain.Field customField = issue.getFieldByName(fieldName);
 		log.info("===" + customField.getValue());
+		if(!IsOverwrite && customField.getValue() != null) {
+			value = customField.getValue()+","+(String)value;
+		}
 		update(issue, customField, value);
 	}
 
@@ -187,7 +198,40 @@ public class JIRAConnection {
 	
 	public List<String> getCommits(List<String> jiraTicketNos) {
 		List<String> commits = new ArrayList<String>();
+		for(String jiraTicketNo : jiraTicketNos) {
+			com.atlassian.jira.rest.client.domain.Issue issue = jiraRestClient.getIssueClient().getIssue(jiraTicketNo)
+					.claim();
+			
+			if(issue != null) {
+				com.atlassian.jira.rest.client.domain.Field customField = issue.getFieldByName("Git Commit IDs");
+				if(customField.getValue() != null) {
+					List<String> commitList = Arrays.asList(((String)customField.getValue()).split("\\s*,\\s*"));
+					commits.addAll(commitList);
+				}
+			}
+			
+		}
 		return commits;
+	}
+	
+	public void markJiraTicketAsCompleted(String jiraTicketNo) {
+		List<IssueRestClient.Expandos> expand= new ArrayList<IssueRestClient.Expandos>();
+        expand.add(IssueRestClient.Expandos.TRANSITIONS);
+		Promise<com.atlassian.jira.rest.client.domain.Issue>  promisedParent = jiraRestClient.getIssueClient().getIssue(jiraTicketNo,expand);
+        
+        com.atlassian.jira.rest.client.domain.Issue issue = promisedParent.claim();
+		Promise<Iterable<Transition>> ptransitions = jiraRestClient.getIssueClient().getTransitions(issue);
+        Iterable<Transition> transitions = ptransitions.claim();
+        Integer fixedId = null;
+        for(Transition t: transitions) {
+        	if(t.getName().equalsIgnoreCase("Analyze")) {
+        		fixedId = t.getId();
+        	}
+            System.out.println(t.getName() + ":" + t.getId());
+        }
+        log.info("fixedId===" + fixedId);
+        TransitionInput tinput = new TransitionInput(fixedId);
+		jiraRestClient.getIssueClient().transition(issue,tinput).claim();
 	}
 
 	public static void main(String str[]) throws URISyntaxException, Exception {
@@ -195,7 +239,8 @@ public class JIRAConnection {
 		//JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed On", "2016-04-10");
 		Map<String, String> paramMap = new HashMap<>();
 		paramMap.put("value", "No");
-		JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed?", paramMap);
+		//JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed?", paramMap);
+		JIRAConnection.getInstance().markJiraTicketAsCompleted("GGP-29");
 	}
 
 }

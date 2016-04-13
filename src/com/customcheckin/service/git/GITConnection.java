@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,17 +19,23 @@ import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.CannotDeleteCurrentBranchException;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidMergeHeadsException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
 import org.eclipse.jgit.api.errors.NotMergedException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
@@ -41,16 +48,20 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+import com.atlassian.jira.util.json.JSONException;
+import com.customcheckin.service.jira.JIRAConnection;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.EnvironmentUserVO;
 import com.customcheckin.service.salesforce.vo.EnvironmentVO;
@@ -181,7 +192,40 @@ public class GITConnection {
 		RefSpec spec = new RefSpec("refs/heads/"+gitUserInfo.getGITBranchName__c());
 		Iterable<PushResult> pushList = pushcmd.setRemote(remoteURL).setRefSpecs(spec).call();
 		log.info("=====Completed===");
+		for(PushResult pushResult : pushList) {
+			mergeBranchWithMaster(pushResult.getAdvertisedRef("refs/heads/PankajHingane-REISysIn1"));
+			for (Ref rru : pushResult.getAdvertisedRefs()) {
+				log.info("rru.getName()===" + rru.getName());
+				log.info("rru.getName()===" + rru.getObjectId());
+				
+			}
+			for (RemoteRefUpdate rru : pushResult.getRemoteUpdates()) {
+				RemoteRefUpdate.Status status = rru.getStatus();
+				log.info("rru.getRemoteName()===" + rru.getRemoteName());
+				log.info("rru.getSrcRef()===" + rru.getSrcRef());
+				log.info("rru.getMessage()===" + rru.getMessage());
+				log.info("NewObjectId===" + rru.getNewObjectId());
+				log.info("pushResult===" + pushResult.getAdvertisedRefs());
+				updateResultTOJira(jiraTicketNo, rru.getNewObjectId().getName());
+			}
+		}
     	return true;
+	}
+	
+	public void mergeBranchWithMaster(Ref sideCommit) throws NoHeadException, ConcurrentRefUpdateException, CheckoutConflictException, InvalidMergeHeadsException, WrongRepositoryStateException, NoMessageException, GitAPIException {
+		MergeResult result = git.merge().include(sideCommit)
+				.setStrategy(MergeStrategy.RESOLVE).call();
+		// https://github.com/eclipse/jgit/blob/master/org.eclipse.jgit.test/tst/org/eclipse/jgit/api/PullCommandWithRebaseTest.java
+	}
+	
+	private void updateResultTOJira(String ticketNo, String revisonNo) {
+		try {
+			JIRAConnection.getInstance().updateField(ticketNo, "Git Commit IDs", revisonNo, false);
+		} catch (JSONException | URISyntaxException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+			e.printStackTrace();
+		}
 	}
 	
 	private Set<String> getFileWithRevisions(RevCommit commit) throws MissingObjectException, IncorrectObjectTypeException, IOException {

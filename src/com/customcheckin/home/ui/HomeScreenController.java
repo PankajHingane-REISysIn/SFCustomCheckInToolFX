@@ -37,31 +37,30 @@ import com.customcheckin.service.salesforce.SalesforceMetadataDeploy;
 import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.service.salesforce.vo.ConfigObjectVO;
 import com.customcheckin.util.Utility;
+import com.demo.HomePageDemo;
 import com.lib.util.CSVUtils;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class HomeScreenController implements Initializable {
 	private HomePage homePage;
+	private HomePageDemo homePagedemo;
 	private static Logger log = Logger.getRootLogger();
 	// metadata table
 	@FXML
@@ -74,6 +73,9 @@ public class HomeScreenController implements Initializable {
 	private TableColumn<MetadataFile, String> metadataModifiedDateColumn;
 	@FXML
 	private TableColumn<MetadataFile, Boolean> metaDataChekBoxColumn;
+	
+	@FXML
+	private Button getMetadataBtn;
 	
 	//Config Data
 	@FXML
@@ -94,6 +96,9 @@ public class HomeScreenController implements Initializable {
 	private TableColumn<ConfigRecord, Boolean> configChekBoxColumn;
 	
 	@FXML
+	private Button getConfigdataBtn;
+	
+	@FXML
     DatePicker metadataDatePicker;
 	
 	@FXML
@@ -112,6 +117,13 @@ public class HomeScreenController implements Initializable {
 	private TableColumn<JiraTicket, String> jiraCreatedDateColumn;
 	@FXML
 	private TableColumn<JiraTicket, Boolean> jiraChekBoxColumn;
+	
+	@FXML
+	private Button getJiraTicketBtn;
+	@FXML
+	private CheckBox deployToINT;
+	@FXML
+	private CheckBox markAsCompleted;
 	
 
 	public HomeScreenController() {
@@ -144,7 +156,24 @@ public class HomeScreenController implements Initializable {
 		metadataNameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
 		metadataModifiedDateColumn.setCellValueFactory(cellData -> cellData.getValue().getLastModifiedDate());
 		metadataCreateDateColumn.setCellValueFactory(cellData -> cellData.getValue().getCreateDate());
+		CheckBox colHeaderTextField = new CheckBox();
+		colHeaderTextField.selectedProperty().addListener(new ChangeListener<Boolean>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		    	log.info("oldValue======" + oldValue);
+		    	log.info("newValue======" + newValue);
+		    	//colHeaderTextField.setSelected(!newValue);
+		    	List<MetadataFile> metadataList = homePage.getMetadataFileList();
+		    	log.info("metadataList======" + metadataList.size());
+		    	for(MetadataFile metadataFile : metadataList) {
+		    		metadataFile.setIsSelected(new SimpleBooleanProperty(newValue));
+		    		log.info("metadataList get selected======" + metadataFile.getIsSelected().get());
+		    	}
+		    	
+		    }
+		});
 
+		metaDataChekBoxColumn.setGraphic(colHeaderTextField);
 		metaDataChekBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getIsSelected()); 
 		metaDataChekBoxColumn.setCellFactory(param -> new CheckBoxTableCell<MetadataFile, Boolean>());
 	}
@@ -161,21 +190,63 @@ public class HomeScreenController implements Initializable {
 	
 	@FXML
 	private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
-		List<JiraTicket> tickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
-		homePage.getJiraTicketComboList().addAll(tickets);
+		Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() throws URISyntaxException, Exception {
+            	
+            	getJiraTicketBtn.setText("Fetching ...");
+            	getJiraTicketBtn.setDisable(true);
+            	List<JiraTicket> tickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
+            	homePage.getJiraTicketComboList().addAll(tickets);
+            	System.out.println("=========Completed");
+            	
+                return null ;
+            }
+        };
+        
+        task.setOnSucceeded(event -> {
+            log.info("After success");
+            getJiraTicketBtn.setText("Fetch JIRA tickets");
+            getJiraTicketBtn.setDisable(false);
+        });
+
+
+        Thread thread = new Thread(task);
+        thread.start();
 	}
 	
 	@FXML
 	private void handleGetConfigDataOnClick() throws URISyntaxException, Exception {
-		LocalDate localeDate = configDatePicker.getValue();
-		Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-		DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
-		format.format(convertToDate);
-		Calendar cal=format.getCalendar();
-		List<ConfigObject> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
-		Collections.sort(sobjList);
-		homePage.getConfigObjComboList().clear();
-		homePage.getConfigObjComboList().addAll(sobjList);
+		Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() throws URISyntaxException, Exception {
+            	
+            	LocalDate localeDate = configDatePicker.getValue();
+            	Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            	DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
+            	format.format(convertToDate);
+            	Calendar cal=format.getCalendar();
+            	getConfigdataBtn.setText("Fetching ...");
+            	getConfigdataBtn.setDisable(true);
+            	List<ConfigObject> sobjList = SalesforceConfigDataService.getConfigDataList(cal);
+            	Collections.sort(sobjList);
+            	homePage.getConfigObjComboList().clear();
+            	homePage.getConfigObjComboList().addAll(sobjList);
+            	System.out.println("=========Completed");
+            	
+                return null ;
+            }
+        };
+        
+        task.setOnSucceeded(event -> {
+            log.info("After success");
+            getConfigdataBtn.setText("Fetch");
+            getConfigdataBtn.setDisable(false);
+        });
+
+
+        Thread thread = new Thread(task);
+        thread.start();
 	}
 	
 	@FXML
@@ -228,8 +299,7 @@ public class HomeScreenController implements Initializable {
 				GITConnection.getInstance().pushRepo(selectedJiraTicket, fileNames);
 				// todo -
 				//SalesforcePMOConnection.getInstance().storeLastCheckInDate();
-				Boolean deployToINT = true;
-				if(deployToINT) {
+				if(deployToINT.isSelected()) {
 					SalesforceMetadataDeploy sfDeploy = new SalesforceMetadataDeploy(SalesforceINTConnection.getInstance().getForceDelegate());
 					List<String> jiraTicket = new ArrayList<>();
 					jiraTicket.add(selectedJiraTicket);
@@ -241,6 +311,9 @@ public class HomeScreenController implements Initializable {
 					Map<String, String> paramMap = new HashMap<>();
 					paramMap.put("value", "Yes");
 					JIRAConnection.getInstance().updateField(selectedJiraTicket, "INTEGRATION Deployed?", paramMap);
+				}
+				if(markAsCompleted.isSelected()) {
+					JIRAConnection.getInstance().markJiraTicketAsCompleted(selectedJiraTicket);
 				}
 				clearTables();
 				Alert alert = new Alert(AlertType.INFORMATION);
@@ -282,17 +355,42 @@ public class HomeScreenController implements Initializable {
 
 	@FXML
 	private void handleGetMetadaOnClick() throws URISyntaxException, Exception {
-		LocalDate localeDate = metadataDatePicker.getValue();
-		Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-		DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
-		format.format(convertToDate);
-		Calendar cal=format.getCalendar();
-		List<MetadataFile> metadataFileList = new ArrayList<>();
-		GetMetadataThreads.getAllData(cal);
-		metadataFileList = new CompareFiles().getMetadataFilesWithDifference();
-		homePage.getMetadataFileList().clear();
-		homePage.getMetadataFileList().addAll(metadataFileList);
-		System.out.println("=========Completed");
+		
+		Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() throws URISyntaxException, Exception {
+	            /*List<JiraTicket> tickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
+				homePage.getJiraTicketComboList().clear();
+				homePage.getJiraTicketComboList().addAll(tickets);
+                updateProgress(10, 10);*/
+            	LocalDate localeDate = metadataDatePicker.getValue();
+            	Date convertToDate = Date.from(localeDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            	DateFormat format=new SimpleDateFormat("yyyy/mm/dd");
+            	format.format(convertToDate);
+            	Calendar cal=format.getCalendar();
+            	List<MetadataFile> metadataFileList = new ArrayList<>();
+            	getMetadataBtn.setText("Fetching ...");
+            	getMetadataBtn.setDisable(true);
+            	GetMetadataThreads.getAllData(cal);
+            	metadataFileList = new CompareFiles().getMetadataFilesWithDifference();
+            	homePage.getMetadataFileList().clear();
+            	homePage.getMetadataFileList().addAll(metadataFileList);
+            	System.out.println("=========Completed");
+            	
+                return null ;
+            }
+        };
+        
+        task.setOnSucceeded(event -> {
+            log.info("After success");
+            getMetadataBtn.setText("Fetch");
+        	getMetadataBtn.setDisable(false);
+        });
+
+
+        Thread thread = new Thread(task);
+        thread.start();
+        
 	}
 	
 	@FXML
@@ -329,42 +427,11 @@ public class HomeScreenController implements Initializable {
 		configDataList.setItems(homePage.getConfigRecordList());
 	}
 	
-	public static class ProgressForm {
-        private final Stage dialogStage;
-        private final ProgressBar pb = new ProgressBar();
-        private final ProgressIndicator pin = new ProgressIndicator();
-
-        public ProgressForm() {
-            dialogStage = new Stage();
-            dialogStage.initStyle(StageStyle.UTILITY);
-            dialogStage.setResizable(false);
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-
-            // PROGRESS BAR
-            final Label label = new Label();
-            label.setText("Loading... Please wait");
-
-            pb.setProgress(0);
-            pin.setProgress(0);
-
-            final HBox hb = new HBox();
-            hb.setSpacing(5);
-            hb.setAlignment(Pos.CENTER);
-            hb.getChildren().addAll(pb, pin);
-
-            Scene scene = new Scene(hb);
-            dialogStage.setScene(scene);
-        }
-
-        public void activateProgressBar(final Task<?> task)  {
-            pb.progressProperty().bind(task.progressProperty());
-            pin.progressProperty().bind(task.progressProperty());
-            dialogStage.show();
-        }
-
-        public Stage getDialogStage() {
-            return dialogStage;
-        }
-    }
-
+	public void setHomePageDemo(HomePageDemo homePage) {
+		this.homePagedemo = homePage;
+		metadataFileList.setItems(homePagedemo.getMetadataFileList());
+		jiraList.setItems(homePagedemo.getJiraTicketComboList());
+		configObjList.setItems(homePagedemo.getConfigObjComboList());
+		configDataList.setItems(homePagedemo.getConfigRecordList());
+	}
 }
