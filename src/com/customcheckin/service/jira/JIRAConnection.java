@@ -10,13 +10,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.SearchResult;
@@ -101,15 +104,20 @@ public class JIRAConnection {
 		return jiraTicketList;
 	}
 
-	public void updateField(String jiraTicketNo, String ticketName, String value) throws JSONException {
+	public void updateField(String jiraTicketNo, String ticketName, Object value) throws JSONException {
 		com.atlassian.jira.rest.client.domain.Issue issue = jiraRestClient.getIssueClient().getIssue(jiraTicketNo)
 				.claim();
+		for(com.atlassian.jira.rest.client.domain.Field field : issue.getFields()){
+			log.info("field===" + field.getName());
+			log.info("field===" + field.getType());
+			log.info("field===" + field.getValue());
+		}
 		com.atlassian.jira.rest.client.domain.Field customField = issue.getFieldByName(ticketName);
 		log.info("===" + customField.getValue());
 		update(issue, customField, value);
 	}
 
-	private static void update(com.atlassian.jira.rest.client.domain.Issue issue, Field field, String value)
+	private static void update(com.atlassian.jira.rest.client.domain.Issue issue, Field field, Object value)
 			throws JSONException {
 
 		try {
@@ -134,7 +142,7 @@ public class JIRAConnection {
 		out.close();
 	}
 
-	private static JSONObject jsonEditIssue(Field field, String value) throws JSONException {
+	private static JSONObject jsonEditIssue(Field field, Object value) throws JSONException {
 		JSONObject summary = new JSONObject().accumulate(field.getId(), value);
 		JSONObject fields = new JSONObject().accumulate("fields", summary);
 		return fields;
@@ -175,7 +183,7 @@ public class JIRAConnection {
 
 	private static URL forIssue(com.atlassian.jira.rest.client.domain.Issue issue) throws MalformedURLException {
 		return issue.getSelf().toURL();
-	}
+	} 
 	
 	public List<String> getCommits(List<String> jiraTicketNos) {
 		List<String> commits = new ArrayList<String>();
@@ -184,8 +192,10 @@ public class JIRAConnection {
 
 	public static void main(String str[]) throws URISyntaxException, Exception {
 		log.info(JIRAConnection.getInstance().getOpenTickets("GGP").size());
-		JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed On", "2016-04-10");
-		JIRAConnection.getInstance().updateField("GGP-3", "Status", "Fixed");
+		//JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed On", "2016-04-10");
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("value", "No");
+		JIRAConnection.getInstance().updateField("GGP-3", "TEST Deployed?", paramMap);
 	}
 
 }

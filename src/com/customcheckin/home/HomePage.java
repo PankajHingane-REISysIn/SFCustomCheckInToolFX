@@ -2,6 +2,7 @@ package com.customcheckin.home;
 
 import java.io.IOException;
 
+import com.customcheckin.home.ui.DeploymentController;
 import com.customcheckin.home.ui.GITLoginController;
 import com.customcheckin.home.ui.HomeScreenController;
 import com.customcheckin.home.ui.JIRALoginController;
@@ -11,6 +12,7 @@ import com.customcheckin.model.ConfigObject;
 import com.customcheckin.model.ConfigRecord;
 import com.customcheckin.model.JiraTicket;
 import com.customcheckin.model.MetadataFile;
+import com.customcheckin.service.salesforce.SalesforcePMOConnection;
 import com.customcheckin.util.PropertyManager;
 
 import javafx.application.Application;
@@ -32,6 +34,8 @@ public class HomePage extends Application {
     private ObservableList<JiraTicket> jiraTicketComboList = FXCollections.observableArrayList();
     
     private ObservableList<ConfigObject> configObjComboList = FXCollections.observableArrayList();
+    
+    private ObservableList<String> envList = FXCollections.observableArrayList();
 
     public HomePage() {
     }
@@ -47,7 +51,7 @@ public class HomePage extends Application {
         } else {
         	showHomePage();
         }
-        showHomePage();
+        //showHomePage();
 	}
 	
 	public void initRootLayout() throws IOException {
@@ -68,13 +72,32 @@ public class HomePage extends Application {
     }
 	
 	public void showHomePage() throws IOException {
+		if(SalesforcePMOConnection.getInstance().isCurrentUserCMAdmin()) {
+			loadDeploymentTool();
+		} else {
+			loadCheckInTool();
+		}
+	}
+	
+	private void loadCheckInTool() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(HomePage.class.getResource("ui/HomeScreen2.fxml"));
-        AnchorPane homeScreenPane = (AnchorPane) loader.load();
-
-        rootLayout.setCenter(homeScreenPane);
-        HomeScreenController controller = loader.getController();
-        controller.setHomePage(this);
+		loader.setLocation(HomePage.class.getResource("ui/HomeScreen2.fxml"));
+		AnchorPane homeScreenPane = (AnchorPane) loader.load();
+		
+		rootLayout.setCenter(homeScreenPane);
+		HomeScreenController controller = loader.getController();
+		controller.setHomePage(this);
+		
+	}
+	
+	private void loadDeploymentTool() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(HomePage.class.getResource("ui/DeploymentHome.fxml"));
+		AnchorPane homeScreenPane = (AnchorPane) loader.load();
+		
+		rootLayout.setCenter(homeScreenPane);
+		DeploymentController controller = loader.getController();
+		controller.setHomePage(this);
 	}
 	
 	public void showPMOLoginPage() throws IOException {
@@ -186,5 +209,11 @@ public class HomePage extends Application {
 	
 	public ObservableList<ConfigObject> getConfigObjComboList() {
 		return configObjComboList;
+	}
+	public ObservableList<String> getEnvList() {
+		return envList;
+	}
+	public void setEnvList(ObservableList<String> envList) {
+		this.envList = envList;
 	}
 }

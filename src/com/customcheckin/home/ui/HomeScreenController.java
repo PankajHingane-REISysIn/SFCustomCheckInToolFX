@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -160,8 +161,8 @@ public class HomeScreenController implements Initializable {
 	
 	@FXML
 	private void handleGetJiraTicketOnClick() throws URISyntaxException, Exception {
-		List<JiraTicket> rickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
-		homePage.getJiraTicketComboList().addAll(rickets);
+		List<JiraTicket> tickets = JIRAConnection.getInstance().getOpenTickets(SalesforcePMOConnection.getInstance().getJiraEnvirnment().getExternalId1__c());
+		homePage.getJiraTicketComboList().addAll(tickets);
 	}
 	
 	@FXML
@@ -230,8 +231,16 @@ public class HomeScreenController implements Initializable {
 				Boolean deployToINT = true;
 				if(deployToINT) {
 					SalesforceMetadataDeploy sfDeploy = new SalesforceMetadataDeploy(SalesforceINTConnection.getInstance().getForceDelegate());
-					sfDeploy.deployFilesToTargetOrg();
-					JIRAConnection.getInstance().updateField(selectedJiraTicket, "TEST Deployed On", "2016-04-10");
+					List<String> jiraTicket = new ArrayList<>();
+					jiraTicket.add(selectedJiraTicket);
+					sfDeploy.deploy(jiraTicket);
+					DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+					Calendar cal = Calendar.getInstance();
+					String dateStr = dateFormat.format(cal.getTime());
+					JIRAConnection.getInstance().updateField(selectedJiraTicket, "INTEGRATION Deployed On", dateStr);
+					Map<String, String> paramMap = new HashMap<>();
+					paramMap.put("value", "Yes");
+					JIRAConnection.getInstance().updateField(selectedJiraTicket, "INTEGRATION Deployed?", paramMap);
 				}
 				clearTables();
 				Alert alert = new Alert(AlertType.INFORMATION);
